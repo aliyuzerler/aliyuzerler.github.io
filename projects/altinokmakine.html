@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="theme-color" content="#0E1012"/>
+<title>ALTINOK MAKİNA — Hassas Üretim Sistemleri</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+/* ============ TEMEL ============ */
+:root{
+  --coal:#0E1012; --panel:#16181B; --ink:#131518;
+  --bone:#EDEAE2; --muted:#A2A7AE; --line:rgba(237,234,226,.14);
+  --accent:#FF4D00; --accent-ink:#140B06;
+  --mono:'IBM Plex Mono',monospace; --sans:'Archivo',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--coal);color:var(--bone);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body.lock{overflow:hidden}
+::selection{background:var(--accent);color:var(--accent-ink)}
+::-webkit-scrollbar{width:10px}
+::-webkit-scrollbar-track{background:var(--coal)}
+::-webkit-scrollbar-thumb{background:#2a2e33;border:2px solid var(--coal)}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+section{scroll-margin-top:84px}
+.mono{font-family:var(--mono);letter-spacing:.08em}
+.container{width:min(1280px,calc(100% - 96px));margin-inline:auto}
+.sec{padding:clamp(90px,11vw,150px) 0}
+.sec-tag{font-family:var(--mono);font-size:11px;letter-spacing:.18em;color:var(--accent);display:flex;align-items:center;gap:14px;margin-bottom:26px}
+.sec-tag::after{content:"";flex:0 0 56px;height:1px;background:currentColor;opacity:.5}
+h2.sec-title{font-weight:800;font-stretch:110%;font-size:clamp(2.1rem,4.6vw,3.9rem);line-height:1.02;letter-spacing:-.02em;text-transform:uppercase}
+
+/* ============ BUTONLAR ============ */
+.btn{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.12em;padding:17px 26px;border:1px solid transparent;cursor:pointer;transition:background .3s,color .3s,border-color .3s;user-select:none}
+.btn svg{width:15px;height:15px;transition:transform .3s}
+.btn:hover svg{transform:translate(3px,-3px)}
+.btn-solid{background:var(--accent);color:var(--accent-ink)}
+.btn-solid:hover{background:var(--bone)}
+.btn-ghost{border-color:rgba(237,234,226,.3);color:var(--bone)}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+.btn-ink{background:var(--accent);color:var(--accent-ink);width:100%;justify-content:center}
+.btn-ink:hover{background:var(--bone)}
+
+/* ============ PRELOADER ============ */
+#preloader{position:fixed;inset:0;background:var(--coal);z-index:200;display:flex;align-items:center;justify-content:center}
+.pre-inner{display:flex;flex-direction:column;align-items:center;gap:18px}
+.pre-brand{font-size:12px;letter-spacing:.3em;color:var(--muted)}
+.pre-bar{width:200px;height:2px;background:rgba(237,234,226,.12);overflow:hidden}
+.pre-bar i{display:block;height:100%;background:var(--accent);transform:scaleX(0);transform-origin:left}
+.pre-num{font-size:12px;color:var(--accent)}
+
+/* ============ NAV ============ */
+.nav{position:fixed;top:0;left:0;right:0;z-index:90;transition:background .35s,border-color .35s;border-bottom:1px solid transparent}
+.nav.scrolled{background:rgba(14,16,18,.85);backdrop-filter:blur(14px);border-bottom-color:var(--line)}
+.nav-inner{width:min(1280px,calc(100% - 48px));margin-inline:auto;display:flex;align-items:center;justify-content:space-between;height:72px}
+.brand{font-weight:800;font-stretch:110%;font-size:19px;letter-spacing:.02em}
+.brand span{font-family:var(--mono);font-weight:400;font-size:10px;color:var(--accent);letter-spacing:.2em;margin-left:6px;vertical-align:middle}
+.links{display:flex;gap:34px}
+.links a{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--muted);position:relative;padding:6px 0;transition:color .25s}
+.links a::after{content:"";position:absolute;left:0;bottom:0;width:100%;height:1px;background:var(--accent);transform:scaleX(0);transform-origin:right;transition:transform .35s cubic-bezier(.22,1,.36,1)}
+.links a:hover{color:var(--bone)}
+.links a:hover::after{transform:scaleX(1);transform-origin:left}
+.nav-right{display:flex;align-items:center;gap:16px}
+.nav-cta{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--bone);border:1px solid rgba(237,234,226,.28);padding:11px 18px;display:inline-flex;align-items:center;gap:8px;transition:.3s;cursor:pointer}
+.nav-cta:hover{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.nav-cta svg{width:13px;height:13px}
+.burger{display:none;background:none;border:none;color:var(--bone);cursor:pointer;padding:6px}
+.burger svg{width:24px;height:24px}
+.progress{position:absolute;left:0;right:0;bottom:-1px;height:2px}
+.progress i{display:block;height:100%;background:var(--accent);transform:scaleX(0);transform-origin:left}
+
+/* ============ MOBİL MENÜ ============ */
+.mmenu{position:fixed;inset:0;background:var(--coal);z-index:120;display:flex;flex-direction:column;justify-content:center;padding:0 28px;clip-path:inset(0 0 100% 0);transition:clip-path .55s cubic-bezier(.76,0,.24,1);visibility:hidden}
+.mmenu.open{clip-path:inset(0 0 0% 0);visibility:visible}
+.mmenu a.mlink{font-weight:800;font-size:clamp(2rem,9vw,3rem);text-transform:uppercase;padding:14px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+.mmenu a.mlink span{font-family:var(--mono);font-size:11px;color:var(--accent);font-weight:400}
+.mmenu-foot{margin-top:34px;font-size:11px;color:var(--muted);line-height:2}
+
+/* ============ HERO ============ */
+.hero{position:relative;height:100svh;min-height:640px;overflow:hidden}
+.hero-canvas-wrap{position:absolute;inset:0}
+#scene{width:100%;height:100%;display:block;cursor:grab}
+#scene:active{cursor:grabbing}
+.hero-content{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;justify-content:center;pointer-events:none;padding-top:40px}
+.hero-content a{pointer-events:auto}
+.hero-tag{font-family:var(--mono);font-size:11px;letter-spacing:.22em;color:var(--muted);margin-bottom:28px}
+.hero-tag b{color:var(--accent);font-weight:500}
+.hero-title{font-size:clamp(3.2rem,9.4vw,8.4rem);line-height:.94;font-weight:900;letter-spacing:-.025em;text-transform:uppercase;font-stretch:105%}
+.hero-title .line{display:block;overflow:hidden;padding-block:.1em;margin-block:-.1em}
+.hero-title .line i{display:inline-block;font-style:normal;transform:translateY(120%)}
+.hero-title .outline{-webkit-text-stroke:2.5px var(--accent);color:transparent}
+.hero-title .sq{display:inline-block;width:.13em;height:.13em;background:var(--accent);margin-left:.14em}
+.hero-sub{max-width:520px;color:var(--muted);font-size:15.5px;margin-top:34px}
+.hero-sub b{color:var(--bone);font-weight:600}
+.hero-cta{display:flex;gap:14px;margin-top:38px;flex-wrap:wrap}
+/* canlı durum paneli */
+.status{position:absolute;right:48px;bottom:44px;z-index:3;width:320px;background:rgba(14,16,18,.72);backdrop-filter:blur(10px);border:1px solid var(--line);padding:16px 18px;pointer-events:auto}
+.status-head{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:10px;letter-spacing:.16em;color:var(--muted);padding-bottom:12px;border-bottom:1px solid var(--line);margin-bottom:12px}
+.live-dot{width:7px;height:7px;background:var(--accent);border-radius:50%;animation:pulse 1.6s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,77,0,.5)}55%{box-shadow:0 0 0 7px rgba(255,77,0,0)}}
+.status-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.status-grid label{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.14em;color:#6d737a;margin-bottom:4px}
+.status-grid b{font-family:var(--mono);font-size:16px;font-weight:600;color:var(--bone);display:block}
+.status-grid small{font-family:var(--mono);font-size:9px;color:#6d737a;letter-spacing:.08em}
+.scroll-cue{position:absolute;left:48px;bottom:44px;z-index:3;display:flex;flex-direction:column;align-items:center;gap:10px;font-family:var(--mono);font-size:9px;letter-spacing:.3em;color:#6d737a}
+.scroll-cue::after{content:"";width:1px;height:44px;background:var(--line);position:relative;overflow:hidden}
+.scroll-cue i{position:absolute;bottom:44px;left:50%;width:1px;height:18px;background:var(--accent);animation:cue 1.8s cubic-bezier(.76,0,.24,1) infinite}
+@keyframes cue{0%{transform:translateY(-8px) scaleY(0);transform-origin:top}45%{transform:translateY(0) scaleY(1);transform-origin:top}55%{transform:translateY(0) scaleY(1);transform-origin:bottom}100%{transform:translateY(26px) scaleY(0);transform-origin:bottom}}
+
+/* ============ MARQUEE ============ */
+.marquee{background:var(--accent);color:var(--accent-ink);overflow:hidden;padding:15px 0;border-block:1px solid rgba(0,0,0,.15)}
+.marquee-track{display:flex;width:max-content;animation:mq 32s linear infinite}
+.marquee:hover .marquee-track{animation-play-state:paused}
+.marquee-track span{font-family:var(--mono);font-size:13px;font-weight:600;letter-spacing:.16em;white-space:nowrap;padding:0 22px}
+.marquee-track i{font-style:normal;opacity:.45;font-family:var(--mono);padding:0 4px}
+@keyframes mq{to{transform:translateX(-50%)}}
+
+/* ============ HAKKIMIZDA ============ */
+.about{background:var(--bone);color:var(--ink)}
+.about-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(40px,6vw,100px);margin-top:52px}
+.about-big{font-size:clamp(1.5rem,2.9vw,2.35rem);line-height:1.32;font-weight:600;letter-spacing:-.01em;max-width:640px}
+.about-big .w{display:inline-block}
+.about-note{margin-top:34px;color:#4d5257;font-size:15px;max-width:520px}
+.certs{margin-top:44px;border-top:1px solid rgba(19,21,24,.2);padding-top:18px;display:flex;flex-wrap:wrap;gap:8px 26px;font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:#4d5257}
+.certs b{color:var(--ink);font-weight:600}
+.stats{display:flex;flex-direction:column}
+.stat{border-top:1px solid rgba(19,21,24,.2);padding:20px 0 24px}
+.stat-label{font-family:var(--mono);font-size:10px;letter-spacing:.18em;color:#6a6f75;display:block;margin-bottom:8px}
+.stat-num{font-size:clamp(2.2rem,3.6vw,3.1rem);font-weight:800;letter-spacing:-.02em;line-height:1;font-stretch:108%}
+
+/* ============ KAPASİTELER ============ */
+.caps .sec-top{display:flex;justify-content:space-between;align-items:flex-end;gap:40px;margin-bottom:56px;flex-wrap:wrap}
+.caps .sec-top p{max-width:340px;color:var(--muted);font-size:14px}
+.cap-list{border-top:1px solid var(--line)}
+.cap-row{display:grid;grid-template-columns:84px 1.05fr 1.15fr 170px 60px;align-items:center;gap:22px;padding:30px 0;border-bottom:1px solid var(--line);position:relative}
+.cap-idx{font-size:12px;color:#6d737a;transition:color .3s}
+.cap-name{font-size:clamp(1.25rem,2.2vw,1.8rem);font-weight:800;text-transform:uppercase;letter-spacing:-.01em;transition:transform .4s cubic-bezier(.22,1,.36,1),color .3s;font-stretch:108%}
+.cap-desc{color:var(--muted);font-size:14px}
+.cap-spec{font-size:12px;color:var(--bone);border:1px solid var(--line);padding:7px 12px;justify-self:start;white-space:nowrap}
+.cap-arrow{opacity:0;transform:translate(-8px,8px);transition:.35s;color:var(--accent)}
+.cap-arrow svg{width:22px;height:22px}
+.cap-row.on .cap-name{color:var(--accent);transform:translateX(14px)}
+.cap-row.on .cap-idx{color:var(--accent)}
+.cap-row.on .cap-arrow{opacity:1;transform:translate(0,0)}
+/* imleci takip eden önizleme */
+#capPreview{position:fixed;top:0;left:0;z-index:60;pointer-events:none;will-change:transform}
+.cap-preview-inner{width:330px;height:235px;overflow:hidden;border:1px solid rgba(237,234,226,.25);background:var(--panel);opacity:0;box-shadow:0 30px 60px rgba(0,0,0,.45)}
+.cap-preview-inner img{width:100%;height:100%;object-fit:cover;filter:grayscale(.35) contrast(1.06)}
+.cap-preview-tag{position:absolute;left:10px;bottom:10px;font-family:var(--mono);font-size:9px;letter-spacing:.16em;color:var(--bone);background:rgba(14,16,18,.8);padding:5px 9px}
+
+/* ============ FABRİKA ============ */
+.factory{background:var(--bone);color:var(--ink)}
+.factory-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:54px;gap:30px;flex-wrap:wrap}
+.factory-head p{max-width:360px;color:#4d5257;font-size:14.5px}
+.factory-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
+.ph{position:relative;overflow:hidden;background:#dcd8ce}
+.ph .ph-img{position:absolute;inset:0;overflow:hidden}
+.ph img{width:100%;height:100%;object-fit:cover;filter:grayscale(.9) contrast(1.05);transition:filter .5s;will-change:transform}
+.ph:hover img{filter:grayscale(0) contrast(1)}
+.ph figcaption{position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:rgba(14,16,18,.78);color:var(--bone);font-family:var(--mono);font-size:10px;letter-spacing:.16em;z-index:2}
+.ph figcaption em{font-style:normal;color:var(--accent)}
+.ph-1{grid-column:1/8;height:540px}
+.ph-2{grid-column:8/13;height:540px}
+.ph-3{grid-column:1/5;height:380px}
+.ph-4{grid-column:5/13;height:380px}
+
+/* ============ SÜREÇ ============ */
+.process-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(40px,6vw,110px);margin-top:20px}
+.process-left{position:sticky;top:130px;align-self:start}
+.process-left p{color:var(--muted);font-size:15px;max-width:400px;margin-top:26px}
+.process-left .p-meta{margin-top:38px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:#6d737a;line-height:2.2}
+.process-left .p-meta b{color:var(--accent);font-weight:500}
+.track{position:relative;padding-left:58px}
+.track-line{position:absolute;left:5px;top:8px;bottom:8px;width:1px;background:rgba(237,234,226,.12)}
+.track-fill{position:absolute;left:4.5px;top:8px;bottom:8px;width:2px;background:var(--accent);transform:scaleY(0);transform-origin:top}
+.step{position:relative;padding:26px 0;border-bottom:1px solid var(--line)}
+.step:last-child{border-bottom:none}
+.step::before{content:"";position:absolute;left:-58px;top:36px;width:11px;height:11px;background:var(--coal);border:1px solid #3a3f45;transform:translateX(-1px) rotate(45deg);transition:.4s}
+.step.on::before{background:var(--accent);border-color:var(--accent)}
+.step-top{font-family:var(--mono);font-size:10px;letter-spacing:.18em;color:#6d737a;display:flex;justify-content:space-between;margin-bottom:10px}
+.step-top em{font-style:normal;color:var(--accent)}
+.step h3{font-size:clamp(1.25rem,2vw,1.7rem);font-weight:800;text-transform:uppercase;letter-spacing:-.01em;color:#787e86;transition:color .45s;font-stretch:108%}
+.step.on h3{color:var(--bone)}
+.step p{color:var(--muted);font-size:14.5px;margin-top:10px;max-width:480px}
+
+/* ============ İLETİŞİM ============ */
+.contact{background:var(--accent);color:var(--accent-ink)}
+.contact .sec-tag{color:var(--accent-ink)}
+.contact .sec-tag::after{background:currentColor;opacity:.4}
+.contact-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(44px,6vw,110px);align-items:start}
+.contact h2{font-size:clamp(2.6rem,6vw,5.2rem);font-weight:900;line-height:.96;letter-spacing:-.025em;text-transform:uppercase;font-stretch:106%}
+.contact h2 span{color:var(--bone)}
+.contact-lead{margin-top:26px;max-width:440px;font-size:15px;color:rgba(20,11,6,.78)}
+.ci{border-top:1px solid rgba(20,11,6,.28);padding:16px 0;display:flex;flex-direction:column;gap:4px}
+.ci:first-of-type{margin-top:44px}
+.ci span{font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:rgba(20,11,6,.6)}
+.ci a,.ci b{font-weight:600;font-size:clamp(1.1rem,1.8vw,1.45rem);letter-spacing:-.01em;width:fit-content}
+.ci a{border-bottom:1px solid transparent;transition:border-color .25s}
+.ci a:hover{border-color:var(--accent-ink)}
+.form-panel{background:var(--ink);color:var(--bone);padding:clamp(28px,3.4vw,46px)}
+.form-head{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;letter-spacing:.18em;color:var(--muted);padding-bottom:22px;border-bottom:1px solid var(--line);margin-bottom:8px}
+.form-head b{color:var(--accent);font-weight:500}
+.field{padding:18px 0 6px;position:relative}
+.field label{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.18em;color:#8a9097;margin-bottom:8px}
+.field input,.field textarea{width:100%;background:transparent;border:none;border-bottom:1px solid rgba(237,234,226,.22);color:var(--bone);font-family:var(--sans);font-size:15px;padding:10px 0;outline:none;transition:border-color .3s;resize:vertical}
+.field input:focus,.field textarea:focus{border-color:var(--accent)}
+.field .err{display:none;font-family:var(--mono);font-style:normal;font-size:10px;color:#FF8A5C;letter-spacing:.08em;padding-top:6px}
+.field.error .err{display:block}
+.field.error input,.field.error textarea{border-color:#FF8A5C}
+.form-panel .btn-ink{margin-top:30px}
+.form-note{margin-top:16px;font-size:10px;letter-spacing:.14em;color:#6d737a;text-align:center}
+
+/* ============ FOOTER ============ */
+.footer{background:var(--coal);padding:80px 0 36px;overflow:hidden}
+.footer-giant{font-size:clamp(2.6rem,10.6vw,9.6rem);font-weight:900;line-height:.95;letter-spacing:-.02em;text-transform:uppercase;white-space:nowrap;color:transparent;-webkit-text-stroke:1.5px rgba(237,234,226,.38);transition:color .6s;user-select:none;font-stretch:108%}
+.footer-giant:hover{color:var(--bone)}
+.footer-meta{display:flex;justify-content:space-between;gap:36px;flex-wrap:wrap;margin-top:56px;padding-top:30px;border-top:1px solid var(--line)}
+.footer-meta .fcol{display:flex;flex-direction:column;gap:8px}
+.footer-meta .flabel{font-family:var(--mono);font-size:9px;letter-spacing:.22em;color:#6d737a;margin-bottom:4px}
+.footer-meta a,.footer-meta b{font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;color:var(--muted);font-weight:400;transition:color .25s}
+.footer-meta a:hover{color:var(--accent)}
+.footer-meta .clock b{color:var(--accent);font-size:13px}
+.footer-bottom{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-top:56px;font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:#6d737a}
+
+/* ============ TOAST ============ */
+#toasts{position:fixed;right:22px;bottom:22px;z-index:150;display:flex;flex-direction:column;gap:10px}
+.toast{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--accent);padding:15px 18px;min-width:300px;max-width:360px;display:flex;gap:12px;align-items:flex-start;box-shadow:0 20px 50px rgba(0,0,0,.5)}
+.toast svg{width:17px;height:17px;color:var(--accent);flex:none;margin-top:2px}
+.toast b{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--accent);margin-bottom:4px}
+.toast p{font-size:13px;color:var(--muted);line-height:1.5}
+
+/* ============ DUYARLILIK ============ */
+@media(max-width:1024px){
+  .about-grid,.process-grid,.contact-grid{grid-template-columns:1fr}
+  .process-left{position:static}
+  .ph-1{grid-column:1/13;height:420px}
+  .ph-2{grid-column:1/7;height:340px}
+  .ph-3{grid-column:7/13;height:340px}
+  .ph-4{grid-column:1/13;height:320px}
+}
+@media(max-width:860px){
+  .container{width:calc(100% - 44px)}
+  .links{display:none}
+  .burger{display:block}
+  .nav-cta{display:none}
+  .status,.scroll-cue{display:none}
+  .cap-row{grid-template-columns:44px 1fr auto;row-gap:8px}
+  .cap-desc{grid-column:2/-1}
+  .cap-arrow{display:none}
+  .cap-spec{grid-column:2/-1;justify-self:start}
+  #capPreview{display:none}
+  .footer-meta{flex-direction:column}
+}
+</style>
+</head>
+<body class="lock">
+
+<!-- Preloader -->
+<div id="preloader">
+  <div class="pre-inner">
+    <span class="mono pre-brand">ALTINOK MAKİNA — SİSTEM HAZIRLANIYOR</span>
+    <div class="pre-bar"><i id="preBar"></i></div>
+    <span class="mono pre-num" id="preNum">000</span>
+  </div>
+</div>
+
+<!-- Navigasyon -->
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="#top">ALTINOK<span>MAKİNA</span></a>
+    <nav class="links">
+      <a href="#hakkinda">HAKKIMIZDA</a>
+      <a href="#kapasite">KAPASİTELER</a>
+      <a href="#fabrika">FABRİKA</a>
+      <a href="#surec">SÜREÇ</a>
+      <a href="#iletisim">İLETİŞİM</a>
+    </nav>
+    <div class="nav-right">
+      <a class="nav-cta magnetic" href="#iletisim">TEKLİF AL <i data-lucide="arrow-up-right"></i></a>
+      <button class="burger" id="burger" aria-label="Menü"><i data-lucide="menu"></i></button>
+    </div>
+  </div>
+  <div class="progress"><i id="progressBar"></i></div>
+</header>
+
+<!-- Mobil menü -->
+<div class="mmenu" id="mmenu">
+  <a class="mlink" href="#hakkinda">HAKKIMIZDA <span>01</span></a>
+  <a class="mlink" href="#kapasite">KAPASİTELER <span>02</span></a>
+  <a class="mlink" href="#fabrika">FABRİKA <span>03</span></a>
+  <a class="mlink" href="#surec">SÜREÇ <span>04</span></a>
+  <a class="mlink" href="#iletisim">İLETİŞİM <span>05</span></a>
+  <div class="mmenu-foot mono">satis@altinokmakina.com<br>+90 (232) 000 00 00 — Atatürk OSB, İZMİR</div>
+</div>
+
+<main>
+  <!-- HERO + 3D SAHNE -->
+  <section class="hero" id="top">
+    <div class="hero-canvas-wrap" id="heroCanvasWrap"><canvas id="scene"></canvas></div>
+    <div class="hero-content" id="heroContent">
+      <p class="hero-tag" id="heroTag">İZMİR ATATÜRK OSB — <b>KURULUŞ 1987</b> — TSE DENETLİMLİ TESİS</p>
+      <h1 class="hero-title">
+        <span class="line"><i>HASSAS</i></span>
+        <span class="line"><i class="outline">MAKİNE</i></span>
+        <span class="line"><i>ÜRETİMİ<em class="sq"></em></i></span>
+      </h1>
+      <p class="hero-sub" id="heroSub">Savunma, otomotiv ve enerji sektörlerine <b>±0,005&nbsp;mm toleransla</b> CNC imalat, komple makine montajı ve mühendislik çözümleri sunuyoruz.</p>
+      <div class="hero-cta" id="heroCta">
+        <a class="btn btn-solid magnetic" href="#kapasite">KAPASİTELERİ GÖR <i data-lucide="arrow-up-right"></i></a>
+        <a class="btn btn-ghost" href="#fabrika">FABRİKAYI GEZ <i data-lucide="arrow-down"></i></a>
+      </div>
+    </div>
+    <div class="status" id="heroStatus">
+      <div class="status-head"><span class="live-dot"></span>CNC HALA-07 — CANLI YAYIN · SAHNEYİ SÜRÜKLEYİN</div>
+      <div class="status-grid">
+        <div><label>SPINDLE</label><b id="rpm">12.412</b><small>DEV/DK</small></div>
+        <div><label>PARÇA</label><b id="prog">37</b><small>% İLERLEME</small></div>
+        <div><label>ORTAM</label><b id="temp">21,3</b><small>°C</small></div>
+      </div>
+    </div>
+    <div class="scroll-cue">KAYDIR<i></i></div>
+  </section>
+
+  <!-- KAYAN ŞERİT -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track" id="mqTrack"></div>
+  </div>
+
+  <!-- HAKKIMIZDA -->
+  <section class="about sec" id="hakkinda">
+    <div class="container">
+      <p class="sec-tag">01 — HAKKIMIZDA</p>
+      <div class="about-grid">
+        <div>
+          <p class="about-big" id="aboutBig">Bir torna tezgâhıyla başladık. Bugün 4.500 m²'lik fabrikamızda, 38 mühendis ve 120'yi aşkın usta ile Türkiye'nin en zorlu imalat taleplerini cevaplıyoruz. Bizim için hassasiyet bir hedef değil — başlangıç noktası.</p>
+          <p class="about-note" data-reveal>1987'de küçük bir atölyede kurulan Altınok Makina; bugün tek çatı altında tasarım, imalat, montaj ve kalite kontrol süreçlerini yürütüyor. Ürettiğimiz her parça, seri numarasıyla izlenebilir ve ölçüm raporuyla belgelenir.</p>
+          <div class="certs" data-reveal>
+            <span><b>SERTİFİKASYON —</b></span>
+            <span>ISO 9001:2015</span><span>ISO 14001</span><span>CE UYGUNLUK</span><span>AS9100D</span>
+          </div>
+        </div>
+        <div class="stats">
+          <div class="stat" data-reveal><span class="stat-label">DENEYİM</span><span class="stat-num" data-count="38">38</span></div>
+          <div class="stat" data-reveal data-delay=".06"><span class="stat-label">KAPALI ALAN (m²)</span><span class="stat-num" data-count="4500">4.500</span></div>
+          <div class="stat" data-reveal data-delay=".12"><span class="stat-label">UZMAN KADRO</span><span class="stat-num" data-count="120" data-suf="+">120+</span></div>
+          <div class="stat" data-reveal data-delay=".18"><span class="stat-label">ÜRETİM TOLERANSI</span><span class="stat-num" data-count="0.005" data-dec="3" data-pre="±" data-suf=" mm">±0,005 mm</span></div>
+          <div class="stat" data-reveal data-delay=".24"><span class="stat-label">SEVK İSABETİ</span><span class="stat-num" data-count="99.7" data-dec="1" data-suf="%">%99,7</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- KAPASİTELER -->
+  <section class="caps sec" id="kapasite">
+    <div class="container">
+      <p class="sec-tag">02 — İMALAT KAPASİTESİ</p>
+      <div class="sec-top">
+        <h2 class="sec-title" data-reveal>TEZGÂHDAN<br>ÇIKAN İŞ.</h2>
+        <p data-reveal>Listelenen toleranslar standart üretim değerleridir; özel talepler mühendislik incelemesi sonrası genişletilir.</p>
+      </div>
+      <div class="cap-list" id="capList" data-reveal-group>
+        <div class="cap-row" data-img="https://picsum.photos/seed/altinok-torna/640/480.jpg" data-name="CNC TORNALAMA">
+          <span class="cap-idx mono">01</span>
+          <h3 class="cap-name">CNC TORNALAMA</h3>
+          <p class="cap-desc">Ø2 – Ø650 mm arası, 8 metreye kadar millî parçalar; çelik, paslanmaz ve alüminyum.</p>
+          <span class="cap-spec mono">±0,005 mm</span>
+          <span class="cap-arrow"><i data-lucide="arrow-up-right"></i></span>
+        </div>
+        <div class="cap-row" data-img="https://picsum.photos/seed/altinok-freze/640/480.jpg" data-name="5 EKSEN FREZELEME">
+          <span class="cap-idx mono">02</span>
+          <h3 class="cap-name">5 EKSEN FREZELEME</h3>
+          <p class="cap-desc">Karmaşık geometriler, tek bağlamada bitmiş yüzey; 0,6 m³ işlem hacmi.</p>
+          <span class="cap-spec mono">0,6 m³</span>
+          <span class="cap-arrow"><i data-lucide="arrow-up-right"></i></span>
+        </div>
+        <div class="cap-row" data-img="https://picsum.photos/seed/altinok-lazer/640/480.jpg" data-name="LAZER KESİM">
+          <span class="cap-idx mono">03</span>
+          <h3 class="cap-name">LAZER KESİM</h3>
+          <p class="cap-desc">12 kW fiber lazer ile 25 mm'ye kadar karbon çeliği kesim ve büküm.</p>
+          <span class="cap-spec mono">±0,1 mm</span>
+          <span class="cap-arrow"><i data-lucide="arrow-up-right"></i></span>
+        </div>
+        <div class="cap-row" data-img="https://picsum.photos/seed/altinok-montaj/640/480.jpg" data-name="KAYNAK & MONTAJ">
+          <span class="cap-idx mono">04</span>
+          <h3 class="cap-name">KAYNAK & MONTAJ</h3>
+          <p class="cap-desc">Sertifikalı kaynakçı kadrosu ve robotik kaynak hattı; komple makine montajı.</p>
+          <span class="cap-spec mono">ISO 9606</span>
+          <span class="cap-arrow"><i data-lucide="arrow-up-right"></i></span>
+        </div>
+        <div class="cap-row" data-img="https://picsum.photos/seed/altinok-taslama/640/480.jpg" data-name="TAŞLAMA & FİNİŞ">
+          <span class="cap-idx mono">05</span>
+          <h3 class="cap-name">TAŞLAMA & FİNİŞ</h3>
+          <p class="cap-desc">Silindirik taşlama, honlama ve yüzey kaplama ile son geometri.</p>
+          <span class="cap-spec mono">Ra 0,2 µm</span>
+          <span class="cap-arrow"><i data-lucide="arrow-up-right"></i></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FABRİKA -->
+  <section class="factory sec" id="fabrika">
+    <div class="container">
+      <div class="factory-head">
+        <div>
+          <p class="sec-tag">03 — TESİS</p>
+          <h2 class="sec-title" data-reveal>İÇERİDE NE VAR?</h2>
+        </div>
+        <p data-reveal>Dört hala, robotik kaynak hattı ve CMM sertifikalı ölçüm laboratuvarı. Tesis turu için satış ekibimizle randevu oluşturabilirsiniz.</p>
+      </div>
+      <div class="factory-grid" data-reveal-group>
+        <figure class="ph ph-1"><div class="ph-img"><img src="https://picsum.photos/seed/altinok-halle3/1200/750.jpg" alt="Hala 3 — 5 eksen freze hattı"></div><figcaption><span>HALA 3 — 5 EKSEN FREZE HATTI</span><em>FİG.01</em></figcaption></figure>
+        <figure class="ph ph-2"><div class="ph-img"><img src="https://picsum.photos/seed/altinok-kaynak/700/900.jpg" alt="Kaynak robotu"></div><figcaption><span>KAYNAK ROBOTU — KR 210</span><em>FİG.02</em></figcaption></figure>
+        <figure class="ph ph-3"><div class="ph-img"><img src="https://picsum.photos/seed/altinok-cmm/800/620.jpg" alt="Kalite laboratuvarı"></div><figcaption><span>KALİTE LAB. — CMM ÖLÇÜM</span><em>FİG.03</em></figcaption></figure>
+        <figure class="ph ph-4"><div class="ph-img"><img src="https://picsum.photos/seed/altinok-sevkiyat/1300/560.jpg" alt="Sevkiyat sahası"></div><figcaption><span>SEVKİYAT SAHASI — 4.500 m²</span><em>FİG.04</em></figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- SÜREÇ -->
+  <section class="sec" id="surec">
+    <div class="container">
+      <p class="sec-tag">04 — NASIL ÇALIŞIYORUZ</p>
+      <div class="process-grid">
+        <div class="process-left">
+          <h2 class="sec-title" data-reveal>FİKRİNDEN<br>TESLİMATA.</h2>
+          <p data-reveal>Teknik resimle gelirsiniz, belgelenmiş ölçüm raporuyla çıkarınız. Sürecin her adımı tek ekipte, tek çatı altında yürür — ara tedarikçi sürprizi yok.</p>
+          <div class="p-meta" data-reveal>
+            ORTALAMA TEKLİF SÜRESİ — <b>48 SAAT</b><br>
+            İLK PARÇA ONAYI — <b>7 GÜN</b><br>
+            STANDART SEVKİYAT — <b>3–5 HAFTA</b>
+          </div>
+        </div>
+        <div class="track">
+          <div class="track-line"></div>
+          <div class="track-fill" id="trackFill"></div>
+          <div class="steps" id="steps">
+            <div class="step" data-reveal>
+              <div class="step-top"><span><em>ADIM 01</em> — KEŞİF</span><span>48 SA</span></div>
+              <h3>Analiz & DFM</h3>
+              <p>Teknik resim ve tolerans analizi, malzeme seçimi, imalat edilebilirlik (DFM) raporu ve net fiyat.</p>
+            </div>
+            <div class="step" data-reveal>
+              <div class="step-top"><span><em>ADIM 02</em> — MÜHENDİSLİK</span><span>3–5 GÜN</span></div>
+              <h3>Proses & CAM</h3>
+              <p>CAM programlama, fikstür tasarımı, proses planı ve ilk parça onayı (FAI) dokümantasyonu.</p>
+            </div>
+            <div class="step" data-reveal>
+              <div class="step-top"><span><em>ADIM 03</em> — İMALAT</span><span>SİPARİŞE GÖRE</span></div>
+              <h3>CNC Üretim</h3>
+              <p>Tezgâh üretimi, ara ölçümler ve her parçaya özel izlenebilirlik (serial) kodu.</p>
+            </div>
+            <div class="step" data-reveal>
+              <div class="step-top"><span><em>ADIM 04</em> — KALİTE</span><span>%100 KONTROL</span></div>
+              <h3>CMM Raporu</h3>
+              <p>Üç boyutlu ölçüm, yüzey pürüzlülüğü testi ve malzeme sertifikasyonu ile raporlama.</p>
+            </div>
+            <div class="step" data-reveal>
+              <div class="step-top"><span><em>ADIM 05</em> — TESLİMAT</span><span>TAKİPLİ</span></div>
+              <h3>Sevkiyat & Destek</h3>
+              <p>Koruyucu paketleme, lojistik organizasyonu ve yedek parça garantisi.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- İLETİŞİM -->
+  <section class="contact sec" id="iletisim">
+    <div class="container">
+      <p class="sec-tag">05 — İLETİŞİM</p>
+      <div class="contact-grid">
+        <div>
+          <h2 data-reveal>PROJENİZİ<br>KONUŞALIM<span>.</span></h2>
+          <p class="contact-lead" data-reveal>Çiziminizi (STEP, DXF, PDF) iletin; 48 saat içinde proses planı ve fiyat teklifiyle dönelim. Talebiniz gizli kalır, NDA gerekirse hazırız.</p>
+          <div data-reveal>
+            <div class="ci"><span>TELEFON</span><a href="tel:+902320000000">+90 (232) 000 00 00</a></div>
+            <div class="ci"><span>E-POSTA</span><a href="mailto:satis@altinokmakina.com">satis@altinokmakina.com</a></div>
+            <div class="ci"><span>ADRES</span><b>Atatürk OSB, 10032 Sk. No:12, Çiğli / İZMİR</b></div>
+          </div>
+        </div>
+        <form class="form-panel" id="quoteForm" novalidate>
+          <div class="form-head"><span>TEKLİF FORMU</span><b>24 SA DÖNÜŞ</b></div>
+          <div class="field">
+            <label for="fAd">AD SOYAD *</label>
+            <input id="fAd" name="ad" type="text" autocomplete="name"/>
+            <em class="err">Lütfen adınızı yazın.</em>
+          </div>
+          <div class="field">
+            <label for="fFirma">FİRMA (OPSİYONEL)</label>
+            <input id="fFirma" name="firma" type="text" autocomplete="organization"/>
+            <em class="err"></em>
+          </div>
+          <div class="field">
+            <label for="fMail">E-POSTA *</label>
+            <input id="fMail" name="eposta" type="email" autocomplete="email"/>
+            <em class="err">Geçerli bir e-posta girin.</em>
+          </div>
+          <div class="field">
+            <label for="fDetay">PROJE DETAYI *</label>
+            <textarea id="fDetay" name="detay" rows="4" placeholder="Parça türü, malzeme, adet, tolerans…"></textarea>
+            <em class="err">Bize kısaca projenizi anlatın.</em>
+          </div>
+          <button class="btn btn-ink magnetic" type="submit" id="submitBtn">TEKLİF TALEBİ GÖNDER <i data-lucide="arrow-up-right"></i></button>
+          <p class="form-note mono">BİLGİLERİNİZ YALNIZCA TEKLİF AMAÇLI KULLANILIR.</p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-giant" data-reveal>ALTINOK MAKİNA</div>
+      <div class="footer-meta" data-reveal>
+        <div class="fcol">
+          <span class="flabel">SİTE</span>
+          <a href="#hakkinda">HAKKIMIZDA</a>
+          <a href="#kapasite">KAPASİTELER</a>
+          <a href="#fabrika">FABRİKA</a>
+          <a href="#surec">SÜREÇ</a>
+        </div>
+        <div class="fcol">
+          <span class="flabel">İLETİŞİM</span>
+          <a href="mailto:satis@altinokmakina.com">SATIS@ALTINOKMAKINA.COM</a>
+          <a href="tel:+902320000000">+90 (232) 000 00 00</a>
+        </div>
+        <div class="fcol clock">
+          <span class="flabel">TESİS — İZMİR</span>
+          <b id="clock">--:--:--</b>
+          <span>38,4632°K — 27,1010°D</span>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2025 ALTINOK MAKİNA SAN. VE TİC. A.Ş.</span>
+        <span>HASSAS İMALAT — 1987'DEN BERİ</span>
+      </div>
+    </div>
+  </footer>
+</main>
+
+<!-- Kapasite hover önizleme (imleci takip eder) -->
+<div id="capPreview">
+  <div class="cap-preview-inner" id="capPreviewInner">
+    <img id="capPreviewImg" src="" alt=""/>
+    <span class="cap-preview-tag" id="capPreviewTag"></span>
+  </div>
+</div>
+
+<!-- Toast alanı -->
+<div id="toasts"></div>
+
+<!-- Kütüphaneler: Framer Motion (Motion UMD) + Lucide ikonları -->
+<script src="https://cdn.jsdelivr.net/npm/motion@11/dist/motion.js"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<!-- ================= UI EFEKTLERİ (Motion) ================= -->
+<script>
+(function(){
+  const qs = (s,c=document)=>c.querySelector(s);
+  const qsa = (s,c=document)=>[...c.querySelectorAll(s)];
+  const M = window.Motion;
+  const { animate, scroll, inView, stagger } = M || {};
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const finePointer = matchMedia('(hover:hover) and (pointer:fine)').matches;
+
+  /* ---- Marquee içeriğini oluştur ---- */
+  const items = ['CNC TORNALAMA','5 EKSEN FREZELEME','LAZER KESİM','KAYNAK & MONTAJ','TAŞLAMA & FİNİŞ','ISO 9001:2015','±0,005 MM TOLERANS'];
+  const group = items.map(t=>`<span>${t}</span><i>/</i>`).join('');
+  qs('#mqTrack').innerHTML = group + group; // kesintisiz kayış için iki kopya
+
+  /* ---- Lucide ikonları ---- */
+  const drawIcons = ()=> window.lucide && lucide.createIcons();
+  drawIcons();
+
+  /* ---- Preloader + Hero açılışı ---- */
+  const pre = qs('#preloader');
+  function heroIntro(){
+    if(!M || reduced) return;
+    animate('.hero-title .line > i', { transform:['translateY(120%)','translateY(0%)'] },
+      { duration:1.05, ease:[.22,1,.36,1], delay:stagger(.11) });
+    animate('#heroTag',  { opacity:[0,1], transform:['translateY(16px)','translateY(0)'] }, { duration:.7, delay:.15, ease:[.22,1,.36,1] });
+    animate('#heroSub',  { opacity:[0,1], transform:['translateY(22px)','translateY(0)'] }, { duration:.8, delay:.45, ease:[.22,1,.36,1] });
+    animate('#heroCta > a', { opacity:[0,1], transform:['translateY(22px)','translateY(0)'] }, { duration:.8, delay:.58, ease:[.22,1,.36,1], delay:stagger(.09) });
+    animate('#heroStatus', { opacity:[0,1], transform:['translateY(16px)','translateY(0)'] }, { duration:.8, delay:.75, ease:[.22,1,.36,1] });
+  }
+  if(M && !reduced){
+    animate(0, 100, {
+      duration:1.15, ease:[.22,1,.36,1],
+      onUpdate:v=>{ qs('#preNum').textContent=String(Math.round(v)).padStart(3,'0'); qs('#preBar').style.transform=`scaleX(${v/100})`; },
+      onComplete:()=>{
+        document.body.classList.remove('lock');
+        animate(pre,{transform:['translateY(0%)','translateY(-100%)']},{duration:.85,ease:[.76,0,.24,1]}).then(()=>pre.style.display='none');
+        heroIntro();
+      }
+    });
+  } else { pre.style.display='none'; document.body.classList.remove('lock'); }
+
+  /* ---- Genel scroll reveal ---- */
+  if(M && !reduced){
+    qsa('[data-reveal]').forEach(el=>{
+      el.style.opacity = 0;
+      inView(el, ()=>{
+        if(el.dataset.done) return; el.dataset.done = 1;
+        animate(el, { opacity:[0,1], transform:['translateY(42px)','translateY(0)'] },
+          { duration:.9, ease:[.22,1,.36,1], delay:+(el.dataset.delay||0) });
+      }, { amount:.25 });
+    });
+    qsa('[data-reveal-group]').forEach(g=>{
+      const kids = [...g.children];
+      kids.forEach(k=>k.style.opacity=0);
+      inView(g, ()=>{
+        animate(kids, { opacity:[0,1], transform:['translateY(38px)','translateY(0)'] },
+          { duration:.85, ease:[.22,1,.36,1], delay:stagger(.1) });
+      }, { amount:.15 });
+    });
+  }
+
+  /* ---- Sayfa ilerleme çubuğu ---- */
+  if(M) scroll(p=>{ qs('#progressBar').style.transform=`scaleX(${p})`; });
+
+  /* ---- Hero paralaksı ---- */
+  if(M && !reduced){
+    const hero = qs('.hero'), wrap = qs('#heroCanvasWrap'), hc = qs('#heroContent');
+    scroll(p=>{
+      wrap.style.transform = `translateY(${p*110}px)`;
+      hc.style.opacity = Math.max(0, 1 - p*1.35);
+    }, { target:hero, offset:['start start','end start'] });
+  }
+
+  /* ---- Hakkımızda: kelime kelime açılış ---- */
+  const big = qs('#aboutBig');
+  if(M && !reduced && big){
+    big.innerHTML = big.textContent.trim().split(/\s+/).map(w=>`<span class="w">${w}</span>`).join(' ');
+    const ws = qsa('.w', big);
+    inView(big, ()=>{
+      animate(ws, { opacity:[.12,1] }, { duration:.55, ease:'easeOut', delay:stagger(.035) });
+    }, { amount:.4 });
+  }
+
+  /* ---- Sayaçlar ---- */
+  const fmt = (v,d)=>v.toLocaleString('tr-TR',{minimumFractionDigits:d,maximumFractionDigits:d});
+  qsa('.stat-num').forEach(el=>{
+    const end=+el.dataset.count, d=+(el.dataset.dec||0), pre_=el.dataset.pre||'', suf=el.dataset.suf||'';
+    const set=v=>el.textContent=pre_+fmt(v,d)+suf;
+    if(!M || reduced){ set(end); return; }
+    set(0);
+    inView(el, ()=>{
+      if(el.dataset.done) return; el.dataset.done=1;
+      animate(0, end, { duration:2.1, ease:[.16,1,.3,1], onUpdate:set });
+    }, { amount:.6 });
+  });
+
+  /* ---- Kapasite satırları: imleci takip eden görsel ---- */
+  const rows = qsa('.cap-row'), prev = qs('#capPreview'), prevIn = qs('#capPreviewInner'),
+        prevImg = qs('#capPreviewImg'), prevTag = qs('#capPreviewTag');
+  if(finePointer && rows.length){
+    let tx=0,ty=0,px=0,py=0,active=false;
+    addEventListener('pointermove', e=>{ tx=e.clientX+26; ty=e.clientY-118; });
+    (function loop(){ px+=(tx-px)*.12; py+=(ty-py)*.12; prev.style.transform=`translate(${px}px,${py}px)`; requestAnimationFrame(loop); })();
+    rows.forEach(r=>{
+      r.addEventListener('mouseenter', ()=>{
+        if(prevImg.getAttribute('src')!==r.dataset.img) prevImg.src=r.dataset.img;
+        prevTag.textContent='ALTINOK TESİS — '+r.dataset.name;
+        r.classList.add('on'); active=true;
+        M && animate(prevIn,{opacity:[0,1],scale:[.85,1]},{duration:.35,ease:[.22,1,.36,1]});
+      });
+    });
+    qs('#capList').addEventListener('mouseleave', ()=>{
+      rows.forEach(r=>r.classList.remove('on')); active=false;
+      M && animate(prevIn,{opacity:0,scale:.85},{duration:.3,ease:'easeOut'});
+    });
+  }
+
+  /* ---- Fabrika görsellerinde paralaks ---- */
+  if(M && !reduced){
+    qsa('.ph').forEach(fig=>{
+      const img = qs('img',fig);
+      scroll(p=>{ img.style.transform=`translateY(${(p-.5)*11}%) scale(1.16)`; },
+        { target:fig, offset:['start end','end start'] });
+    });
+  }
+
+  /* ---- Süreç hattı: scroll ile dolan çizgi + adım aktivasyonu ---- */
+  const fill = qs('#trackFill');
+  if(M) scroll(p=>{ fill.style.transform=`scaleY(${p})`; },
+    { target:qs('.track'), offset:['start 0.72','end 0.55'] });
+  qsa('.step').forEach(s=> inView(s, ()=>s.classList.add('on'), { margin:'-42% 0px -42% 0px' }));
+
+  /* ---- Manyetik butonlar ---- */
+  if(finePointer){
+    qsa('.magnetic').forEach(btn=>{
+      btn.style.transition='transform .28s cubic-bezier(.22,1,.36,1)';
+      btn.addEventListener('pointermove', e=>{
+        const r=btn.getBoundingClientRect();
+        btn.style.transform=`translate(${(e.clientX-r.left-r.width/2)*.28}px,${(e.clientY-r.top-r.height/2)*.28}px)`;
+      });
+      btn.addEventListener('pointerleave', ()=>btn.style.transform='translate(0,0)');
+    });
+  }
+
+  /* ---- Mobil menü ---- */
+  const mmenu = qs('#mmenu'), burger = qs('#burger');
+  let menuOpen=false;
+  function toggleMenu(force){
+    menuOpen = force!==undefined ? force : !menuOpen;
+    mmenu.classList.toggle('open', menuOpen);
+    burger.innerHTML = `<i data-lucide="${menuOpen?'x':'menu'}"></i>`; drawIcons();
+    document.body.style.overflow = menuOpen ? 'hidden' : '';
+    if(menuOpen && M) animate(qsa('.mlink',mmenu),{opacity:[0,1],transform:['translateY(26px)','translateY(0)']},{duration:.55,ease:[.22,1,.36,1],delay:stagger(.06)});
+  }
+  burger.addEventListener('click',()=>toggleMenu());
+  qsa('.mlink',mmenu).forEach(a=>a.addEventListener('click',()=>toggleMenu(false)));
+
+  /* ---- Canlı makine durumu ---- */
+  const rpmEl=qs('#rpm'), progEl=qs('#prog'), tempEl=qs('#temp'); let prog=37;
+  setInterval(()=>{
+    rpmEl.textContent = (12340+Math.floor(Math.random()*150)).toLocaleString('tr-TR');
+    prog += Math.random()<.72?1:2; if(prog>100) prog=0;
+    progEl.textContent = prog;
+    tempEl.textContent = fmt(21+Math.random()*.8,1);
+  }, 900);
+
+  /* ---- İzmir saati ---- */
+  const clockEl = qs('#clock');
+  const tf = new Intl.DateTimeFormat('tr-TR',{timeZone:'Europe/Istanbul',hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  setInterval(()=>clockEl.textContent=tf.format(new Date())+' TR', 1000);
+  clockEl.textContent=tf.format(new Date())+' TR';
+
+  /* ---- Toast ---- */
+  function toast(title,msg){
+    const t=document.createElement('div'); t.className='toast';
+    t.innerHTML=`<i data-lucide="check-circle-2"></i><div><b>${title}</b><p>${msg}</p></div>`;
+    qs('#toasts').appendChild(t); drawIcons();
+    if(M) animate(t,{opacity:[0,1],transform:['translateY(18px)','translateY(0)']},{duration:.5,ease:[.22,1,.36,1]});
+    setTimeout(()=>{
+      (M?animate(t,{opacity:0,transform:'translateY(12px)'},{duration:.4}).then(()=>t.remove()):t.remove());
+    },4200);
+  }
+
+  /* ---- Form doğrulama + gönderim (yerelde simüle edilir) ---- */
+  const form = qs('#quoteForm'), submitBtn = qs('#submitBtn');
+  const mark=(input,bad)=>input.closest('.field').classList.toggle('error',bad);
+  form.addEventListener('input',e=>{ if(e.target.matches('input,textarea')) mark(e.target,false); });
+  form.addEventListener('submit', e=>{
+    e.preventDefault();
+    const ad=qs('#fAd'), mail=qs('#fMail'), detay=qs('#fDetay');
+    let ok=true;
+    if(!ad.value.trim()){ mark(ad,true); ok=false; }
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(mail.value.trim())){ mark(mail,true); ok=false; }
+    if(detay.value.trim().length<10){ mark(detay,true); ok=false; }
+    if(!ok) return;
+    submitBtn.disabled=true;
+    submitBtn.innerHTML='GÖNDERİLİYOR…';
+    setTimeout(()=>{
+      toast('TALEP ALINDI','Teşekkürler '+ad.value.trim().split(' ')[0]+'. Mühendislik ekibimiz 24 saat içinde dönüş yapacak.');
+      form.reset();
+      submitBtn.innerHTML='GÖNDERİLDİ — TEŞEKKÜRLER';
+      setTimeout(()=>{ submitBtn.disabled=false; submitBtn.innerHTML='TEKLİF TALEBİ GÖNDER <i data-lucide="arrow-up-right"></i>'; drawIcons(); },2800);
+    },1000);
+  });
+})();
+</script>
+
+<!-- ================= 3D SAHNE (Three.js) ================= -->
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+}}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+const canvas = document.getElementById('scene');
+const hero = document.querySelector('.hero');
+const coarse = matchMedia('(pointer: coarse)').matches;
+if(coarse) canvas.style.pointerEvents = 'none'; // mobilde sayfa kaydırma öncelikli, sahne otomatik döner
+
+/* ---- Renderer / Sahne / Kamera ---- */
+const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.12;
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.Fog(0x0e1012, 12, 34);
+
+const camera = new THREE.PerspectiveCamera(38, 1, .1, 80);
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(), .04).texture;
+
+/* ---- Işıklar ---- */
+const key = new THREE.DirectionalLight(0xffffff, 1.5); key.position.set(5, 7, 6); scene.add(key);
+const rim = new THREE.DirectionalLight(0xff5a1f, 2.4); rim.position.set(-7, 2.5, -5); scene.add(rim); // turuncu kontur
+const fill = new THREE.DirectionalLight(0xffffff, .28); fill.position.set(-4, -2, 4); scene.add(fill);
+scene.add(new THREE.AmbientLight(0xffffff, .12));
+
+/* ---- Malzemeler ---- */
+const matOrange = new THREE.MeshStandardMaterial({ color:0xff4d00, metalness:.3,  roughness:.4,  envMapIntensity:.7 });
+const matSteel  = new THREE.MeshStandardMaterial({ color:0x9ba1a8, metalness:.92, roughness:.28, envMapIntensity:.9 });
+const matBrass  = new THREE.MeshStandardMaterial({ color:0xc8a24b, metalness:.95, roughness:.3,  envMapIntensity:.9 });
+const matDark   = new THREE.MeshStandardMaterial({ color:0x2c2f34, metalness:.85, roughness:.42, envMapIntensity:.6 });
+const matBack   = new THREE.MeshStandardMaterial({ color:0x171a1e, metalness:.6,  roughness:.6,  envMapIntensity:.35 });
+
+/* ---- Prosedürel dişli geometrisi ---- */
+function gearGeometry(teeth, m, thickness, holeR, spokes){
+  const rp = teeth*m/2, ra = rp + .85*m, rr = rp - 1.0*m, s = Math.PI*2/teeth;
+  const shape = new THREE.Shape();
+  for(let i=0;i<teeth;i++){
+    const a = i*s; // diş ortası tam bu açıda
+    [[rr,a-.30*s],[rr,a-.18*s],[ra,a-.10*s],[ra,a+.10*s],[rr,a+.18*s],[rr,a+.30*s]]
+      .forEach(([r,ang],j)=>{
+        const x=Math.cos(ang)*r, y=Math.sin(ang)*r;
+        (i===0&&j===0) ? shape.moveTo(x,y) : shape.lineTo(x,y);
+      });
+  }
+  shape.closePath();
+  const hole = new THREE.Path(); hole.absarc(0,0,holeR,0,Math.PI*2,true); shape.holes.push(hole);
+  if(spokes){ // jant delikleri
+    const rH=(rr-holeR)*.27, rMid=holeR+(rr-holeR)*.5;
+    for(let i=0;i<spokes;i++){
+      const a=i/spokes*Math.PI*2, h=new THREE.Path();
+      h.absarc(Math.cos(a)*rMid, Math.sin(a)*rMid, rH, 0, Math.PI*2, true);
+      shape.holes.push(h);
+    }
+  }
+  const g = new THREE.ExtrudeGeometry(shape,{ depth:thickness, bevelEnabled:true, bevelThickness:.02, bevelSize:.025, bevelSegments:2, curveSegments:24 });
+  g.translate(0,0,-thickness/2);
+  return g;
+}
+
+/* ---- Dişli kurulumu ---- */
+const gears = []; // dönen tüm parçalar
+const gearRoot = new THREE.Group(); scene.add(gearRoot);
+
+function addGear({teeth, m=.16, thickness=.55, holeR=.2, spokes=0, mat, pos, phase=0, w=0, hex=false}){
+  const grp = new THREE.Group();
+  grp.add(new THREE.Mesh(gearGeometry(teeth,m,thickness,holeR,spokes), mat));
+  const hub = hex
+    ? new THREE.Mesh(new THREE.CylinderGeometry(holeR+.16,holeR+.16,thickness*1.5,6),  matDark) // altıgen somun
+    : new THREE.Mesh(new THREE.CylinderGeometry(holeR+.12,holeR+.12,thickness*1.45,24), matDark);
+  hub.rotation.x = Math.PI/2; grp.add(hub);
+  grp.position.set(...pos);
+  gearRoot.add(grp);
+  gears.push({ obj:grp, w, phase, acc:0 });
+  return grp;
+}
+
+// Ana takım: doğru dişli oranlarıyla (hız ters orantılı, yön zıt)
+addGear({ teeth:26, thickness:.6,  holeR:.28, spokes:6, mat:matOrange, pos:[0,0,0],        phase:-0.739, w: .30,  hex:true });
+addGear({ teeth:14, thickness:.5,  holeR:.18, spokes:4, mat:matSteel,  pos:[2.589,-1.839,.42],  phase:-0.618, w:-.557 });
+addGear({ teeth:19, thickness:.5,  holeR:.22, spokes:5, mat:matBrass,  pos:[-3.065,1.845,-.42], phase: 2.60,  w:-.411 });
+// Arka planda dev siluet dişliler (derinlik hissi)
+addGear({ teeth:34, m:.22, thickness:.8, holeR:.5, mat:matBack, pos:[-3.5,2.4,-6], w: .05 });
+addGear({ teeth:50, m:.3,  thickness:.9, holeR:.7, mat:matBack, pos:[8.5,-4,-9],  w:-.035 });
+
+/* ---- Zemin ızgarası ---- */
+const grid = new THREE.GridHelper(70, 46, 0x212429, 0x171a1e);
+grid.position.y = -3.6; scene.add(grid);
+
+/* ---- Kontroller: sürükle-döndür ---- */
+const controls = new OrbitControls(camera, canvas);
+controls.enableDamping = true; controls.dampingFactor = .05;
+controls.enablePan = false; controls.enableZoom = false; // tekerlek sayfa kaydırmasına kalsın
+controls.autoRotate = true; controls.autoRotateSpeed = .45;
+controls.minPolarAngle = 1.0; controls.maxPolarAngle = 1.9;
+let rotTimer;
+controls.addEventListener('start', ()=>{ controls.autoRotate=false; clearTimeout(rotTimer); });
+controls.addEventListener('end',   ()=>{ rotTimer=setTimeout(()=>controls.autoRotate=true, 3500); });
+
+/* ---- Boyutlandırma ---- */
+function layout(){
+  const w = hero.offsetWidth, h = hero.offsetHeight, aspect = w/h;
+  renderer.setSize(w, h, false);
+  camera.aspect = aspect;
+  if(aspect < 1){ gearRoot.position.set(0,-0.6,0); controls.target.set(0,-0.6,0); camera.position.set(0,1,14.5); }
+  else          { gearRoot.position.set(2.6,0,0);  controls.target.set(2.6,0,0);   camera.position.set(2.8,1,9.8); }
+  camera.updateProjectionMatrix();
+}
+layout(); addEventListener('resize', layout);
+
+/* ---- Sahne görünürlüğüne göre render tasarrufu ---- */
+let heroVisible = true;
+new IntersectionObserver(([e])=>heroVisible=e.isIntersecting).observe(hero);
+
+/* ---- Animasyon döngüsü: imleç sahnenin üstündeyken dişliler hızlanır ---- */
+let speed=1, targetSpeed=1;
+if(!coarse){
+  hero.addEventListener('pointerenter', ()=>targetSpeed=1.9);
+  hero.addEventListener('pointerleave', ()=>targetSpeed=1);
+}
+const clock = new THREE.Clock();
+(function tick(){
+  requestAnimationFrame(tick);
+  if(!heroVisible) return;
+  const dt = Math.min(clock.getDelta(), .05);
+  speed += (targetSpeed-speed)*.06;
+  for(const g of gears){ g.acc += g.w*speed*dt; g.obj.rotation.z = g.phase + g.acc; }
+  controls.update();
+  renderer.render(scene, camera);
+})();
+</script>
+</body>
+</html>
