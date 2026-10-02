@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VOLTA — Elektronik & Yaşam</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Spline+Sans+Mono:wght@500;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer onload="if(window.icons)icons()"></script>
+<script>
+/* Hata yakalayıcı: sayfa bomboş kalmak yerine hatayı gösterir */
+(function(){
+  function fatal(msg,loc){
+    var d=document.createElement('div');
+    d.style.cssText='position:fixed;left:16px;right:16px;bottom:16px;z-index:99999;background:#D91E2E;color:#fff;padding:16px 20px;border-radius:14px;font:13px/1.6 ui-monospace,monospace;box-shadow:0 12px 30px rgba(0,0,0,.35);max-width:760px';
+    d.innerHTML='<b style="font-size:14px">Teknik hata — lütfen bu metni bildirin:</b><br>'+String(msg||'Bilinmeyen hata')+(loc?'<br><small>'+loc+'</small>':'');
+    (document.body||document.documentElement).appendChild(d);
+  }
+  window.addEventListener('error',function(e){ fatal(e.message, e.lineno?('satır '+e.lineno):''); });
+  window.__fatal=fatal;
+})();
+</script>
+<style>
+:root{
+  --red:#D91E2E; --red-d:#A81320; --yellow:#FFC42E; --ink:#1B1613; --ink-2:#3A322B;
+  --paper:#FAF7F1; --card:#FFFFFF; --line:#E9E1D3; --muted:#8A8074;
+  --green:#1E9E5A; --r:16px; --mono:'Spline Sans Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Archivo',sans-serif;background:var(--paper);color:var(--ink);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,select,textarea{font-family:inherit;font-size:14px;color:var(--ink)}
+.wrap{max-width:1240px;margin:0 auto;padding:0 28px}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+i[data-lucide]{width:18px;height:18px;flex:none}
+
+.announce{background:var(--ink);color:var(--yellow);overflow:hidden;font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;border-bottom:3px solid var(--yellow)}
+.announce-track{display:flex;width:max-content;animation:mq 26s linear infinite;padding:9px 0}
+.announce-track span{white-space:nowrap;padding-right:60px}
+@keyframes mq{to{transform:translateX(-50%)}}
+
+header{position:sticky;top:0;z-index:50;background:rgba(250,247,241,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.hd{display:flex;align-items:center;gap:26px;height:72px}
+.logo{display:flex;align-items:center;gap:11px;flex:none}
+.logo-mark{width:42px;height:42px;background:var(--red);color:#fff;display:grid;place-items:center;font-weight:900;font-size:22px;border-radius:10px;position:relative}
+.logo-mark::after{content:'';position:absolute;right:5px;bottom:5px;width:7px;height:7px;background:var(--yellow);border-radius:2px}
+.logo b{font-size:19px;font-weight:900;letter-spacing:.06em;display:block;line-height:1}
+.logo small{font-size:10.5px;color:var(--muted);letter-spacing:.18em;text-transform:uppercase}
+nav.mainnav{display:flex;gap:22px}
+nav.mainnav a{font-size:12.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:6px 0;border-bottom:3px solid transparent;transition:.15s}
+nav.mainnav a:hover{color:var(--red)}
+nav.mainnav a.on{border-color:var(--yellow);color:var(--red)}
+.srch{position:relative;flex:1;max-width:340px;margin-left:auto}
+.srch input{width:100%;border:1.5px solid var(--line);background:#fff;border-radius:99px;padding:10px 16px 10px 40px;font-size:13.5px;outline:none;transition:.15s}
+.srch input:focus{border-color:var(--ink)}
+.srch>i{position:absolute;left:15px;top:50%;transform:translateY(-50%);color:var(--muted);width:16px;height:16px}
+.s-drop{position:absolute;top:calc(100% + 8px);left:0;right:0;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 18px 44px rgba(27,22,19,.14);overflow:hidden;display:none}
+.s-drop.open{display:block}
+.s-drop button{display:flex;width:100%;gap:12px;align-items:center;padding:10px 14px;text-align:left;border-bottom:1px solid var(--line);font-size:13.5px}
+.s-drop button:last-child{border-bottom:none}
+.s-drop button:hover{background:var(--paper)}
+.s-drop img{width:36px;height:36px;border-radius:8px;object-fit:cover}
+.s-drop .pr{margin-left:auto;font-family:var(--mono);font-weight:700;color:var(--red)}
+.hacts{display:flex;gap:6px;flex:none}
+.icb{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;position:relative;transition:.15s}
+.icb:hover{background:var(--ink);color:#fff}
+.icb .n{position:absolute;top:2px;right:2px;min-width:18px;height:18px;background:var(--red);color:#fff;border-radius:99px;font-size:10.5px;font-weight:800;display:grid;place-items:center;padding:0 4px}
+.icb.bump{animation:bump .45s}
+@keyframes bump{30%{transform:scale(1.25)}}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;background:var(--red);color:#fff;font-weight:800;font-size:13.5px;letter-spacing:.05em;text-transform:uppercase;padding:14px 26px;border-radius:12px;transition:.15s;border:2px solid var(--red)}
+.btn:hover{background:var(--red-d);border-color:var(--red-d)}
+.btn.yw{background:var(--yellow);color:var(--ink);border-color:var(--yellow)}
+.btn.yw:hover{background:#F0B415}
+.btn.gh{background:transparent;color:var(--ink);border-color:var(--ink)}
+.btn.gh:hover{background:var(--ink);color:#fff}
+.btn.sm{padding:9px 16px;font-size:12px;border-radius:10px}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:.09em;color:var(--ink-2)}
+.field input,.field select,.field textarea{border:1.5px solid var(--line);background:#fff;border-radius:11px;padding:11px 14px;outline:none;transition:.15s;width:100%}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--ink)}
+.field input.err,.field textarea.err{border-color:var(--red);background:#FDF1F2}
+.field small{color:var(--muted);font-size:11.5px}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+
+.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center;padding:64px 0 56px}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:11.5px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--red)}
+.eyebrow::before{content:'';width:26px;height:3px;background:var(--yellow)}
+.hero h1{font-size:clamp(44px,5.6vw,80px);font-weight:900;line-height:.94;letter-spacing:-.02em;margin:16px 0 20px;text-transform:uppercase}
+.hl{display:inline-block;background:var(--yellow);padding:2px 14px 4px;transform:rotate(-1.5deg);margin-top:8px}
+.hero p{color:var(--ink-2);font-size:16.5px;max-width:440px;margin-bottom:28px}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap}
+.hero-art{position:relative}
+.hero-panel{background:var(--red);clip-path:polygon(7% 0,100% 3%,94% 100%,0 97%);padding:52px;display:grid;place-items:center}
+.hero-panel img{width:min(340px,80%);border-radius:18px;aspect-ratio:1;object-fit:cover;box-shadow:14px 14px 0 rgba(27,22,19,.28)}
+.rot-badge{position:absolute;top:-8px;right:-6px;width:128px;height:128px;background:var(--yellow);border-radius:50%;display:grid;place-items:center;border:3px solid var(--ink)}
+.rot-badge svg{position:absolute;inset:0;animation:spin 14s linear infinite}
+.rot-badge svg text{font-size:11.5px;font-weight:900;letter-spacing:.22em;fill:var(--ink)}
+.rot-badge>i{width:26px;height:26px;color:var(--ink)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.hero-tag{position:absolute;left:-16px;bottom:26px;background:var(--ink);color:#fff;padding:13px 18px;border-radius:12px;font-size:12.5px;font-weight:700;display:flex;gap:9px;align-items:center}
+.hero-tag i{color:var(--yellow)}
+
+.strip{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.strip>div{display:flex;gap:13px;align-items:center;padding:20px 22px;border-left:1px solid var(--line)}
+.strip>div:first-child{border-left:none}
+.strip i{width:22px;height:22px;color:var(--red)}
+.strip b{font-size:13.5px;display:block}
+.strip small{color:var(--muted);font-size:12px}
+
+.sec{padding:56px 0}
+.sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:26px}
+.sec-head h2{font-size:clamp(26px,3vw,38px);font-weight:900;letter-spacing:-.01em;text-transform:uppercase}
+.sec-head .kicker{font-size:11px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:var(--red);display:block;margin-bottom:6px}
+.sec-link{font-size:12.5px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;display:inline-flex;gap:6px;align-items:center;color:var(--red)}
+.sec-link:hover{color:var(--red-d)}
+
+.cat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.cat-card{border:1.5px solid var(--ink);border-radius:var(--r);padding:22px;min-height:132px;display:flex;flex-direction:column;justify-content:space-between;transition:.18s;cursor:pointer;position:relative}
+.cat-card:hover{background:var(--yellow);transform:translateY(-3px)}
+.cat-card .no{font-family:var(--mono);font-size:12px;color:var(--red);font-weight:700}
+.cat-card b{font-size:22px;font-weight:900;line-height:1.1}
+.cat-card small{color:var(--ink-2);font-size:12.5px}
+.cat-card>i{position:absolute;top:18px;right:18px;width:20px;height:20px}
+
+.feat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.p-card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column;position:relative;transition:.18s}
+.p-card:hover{box-shadow:0 16px 40px rgba(27,22,19,.1);transform:translateY(-3px)}
+.p-card.big{grid-column:span 2;grid-row:span 2}
+.p-media{position:relative;overflow:hidden;background:#F1EADD;cursor:pointer}
+.p-media img{width:100%;aspect-ratio:1;object-fit:cover;transition:.4s}
+.p-card.big .p-media{flex:1;min-height:0}
+.p-card.big .p-media img{height:100%;aspect-ratio:auto}
+.p-card:hover .p-media img{transform:scale(1.045)}
+.p-badge{position:absolute;top:12px;left:12px;background:var(--yellow);color:var(--ink);font-size:10.5px;font-weight:900;text-transform:uppercase;letter-spacing:.07em;padding:6px 10px;border-radius:7px;transform:rotate(-2deg);z-index:2}
+.p-disc{position:absolute;top:12px;right:12px;background:var(--red);color:#fff;font-family:var(--mono);font-size:11.5px;font-weight:700;padding:6px 9px;border-radius:7px;z-index:2}
+.p-body{padding:16px;display:flex;flex-direction:column;gap:5px}
+.p-cat{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.14em;color:var(--muted)}
+.p-body h3{font-size:15px;font-weight:700;cursor:pointer;line-height:1.3}
+.p-card.big .p-body h3{font-size:19px}
+.p-body h3:hover{color:var(--red)}
+.p-price{display:flex;align-items:baseline;gap:9px;margin-top:3px}
+.p-price b{font-family:var(--mono);font-size:17px;font-weight:700}
+.p-price s{color:var(--muted);font-size:12.5px}
+.p-sales{font-size:11.5px;color:var(--muted);display:flex;gap:5px;align-items:center}
+.p-sales i{width:12px;height:12px;color:var(--yellow);fill:var(--yellow)}
+.p-add{position:absolute;left:12px;right:12px;bottom:12px;background:var(--ink);color:#fff;padding:11px;border-radius:11px;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;display:flex;gap:8px;align-items:center;justify-content:center;transform:translateY(calc(100% + 20px));transition:.25s;z-index:3}
+.p-card:hover .p-add{transform:none}
+.p-add:hover{background:var(--red)}
+.p-add.out{background:var(--paper);color:var(--muted);cursor:default;transform:none;border:1px solid var(--line)}
+.p-add i{width:15px;height:15px}
+
+.crumb{font-size:12.5px;color:var(--muted);padding:20px 0 0;display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.crumb a:hover{color:var(--red)}
+.cat-toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:14px 0 24px;flex-wrap:wrap}
+.cat-toolbar h1{font-size:clamp(26px,3vw,36px);font-weight:900;text-transform:uppercase}
+.cat-toolbar select{border:1.5px solid var(--ink);background:#fff;border-radius:11px;padding:10px 14px;font-weight:600;font-size:13px;outline:none}
+.cat-count{font-family:var(--mono);font-size:12.5px;color:var(--muted)}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.empty{text-align:center;padding:80px 20px;color:var(--muted)}
+.empty i{width:44px;height:44px;margin:0 auto 14px;display:block;color:var(--yellow)}
+
+.pd{display:grid;grid-template-columns:1fr 1fr;gap:48px;padding:26px 0 10px}
+.pd-gal img.main{border-radius:20px;border:1px solid var(--line);aspect-ratio:1;object-fit:cover;width:100%}
+.pd-thumbs{display:flex;gap:10px;margin-top:12px}
+.pd-thumbs img{width:76px;height:76px;border-radius:12px;object-fit:cover;cursor:pointer;border:2px solid transparent;opacity:.7}
+.pd-thumbs img.on{border-color:var(--red);opacity:1}
+.pd-info .p-cat{color:var(--red)}
+.pd-info h1{font-size:clamp(26px,3vw,38px);font-weight:900;line-height:1.08;margin:8px 0 10px}
+.pd-rate{display:flex;gap:6px;align-items:center;font-size:13px;color:var(--muted);margin-bottom:18px}
+.pd-rate i{width:15px;height:15px;color:var(--yellow);fill:var(--yellow)}
+.pd-price{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:20px;display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.pd-price b{font-family:var(--mono);font-size:32px}
+.pd-price s{color:var(--muted)}
+.pd-price .off{background:var(--red);color:#fff;font-family:var(--mono);font-size:12.5px;font-weight:700;padding:5px 10px;border-radius:8px}
+.pd-stock{font-size:13px;font-weight:700;margin:14px 0}
+.pd-stock.low{color:var(--red)}
+.pd-stock.ok{color:var(--green)}
+.pd-actions{display:flex;gap:12px;align-items:stretch;margin:6px 0 22px;flex-wrap:wrap}
+.stepper{display:inline-flex;align-items:center;border:1.5px solid var(--ink);border-radius:12px;overflow:hidden}
+.stepper button{width:40px;height:48px;font-size:19px;font-weight:800;display:grid;place-items:center}
+.stepper button:hover{background:var(--yellow)}
+.stepper b{width:42px;text-align:center;font-family:var(--mono)}
+.pd-inst{background:#fff;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-top:18px}
+.pd-inst header{position:static;background:var(--ink);color:#fff;padding:11px 16px;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;display:flex;justify-content:space-between;align-items:center}
+.pd-inst header span{color:var(--yellow)}
+.pd-inst table{width:100%;border-collapse:collapse;font-size:13px}
+.pd-inst td{padding:10px 16px;border-top:1px solid var(--line)}
+.pd-inst td:last-child{text-align:right;font-family:var(--mono);font-weight:700}
+.pd-trust{display:flex;flex-direction:column;gap:9px;margin-top:18px}
+.pd-trust div{display:flex;gap:10px;align-items:center;font-size:13px;color:var(--ink-2)}
+.pd-trust i{width:16px;height:16px;color:var(--red)}
+.pd-desc{margin-top:24px;color:var(--ink-2);font-size:14.5px;border-top:1px solid var(--line);padding-top:20px}
+
+.cart-wrap{display:grid;grid-template-columns:1.5fr .9fr;gap:36px;padding:26px 0 60px;align-items:start}
+.c-line{display:grid;grid-template-columns:88px 1fr auto auto auto;gap:18px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:14px;margin-bottom:12px}
+.c-line img{width:88px;height:88px;border-radius:12px;object-fit:cover;cursor:pointer}
+.c-line b{font-size:14.5px;cursor:pointer}
+.c-line b:hover{color:var(--red)}
+.c-line .u{font-family:var(--mono);font-size:13px;color:var(--muted)}
+.c-line .t{font-family:var(--mono);font-weight:700;font-size:15px;text-align:right}
+.c-line .rm{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;color:var(--muted)}
+.c-line .rm:hover{background:#FDF1F2;color:var(--red)}
+.summary{background:#fff;border:1.5px solid var(--ink);border-radius:var(--r);padding:24px;position:sticky;top:100px}
+.summary h3{font-size:17px;font-weight:900;text-transform:uppercase;margin-bottom:16px}
+.s-row{display:flex;justify-content:space-between;font-size:14px;padding:8px 0}
+.s-row.total{border-top:2px solid var(--ink);margin-top:8px;padding-top:14px;font-size:18px;font-weight:900}
+.s-row .free{color:var(--green);font-weight:800}
+.coupon-row{display:flex;gap:8px;margin:14px 0 6px}
+.coupon-row input{flex:1;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;text-transform:uppercase;outline:none}
+.coupon-row input:focus{border-color:var(--ink)}
+.ship-note{background:var(--paper);border:1px dashed var(--yellow);padding:10px 13px;border-radius:10px;font-size:12.5px;margin-top:12px;color:var(--ink-2)}
+.iyz-line{display:flex;gap:9px;align-items:center;justify-content:center;margin-top:16px;font-size:12px;color:var(--muted)}
+.iyz-line i{width:15px;height:15px;color:var(--green)}
+
+.co-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:40px;padding:26px 0 60px;align-items:start}
+.co-sec{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:24px;margin-bottom:20px}
+.co-sec h3{font-size:16px;font-weight:900;text-transform:uppercase;display:flex;gap:10px;align-items:center;margin-bottom:18px}
+.co-sec h3 .step{width:26px;height:26px;background:var(--red);color:#fff;border-radius:8px;display:grid;place-items:center;font-size:13px}
+.iyzico-panel{border:2px solid var(--ink);border-radius:var(--r);overflow:hidden}
+.iyzico-head{background:var(--ink);color:#fff;padding:13px 18px;display:flex;justify-content:space-between;align-items:center}
+.iyzico-head .brand{font-weight:900;font-size:17px;letter-spacing:-.02em}
+.iyzico-head .brand span{color:var(--yellow)}
+.iyzico-head small{display:block;font-weight:500;font-size:11px;color:#B9AF9F;text-transform:none;letter-spacing:0}
+.iyzico-body{padding:22px;background:#fff}
+.ccard{background:var(--ink);border-radius:18px;color:#fff;padding:22px;aspect-ratio:1.62;display:flex;flex-direction:column;justify-content:space-between;max-width:400px;margin:0 auto 22px;position:relative;overflow:hidden}
+.ccard::before{content:'';position:absolute;width:220px;height:220px;border-radius:50%;background:var(--red);opacity:.9;top:-90px;right:-60px}
+.ccard::after{content:'';position:absolute;width:150px;height:150px;border-radius:50%;background:var(--yellow);opacity:.9;top:22px;right:60px}
+.ccard .top{display:flex;justify-content:space-between;position:relative;z-index:1}
+.ccard .chip{width:44px;height:32px;background:var(--yellow);border-radius:7px}
+.ccard .brand-lg{font-weight:900;font-style:italic;font-size:18px;letter-spacing:.02em}
+.ccard .num{font-family:var(--mono);font-size:21px;letter-spacing:.12em;position:relative;z-index:1}
+.ccard .bot{display:flex;justify-content:space-between;font-family:var(--mono);font-size:12px;position:relative;z-index:1;text-transform:uppercase}
+.ccard .bot span small{display:block;opacity:.5;font-size:9px;letter-spacing:.15em}
+.mc{position:relative;width:44px;height:28px}
+.mc i{position:absolute;width:26px;height:26px;border-radius:50%}
+.mc i:first-child{background:var(--red);left:0}
+.mc i:last-child{background:var(--yellow);right:0;opacity:.92}
+.inst-list{display:flex;flex-direction:column;gap:8px}
+.inst-list label{display:flex;align-items:center;gap:12px;border:1.5px solid var(--line);border-radius:11px;padding:12px 14px;cursor:pointer;font-size:13.5px;transition:.15s}
+.inst-list label:hover{border-color:var(--ink)}
+.inst-list input{accent-color:var(--red);width:16px;height:16px}
+.inst-list b{margin-left:auto;font-family:var(--mono);font-size:12.5px}
+.inst-list label.on{border-color:var(--red);background:#FDF6F7}
+.test-hint{background:var(--paper);border:1px dashed var(--ink);border-radius:10px;padding:10px 14px;font-size:12px;color:var(--ink-2);margin-top:14px;font-family:var(--mono)}
+.co-items{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:20px}
+.co-items .mini{display:flex;gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.co-items .mini:last-of-type{border-bottom:none}
+.co-items .mini img{width:44px;height:44px;border-radius:9px;object-fit:cover}
+.co-items .mini .q{font-family:var(--mono);color:var(--muted);font-size:12px}
+.co-items .mini .pr{margin-left:auto;font-family:var(--mono);font-weight:700}
+.spin{width:16px;height:16px;border:2.5px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite;display:inline-block}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+.ok-page{max-width:620px;margin:0 auto;padding:64px 0;text-align:center}
+.ok-circle{width:96px;height:96px;background:var(--yellow);border:3px solid var(--ink);border-radius:50%;display:grid;place-items:center;margin:0 auto 24px}
+.ok-circle i{width:42px;height:42px}
+.ok-page h1{font-size:clamp(30px,4vw,44px);font-weight:900;text-transform:uppercase}
+.ok-no{font-family:var(--mono);font-size:15px;background:#fff;border:1.5px dashed var(--ink);display:inline-block;padding:10px 22px;border-radius:12px;margin:18px 0}
+.tl{max-width:520px;margin:34px auto 0;text-align:left}
+.tl-item{display:flex;gap:16px}
+.tl-item .dot{width:16px;height:16px;border-radius:50%;border:3px solid var(--line);background:#fff;flex:none;margin-top:3px}
+.tl-item.done .dot{background:var(--red);border-color:var(--red)}
+.tl-item.cur .dot{border-color:var(--red);box-shadow:0 0 0 5px rgba(217,30,46,.18)}
+.tl-item .bar{width:3px;flex:1;background:var(--line);min-height:26px;margin:4px auto 2px;border-radius:2px}
+.tl-item.done .bar,.tl-item.cur .bar{background:var(--red)}
+.tl-item b{font-size:14px;display:block}
+.tl-item small{color:var(--muted);font-size:12px;font-family:var(--mono)}
+.tl-item.pend{opacity:.45}
+.tl-item.cancel b{color:var(--red)}
+
+footer{background:var(--ink);color:#CFC7BA;margin-top:40px;border-top:5px solid var(--yellow)}
+.ft{display:grid;grid-template-columns:1.4fr 1fr 1fr 1.2fr;gap:36px;padding:52px 0 40px}
+.ft h4{color:#fff;font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:.1em;margin-bottom:16px}
+.ft a,.ft p{display:block;font-size:13.5px;padding:5px 0}
+.ft a:hover{color:var(--yellow)}
+.ft .logo b{color:#fff}
+.ft .logo small{color:#8A8074}
+.ft-bot{border-top:1px solid rgba(255,255,255,.1);padding:18px 0;display:flex;justify-content:space-between;gap:14px;font-size:12.5px;flex-wrap:wrap;align-items:center}
+.pay-chips{display:flex;gap:8px;align-items:center}
+.pay-chips span{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);padding:5px 11px;border-radius:7px;font-size:11px;font-weight:800}
+.pay-chips span.iy{color:var(--yellow)}
+
+.adm{display:grid;grid-template-columns:236px 1fr;min-height:100vh}
+.adm-side{background:var(--ink);color:#CFC7BA;display:flex;flex-direction:column;padding:22px 14px;position:sticky;top:0;height:100vh;overflow:auto}
+.adm-side .logo b{color:#fff;font-size:16px}
+.adm-side .logo small{color:#8A8074}
+.adm-menu{margin-top:28px;display:flex;flex-direction:column;gap:3px;flex:1}
+.adm-menu button{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:11px;font-size:13.5px;font-weight:600;text-align:left;transition:.15s;width:100%}
+.adm-menu button:hover{background:rgba(255,255,255,.07);color:#fff}
+.adm-menu button.on{background:var(--yellow);color:var(--ink);font-weight:800}
+.adm-menu .nbadge{margin-left:auto;background:var(--red);color:#fff;font-size:10.5px;font-weight:800;padding:2px 8px;border-radius:99px}
+.adm-main{padding:30px 36px;min-width:0}
+.adm-top{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:26px;flex-wrap:wrap}
+.adm-top h1{font-size:26px;font-weight:900;text-transform:uppercase}
+.adm-top .who{display:flex;gap:10px;align-items:center;font-size:13px;color:var(--muted)}
+.adm-card{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:24px;margin-bottom:22px}
+.adm-card h3{font-size:14px;font-weight:900;text-transform:uppercase;letter-spacing:.06em;margin-bottom:16px;display:flex;align-items:center;gap:9px}
+.adm-card h3 i{color:var(--red)}
+.metrics{display:flex;background:#fff;border:1px solid var(--line);border-radius:var(--r);margin-bottom:22px;overflow:hidden;flex-wrap:wrap}
+.metrics>div{flex:1;min-width:160px;padding:22px 24px;border-left:1px solid var(--line)}
+.metrics>div:first-child{border-left:none}
+.metrics small{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);display:block;margin-bottom:6px}
+.metrics b{font-family:var(--mono);font-size:24px;font-weight:700}
+.metrics .rd{color:var(--red)}
+.chart{display:flex;align-items:flex-end;gap:7px;height:150px;margin-top:8px}
+.cbar{flex:1;background:var(--red);border-radius:6px 6px 0 0;min-height:4px;position:relative;transition:.15s}
+.cbar:hover{background:var(--yellow);outline:2px solid var(--ink)}
+.cbar span{position:absolute;bottom:-20px;left:0;right:0;text-align:center;font-size:9.5px;color:var(--muted);font-family:var(--mono)}
+table.tbl{width:100%;border-collapse:collapse;font-size:13.5px}
+.tbl th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding:10px 12px;border-bottom:2px solid var(--line)}
+.tbl td{padding:12px;border-bottom:1px solid var(--line);vertical-align:middle}
+.tbl tr:hover td{background:var(--paper)}
+.tbl img{width:44px;height:44px;border-radius:9px;object-fit:cover}
+.tbl .acts{display:flex;gap:6px;justify-content:flex-end}
+.tbl .acts button{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;color:var(--muted)}
+.tbl .acts button:hover{background:var(--paper);color:var(--ink)}
+.tbl .acts button.danger:hover{background:#FDF1F2;color:var(--red)}
+.st{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;padding:5px 11px;border-radius:99px}
+.st::before{content:'';width:7px;height:7px;border-radius:50%;background:currentColor}
+.st.s{background:#FFF4D6;color:#8A6A00}.st.i{background:#ECE7DE;color:var(--ink)}.st.g{background:#E2F5EA;color:#127A43}.st.r{background:#FDE5E7;color:var(--red)}
+.switch{position:relative;width:40px;height:22px;background:#DDD5C6;border-radius:99px;cursor:pointer;transition:.15s;flex:none}
+.switch::after{content:'';position:absolute;width:16px;height:16px;background:#fff;border-radius:50%;top:3px;left:3px;transition:.15s}
+.switch.on{background:var(--green)}
+.switch.on::after{left:21px}
+.stock-in{width:64px;border:1.5px solid var(--line);border-radius:8px;padding:6px 8px;font-family:var(--mono);font-size:13px;text-align:center}
+.adm-side .out-link{border-top:1px solid rgba(255,255,255,.12);padding-top:14px}
+.login-page{min-height:100vh;display:grid;place-items:center;background:var(--ink)}
+.login-card{background:var(--paper);border-radius:20px;padding:44px 40px;width:min(420px,92vw);border-top:6px solid var(--yellow)}
+.login-card h1{font-size:24px;font-weight:900;margin:18px 0 6px}
+.login-card p{color:var(--muted);font-size:13.5px;margin-bottom:22px}
+
+#toast-box{position:fixed;bottom:24px;right:24px;z-index:200;display:flex;flex-direction:column;gap:10px}
+.toast{background:var(--ink);color:#fff;padding:14px 20px;border-radius:13px;display:flex;gap:11px;align-items:center;font-size:13.5px;font-weight:600;box-shadow:0 14px 40px rgba(0,0,0,.25);animation:tin .3s;max-width:340px;border-left:4px solid var(--yellow)}
+.toast.ok{border-left-color:var(--green)}.toast.warn{border-left-color:var(--red)}
+.toast i{width:18px;height:18px;color:var(--yellow)}
+.toast.warn i{color:var(--red)}
+@keyframes tin{from{transform:translateY(14px);opacity:0}}
+.m-ov{position:fixed;inset:0;background:rgba(27,22,19,.55);backdrop-filter:blur(4px);z-index:150;display:grid;place-items:center;padding:20px;animation:fin .2s}
+@keyframes fin{from{opacity:0}}
+.m-panel{background:var(--paper);border-radius:20px;width:min(560px,100%);max-height:90vh;overflow:auto;border-top:6px solid var(--red)}
+.m-head{display:flex;justify-content:space-between;align-items:center;padding:20px 24px 0}
+.m-head h3{font-size:18px;font-weight:900}
+.m-body{padding:20px 24px 24px;display:flex;flex-direction:column;gap:14px}
+.fly{position:fixed;z-index:300;width:52px;height:52px;border-radius:12px;object-fit:cover;pointer-events:none;transition:transform .7s cubic-bezier(.2,.7,.3,1),opacity .7s;box-shadow:0 10px 30px rgba(0,0,0,.3)}
+
+.fade-in{animation:fu .35s}
+@keyframes fu{from{opacity:0;transform:translateY(10px)}}
+@media(max-width:1020px){
+  .hero{grid-template-columns:1fr;gap:40px;padding-top:40px}
+  .feat-grid{grid-template-columns:repeat(2,1fr)}
+  .p-card.big{grid-column:span 2;grid-row:span 1}
+  .p-card.big .p-media img{aspect-ratio:1.6;height:auto}
+  .grid3{grid-template-columns:repeat(2,1fr)}
+  .cat-grid,.strip{grid-template-columns:repeat(2,1fr)}
+  .strip>div{border-left:none;border-top:1px solid var(--line)}
+  .cart-wrap,.co-grid,.pd{grid-template-columns:1fr}
+  .adm{grid-template-columns:1fr}
+  .adm-side{position:static;height:auto;flex-direction:row;align-items:center;flex-wrap:wrap;gap:10px;padding:14px 18px}
+  .adm-menu{margin:0;flex-direction:row;flex-wrap:wrap}
+  .adm-main{padding:22px 18px}
+  nav.mainnav{display:none}
+  .ft{grid-template-columns:1fr 1fr}
+}
+@media(max-width:560px){
+  .wrap{padding:0 16px}
+  .srch{display:none}
+  .grid3,.feat-grid,.cat-grid{grid-template-columns:1fr}
+  .c-line{grid-template-columns:64px 1fr;grid-template-rows:auto auto}
+  .c-line img{width:64px;height:64px}
+  .ft{grid-template-columns:1fr}
+  .frow{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="toast-box"></div>
+<div id="modal-root"></div>
+<noscript><p style="padding:24px;font-weight:700">Bu site çalışmak için JavaScript gerektirir. Tarayıcınızda JavaScript'i etkinleştirin.</p></noscript>
+
+<script>
+/* =========================================================
+   VOLTA — tek dosyalık e-ticaret + admin panel
+   Güvenli depolama katmanı: localStorage engellenirse
+   bellek-içi moda düşer, sayfa her koşulda açılır.
+========================================================= */
+var memStore={};
+var store={
+  get:function(k){ try{return localStorage.getItem(k)}catch(e){ return (k in memStore)?memStore[k]:null } },
+  set:function(k,v){ try{localStorage.setItem(k,v)}catch(e){ memStore[k]=v } },
+  del:function(k){ try{localStorage.removeItem(k)}catch(e){ delete memStore[k] } }
+};
+var session={
+  get:function(k){ try{return sessionStorage.getItem(k)}catch(e){ return ('s_'+k in memStore)?memStore['s_'+k]:null } },
+  set:function(k,v){ try{sessionStorage.setItem(k,v)}catch(e){ memStore['s_'+k]=v } },
+  del:function(k){ try{sessionStorage.removeItem(k)}catch(e){ delete memStore['s_'+k] } }
+};
+
+var LS_DB='volta_db', LS_CART='volta_cart', LS_CPN='volta_coupon', SS_ADM='volta_admin';
+var RATES=[{n:1,r:0},{n:3,r:2.9},{n:6,r:5.9},{n:9,r:8.9}];
+function fmt(n){ return new Intl.NumberFormat('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n)+' ₺' }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]}) }
+function uid(){ return Math.random().toString(36).slice(2,10) }
+function stLabel(s){ return ({'hazırlanıyor':'Hazırlanıyor','kargoda':'Kargoda','teslim':'Teslim Edildi','iptal':'İptal Edildi'})[s]||s }
+function stClass(s){ return ({'hazırlanıyor':'s','kargoda':'i','teslim':'g','iptal':'r'})[s]||'i' }
+function icons(){ try{ if(window.lucide) lucide.createIcons(); }catch(e){} }
+function luhn(n){n=n.replace(/\D/g,'');var s=0,alt=false;for(var i=n.length-1;i>=0;i--){var d=+n[i];if(alt){d*=2;if(d>9)d-=9}s+=d;alt=!alt}return n.length>=13&&s%10===0}
+
+/* ---------- örnek veri ---------- */
+function seedDB(){
+  function d(n){ return Date.now()-n*864e5 }
+  return {
+    settings:{brand:'VOLTA',tagline:'Elektronik & Yaşam',
+      announcement:'BUGÜN TÜM SİPARİŞLERDE KARGO BEDAVA • 1500 TL ÜZERİ • 9 TAKSİT FIRSATI • AYNI GÜN KARGO',
+      shippingFee:79.9,freeShippingLimit:1500,phone:'+90 850 000 00 00',email:'destek@volta.com.tr',
+      address:'Maslak Mah. Büyükdere Cad. No:255, Sarıyer / İstanbul',hours:'Hafta içi 09:00 – 19:00',adminPass:'admin123'},
+    categories:[
+      {id:'c1',name:'Ses & Kulaklık',slug:'ses'},
+      {id:'c2',name:'Şarj & Güç',slug:'sarj'},
+      {id:'c3',name:'Akıllı Yaşam',slug:'akis'},
+      {id:'c4',name:'Mutfak',slug:'mutfak'}],
+    products:[
+      {id:'p1',seed:'vt-p1',name:'Pulse Pro TWS Kablosuz Kulaklık',categoryId:'c1',price:1249,comparePrice:1599,stock:34,active:true,badge:'Çok Satan',sales:412,desc:'Aktif gürültü engelleme (ANC), 36 saate varan toplam pil ömrü ve IPX5 su geçirmezlik ile her koşulda kesintisiz ses.'},
+      {id:'p2',seed:'vt-p2',name:'BoomBox Go Taşınabilir Hoparlör',categoryId:'c1',price:1890,comparePrice:0,stock:18,active:true,badge:'',sales:147,desc:'30W çıkış gücü, 360° ses dağıtımı ve 20 saat pil ömrüyle piknikten partiye her ortamda yanınızda.'},
+      {id:'p3',seed:'vt-p3',name:'VoltCore 20.000 mAh Powerbank',categoryId:'c2',price:749,comparePrice:899,stock:52,active:true,badge:'',sales:389,desc:'22.5W hızlı şarj, çift USB-C/USB-A çıkış ve dijital göstergeli LED ekran. Telefonunuzu 4-5 kez şarj eder.'},
+      {id:'p4',seed:'vt-p4',name:'15W Kablosuz Hızlı Şarj Standı',categoryId:'c2',price:429,comparePrice:0,stock:40,active:true,badge:'',sales:203,desc:'Qi sertifikalı, katlanır tasarım. Telefonunuzu dik tutarak video izlerken dahi şarj edin.'},
+      {id:'p5',seed:'vt-p5',name:'Mekanik Klavye TKL RGB',categoryId:'c3',price:1690,comparePrice:1990,stock:15,active:true,badge:'Yeni',sales:88,desc:'Hot-swap anahtar desteği, mavi mekanik switch ve per-key RGB aydınlatma ile tam kontrol.'},
+      {id:'p6',seed:'vt-p6',name:'Nova Akıllı Bileklik 3',categoryId:'c3',price:999,comparePrice:1249,stock:25,active:true,badge:'Fırsat',sales:276,desc:'Nabız, SpO2 ve uyku takibi; 14 gün pil ömrü, 100+ spor modu ve 1.47 inç AMOLED ekran.'},
+      {id:'p7',seed:'vt-p7',name:'Barista One Espresso Makinesi',categoryId:'c4',price:5490,comparePrice:0,stock:9,active:true,badge:'',sales:64,desc:'20 bar İtalyan pompası, buhar çubuğu ile sütlü kahveler ve ısıtılabilir fincan tepsisi. Kafeni eve taşı.'},
+      {id:'p8',seed:'vt-p8',name:'AirCrisp 5.5L Airfryer',categoryId:'c4',price:3290,comparePrice:3890,stock:14,active:true,badge:'Fırsat',sales:158,desc:'Yağsız kızartma teknolojisi, 8 hazır program ve çıkarılabilir bulaşık makinesinde yıkanabilir sepet.'},
+      {id:'p9',seed:'vt-p9',name:'RoboClean Mini Robot Süpürge',categoryId:'c3',price:4750,comparePrice:0,stock:7,active:true,badge:'',sales:41,desc:'Lidar navigasyon, 2700Pa emiş gücü ve uygulama kontrolü. 140 m² alana kadar otomatik temizlik.'},
+      {id:'p10',seed:'vt-p10',name:'Luma LED Akıllı Masa Lambası',categoryId:'c3',price:649,comparePrice:749,stock:60,active:true,badge:'',sales:312,desc:'16 milyon renk, dokunmatik kontrol ve uygulama senkronizasyonu ile çalışma masanıza hava katın.'}],
+    coupons:[
+      {code:'HOSGELDIN10',type:'percent',value:10,min:0,active:true,used:14},
+      {code:'VOLT150',type:'fixed',value:150,min:1500,active:true,used:6}],
+    orders:[
+      {id:uid(),no:'VT-482913',date:d(12),items:[{id:'p1',name:'Pulse Pro TWS Kablosuz Kulaklık',price:1249,qty:1},{id:'p3',name:'VoltCore 20.000 mAh Powerbank',price:749,qty:2}],
+        customer:{name:'Elif Kaya',phone:'+90 532 000 00 01',email:'elif@ornek.com',city:'İstanbul',district:'Kadıköy',address:'Caferağa Mah. Moda Cad. No:12 D:4',note:''},
+        amounts:{subtotal:2747,discount:0,shipping:0,total:2747,totalWithInst:2747},coupon:null,
+        payment:{brand:'Mastercard',last4:'0008',holder:'ELIF KAYA',installment:1},status:'teslim',
+        trace:[{t:d(12),status:'hazırlanıyor',label:'Sipariş alındı'},{t:d(11),status:'kargoda',label:'Kargoya verildi'},{t:d(9),status:'teslim',label:'Teslim edildi'}]},
+      {id:uid(),no:'VT-581742',date:d(9),items:[{id:'p7',name:'Barista One Espresso Makinesi',price:5490,qty:1}],
+        customer:{name:'Mert Demir',phone:'+90 532 000 00 02',email:'mert@ornek.com',city:'İzmir',district:'Bornova',address:'Kazımdirik Mah. 167/1 Sok. No:5',note:'Zili çalın.'},
+        amounts:{subtotal:5490,discount:0,shipping:0,total:5490,totalWithInst:5490},coupon:null,
+        payment:{brand:'Visa',last4:'4242',holder:'MERT DEMIR',installment:3},status:'teslim',
+        trace:[{t:d(9),status:'hazırlanıyor',label:'Sipariş alındı'},{t:d(8),status:'kargoda',label:'Kargoya verildi'},{t:d(5),status:'teslim',label:'Teslim edildi'}]},
+      {id:uid(),no:'VT-619385',date:d(6),items:[{id:'p8',name:'AirCrisp 5.5L Airfryer',price:3290,qty:1},{id:'p4',name:'15W Kablosuz Hızlı Şarj Standı',price:429,qty:1}],
+        customer:{name:'Ayşe Yıldız',phone:'+90 532 000 00 03',email:'ayse@ornek.com',city:'Ankara',district:'Çankaya',address:'Kızılay, Atatürk Bulvarı No:99',note:''},
+        amounts:{subtotal:3719,discount:0,shipping:0,total:3719,totalWithInst:3719},coupon:'HOSGELDIN10',
+        payment:{brand:'Mastercard',last4:'0008',holder:'AYSE YILDIZ',installment:6},status:'kargoda',
+        trace:[{t:d(6),status:'hazırlanıyor',label:'Sipariş alındı'},{t:d(4),status:'kargoda',label:'Kargoya verildi'}]},
+      {id:uid(),no:'VT-704128',date:d(3),items:[{id:'p2',name:'BoomBox Go Taşınabilir Hoparlör',price:1890,qty:1},{id:'p6',name:'Nova Akıllı Bileklik 3',price:999,qty:1}],
+        customer:{name:'Can Öztürk',phone:'+90 532 000 00 04',email:'can@ornek.com',city:'Bursa',district:'Nilüfer',address:'Özlüce Mah. Nilüfer Cad. No:44',note:''},
+        amounts:{subtotal:2889,discount:0,shipping:0,total:2889,totalWithInst:2889},coupon:null,
+        payment:{brand:'Visa',last4:'1881',holder:'CAN OZTURK',installment:1},status:'hazırlanıyor',
+        trace:[{t:d(3),status:'hazırlanıyor',label:'Sipariş alındı'}]},
+      {id:uid(),no:'VT-733560',date:d(1),items:[{id:'p3',name:'VoltCore 20.000 mAh Powerbank',price:749,qty:1}],
+        customer:{name:'Zeynep Arslan',phone:'+90 532 000 00 05',email:'zeynep@ornek.com',city:'Antalya',district:'Muratpaşa',address:'Fener Mah. Lara Cad. No:71',note:''},
+        amounts:{subtotal:749,discount:0,shipping:79.9,total:828.9,totalWithInst:828.9},coupon:null,
+        payment:{brand:'Visa',last4:'4242',holder:'ZEYNEP ARSLAN',installment:1},status:'hazırlanıyor',
+        trace:[{t:d(1),status:'hazırlanıyor',label:'Sipariş alındı'}]}]
+  };
+}
+var db;
+try{ db=JSON.parse(store.get(LS_DB))||seedDB(); }catch(e){ db=seedDB(); }
+if(!db||!db.products||!db.settings) db=seedDB();
+function saveDB(){ store.set(LS_DB,JSON.stringify(db)) }
+
+var state={route:null,cart:[],coupon:null};
+try{ state.cart=JSON.parse(store.get(LS_CART)||'[]')||[] }catch(e){ state.cart=[] }
+state.coupon=store.get(LS_CPN)||null;
+function saveCart(){
+  store.set(LS_CART,JSON.stringify(state.cart));
+  if(state.coupon)store.set(LS_CPN,state.coupon); else store.del(LS_CPN);
+}
+
+/* ---------- yardımcılar ---------- */
+function catName(id){ var c=db.categories.find(function(x){return x.id===id}); return c?c.name:'—' }
+function catSlug(id){ var c=db.categories.find(function(x){return x.id===id}); return c?c.slug:'' }
+function imgUrl(p,i){ return 'https://picsum.photos/seed/'+p.seed+'-'+(i||1)+'/720/720.jpg' }
+function imgBig(p){ return 'https://picsum.photos/seed/'+p.seed+'-1/900/900.jpg' }
+function discOf(p){ return p.comparePrice>p.price?Math.round((1-p.price/p.comparePrice)*100):0 }
+function cartCalc(){
+  var items=state.cart.map(function(c){ var p=db.products.find(function(x){return x.id===c.id}); return (p&&p.active)?{id:c.id,qty:c.qty,p:p}:null }).filter(Boolean);
+  var subtotal=items.reduce(function(s,c){ return s+c.p.price*c.qty },0);
+  var cp=state.coupon?db.coupons.find(function(c){return c.code===state.coupon&&c.active}):null;
+  var discount=cp&&subtotal>=cp.min?(cp.type==='percent'?subtotal*cp.value/100:Math.min(cp.value,subtotal)):0;
+  var net=subtotal-discount;
+  var shipping=items.length===0?0:(net>=db.settings.freeShippingLimit?0:db.settings.shippingFee);
+  return {items:items,subtotal:subtotal,discount:discount,coupon:cp,shipping:shipping,total:net+shipping};
+}
+function toast(msg,type){
+  var box=document.getElementById('toast-box'); if(!box)return;
+  var el=document.createElement('div'); el.className='toast '+(type||'ok');
+  el.innerHTML='<i data-lucide="'+(type==='warn'?'alert-circle':'check-circle-2')+'"></i>'+esc(msg);
+  box.appendChild(el); icons();
+  setTimeout(function(){ el.style.opacity='0'; el.style.transition='.3s'; setTimeout(function(){el.remove()},320) },2800);
+}
+var modalOkFn=null;
+function openModal(html){ document.getElementById('modal-root').innerHTML='<div class="m-ov" onclick="if(event.target===this)closeModal()"><div class="m-panel">'+html+'</div></div>'; icons(); }
+function closeModal(){ document.getElementById('modal-root').innerHTML=''; modalOkFn=null; }
+function confirmModal(title,msg,okLabel,fn){
+  modalOkFn=fn;
+  openModal('<div class="m-head"><h3>'+esc(title)+'</h3><button class="icb" onclick="closeModal()"><i data-lucide="x"></i></button></div>'+
+  '<div class="m-body"><p style="color:var(--ink-2)">'+esc(msg)+'</p>'+
+  '<div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn gh sm" onclick="closeModal()">Vazgeç</button>'+
+  '<button class="btn sm" onclick="modalRun()">'+esc(okLabel)+'</button></div></div>');
+}
+function modalRun(){ var f=modalOkFn; closeModal(); if(f)f(); }
+
+/* ---------- yönlendirme ---------- */
+function parseRoute(){
+  var h=location.hash.replace(/^#\/?/,'');
+  var parts=h.split('/').filter(Boolean).map(function(p){ try{return decodeURIComponent(p)}catch(e){return p} });
+  return {name:parts[0]||'home',parts:parts};
+}
+function go(path){ location.hash='#/'+path }
+window.addEventListener('hashchange',function(){
+  try{ state.route=parseRoute(); render(); }catch(err){ if(window.__fatal)window.__fatal(err.message) }
+});
+
+/* =========================================================
+   MAĞAZA GÖRÜNÜMLERİ
+========================================================= */
+function chrome(view,active){
+  var s=db.settings, cc=cartCalc(), count=cc.items.reduce(function(a,c){return a+c.qty},0);
+  return '<div class="announce"><div class="announce-track"><span>'+esc(s.announcement)+' &nbsp;•&nbsp;</span><span>'+esc(s.announcement)+' &nbsp;•&nbsp;</span></div></div>'+
+  '<header><div class="wrap hd">'+
+    '<a class="logo" href="#/"><span class="logo-mark">'+esc(s.brand.charAt(0))+'</span><span><b>'+esc(s.brand)+'</b><small>'+esc(s.tagline)+'</small></span></a>'+
+    '<nav class="mainnav">'+
+      '<a href="#/" class="'+(active==='home'?'on':'')+'">Anasayfa</a>'+
+      db.categories.slice(0,4).map(function(c){ return '<a href="#/magaza/'+c.slug+'" class="'+(active==='cat-'+c.slug?'on':'')+'">'+esc(c.name)+'</a>' }).join('')+
+      '<a href="#/magaza" class="'+(active==='magaza'?'on':'')+'">Tümü</a>'+
+    '</nav>'+
+    '<div class="srch"><i data-lucide="search"></i>'+
+      '<input id="s-in" placeholder="Ürün ara…" autocomplete="off" oninput="searchSuggest(this.value)" '+
+      'onblur="setTimeout(function(){var d=document.getElementById(\'s-drop\');if(d)d.classList.remove(\'open\')},150)" '+
+      'onkeydown="if(event.key===\'Enter\')doSearch(event,this.value)">'+
+      '<div class="s-drop" id="s-drop"></div></div>'+
+    '<div class="hacts">'+
+      '<a class="icb" href="#/takip" title="Sipariş Takibi"><i data-lucide="package-search"></i></a>'+
+      '<a class="icb" href="#/admin" title="Yönetim"><i data-lucide="shield"></i></a>'+
+      '<a class="icb" href="#/sepet" id="cartBtn" title="Sepet"><i data-lucide="shopping-bag"></i>'+(count?'<span class="n">'+count+'</span>':'')+'</a>'+
+    '</div></div></header>'+
+  '<main class="fade-in">'+view+'</main>'+
+  footer();
+}
+function footer(){
+  var s=db.settings;
+  return '<footer><div class="wrap"><div class="ft">'+
+    '<div><a class="logo" href="#/" style="margin-bottom:14px"><span class="logo-mark">'+esc(s.brand.charAt(0))+'</span><span><b>'+esc(s.brand)+'</b><small>'+esc(s.tagline)+'</small></span></a>'+
+    '<p style="max-width:280px;color:#9C9285">Kurumsal güvence, güncel teknoloji ve seçkin yaşam ürünleri tek çatı altında. Tüm siparişler iyzico güvencesiyle işlenir.</p></div>'+
+    '<div><h4>Kategoriler</h4>'+db.categories.map(function(c){return '<a href="#/magaza/'+c.slug+'">'+esc(c.name)+'</a>'}).join('')+'</div>'+
+    '<div><h4>Hızlı Erişim</h4><a href="#/magaza">Tüm Ürünler</a><a href="#/takip">Sipariş Takibi</a><a href="#/sepet">Sepetim</a><a href="#/admin">Yönetim Paneli</a></div>'+
+    '<div><h4>İletişim</h4><p>'+esc(s.address)+'</p><p>'+esc(s.phone)+'</p><p>'+esc(s.email)+'</p><p>'+esc(s.hours)+'</p></div>'+
+    '</div><div class="ft-bot"><span>© '+new Date().getFullYear()+' '+esc(s.brand)+'. Tüm hakları saklıdır.</span>'+
+    '<div class="pay-chips"><span class="iy">iyzico ile güvenli ödeme</span><span>VISA</span><span>MASTERCARD</span><span>TROY</span></div>'+
+    '</div></div></footer>';
+}
+
+function pCard(p,big){
+  var disc=discOf(p);
+  return '<article class="p-card'+(big?' big':'')+'">'+
+    '<div class="p-media" onclick="go(\'urun/'+p.id+'\')">'+
+      (p.badge?'<span class="p-badge">'+esc(p.badge)+'</span>':'')+
+      (disc?'<span class="p-disc">%'+disc+' indirim</span>':'')+
+      '<img src="'+imgUrl(p,1)+'" alt="'+esc(p.name)+'" loading="lazy">'+
+    '</div>'+
+    '<div class="p-body"><span class="p-cat">'+esc(catName(p.categoryId))+'</span>'+
+      '<h3 onclick="go(\'urun/'+p.id+'\')">'+esc(p.name)+'</h3>'+
+      '<div class="p-price"><b>'+fmt(p.price)+'</b>'+(p.comparePrice>p.price?'<s>'+fmt(p.comparePrice)+'</s>':'')+'</div>'+
+      '<span class="p-sales"><i data-lucide="star"></i>'+p.sales+'+ satış · '+(p.stock>0?p.stock+' adet stokta':'stok yok')+'</span>'+
+    '</div>'+
+    (p.stock>0
+      ?'<button class="p-add" onclick="addToCart(\''+p.id+'\',this)"><i data-lucide="shopping-bag"></i>Sepete Ekle</button>'
+      :'<span class="p-add out">Stokta Yok</span>')+
+  '</article>';
+}
+
+/* --- ANASAYFA --- */
+function vHome(){
+  var s=db.settings;
+  var feat=db.products.filter(function(p){return p.active}).sort(function(a,b){return b.sales-a.sales}).slice(0,5);
+  var top=feat[0]||db.products[0]||null;
+  function counts(id){ return db.products.filter(function(p){return p.categoryId===id&&p.active}).length }
+  return '<div class="wrap"><section class="hero"><div>'+
+    '<span class="eyebrow">'+new Date().getFullYear()+' Sezon Koleksiyonu</span>'+
+    '<h1>Günlük hayatın <span class="hl">enerjisi</span></h1>'+
+    '<p>'+esc(s.brand)+' mağazasında teknoloji ve yaşam ürünleri %100 orijinal ürün garantisi, iyzico güvenli ödemesi ve aynı gün kargo avantajıyla.</p>'+
+    '<div class="hero-cta"><button class="btn" onclick="go(\'magaza\')"><i data-lucide="shopping-bag"></i>Alışverişe Başla</button>'+
+    '<button class="btn gh" onclick="go(\'takip\')"><i data-lucide="package-search"></i>Sipariş Takibi</button></div></div>'+
+    (top?'<div class="hero-art">'+
+      '<div class="hero-panel" style="cursor:pointer" onclick="go(\'urun/'+top.id+'\')"><img src="'+imgBig(top)+'" alt="'+esc(top.name)+'"></div>'+
+      '<div class="rot-badge"><svg viewBox="0 0 120 120"><defs><path id="circ" d="M60,60 m-46,0 a46,46 0 1,1 92,0 a46,46 0 1,1 -92,0"/></defs>'+
+      '<text><textPath href="#circ">KARGO BEDAVA • 9 TAKSİT • GÜVENLİ ÖDEME • </textPath></text></svg><i data-lucide="zap"></i></div>'+
+      '<div class="hero-tag"><i data-lucide="lock"></i><span>iyzico altyapısı ile<br><b>256-bit güvenli ödeme</b></span></div></div>':'')+
+  '</section></div>'+
+  '<div class="wrap"><section class="strip">'+
+    '<div><i data-lucide="truck"></i><span><b>Aynı Gün Kargo</b><small>16:00\'ya kadar verilen siparişler</small></span></div>'+
+    '<div><i data-lucide="rotate-ccw"></i><span><b>14 Gün İade</b><small>Koşulsuz iade hakkı</small></span></div>'+
+    '<div><i data-lucide="shield-check"></i><span><b>iyzico Güvencesi</b><small>3D Secure ile korunur</small></span></div>'+
+    '<div><i data-lucide="headphones"></i><span><b>7/24 Destek</b><small>'+esc(s.phone)+'</small></span></div>'+
+  '</section></div>'+
+  '<div class="wrap sec"><div class="sec-head"><h2><span class="kicker">Kategoriler</span>Ne aramıştınız?</h2></div>'+
+  '<div class="cat-grid">'+db.categories.map(function(c,i){
+    return '<div class="cat-card" onclick="go(\'magaza/'+c.slug+'\')"><span class="no">0'+(i+1)+' — '+counts(c.id)+' ürün</span><div><b>'+esc(c.name)+'</b></div><i data-lucide="arrow-up-right"></i></div>';
+  }).join('')+'</div></div>'+
+  '<div class="wrap sec" style="padding-top:20px"><div class="sec-head"><div><h2><span class="kicker">Vitrin</span>En çok beğenilenler</h2></div>'+
+  '<a class="sec-link" href="#/magaza">Tümünü Gör <i data-lucide="arrow-up-right"></i></a></div>'+
+  '<div class="feat-grid">'+feat.map(function(p,i){return pCard(p,i===0)}).join('')+'</div></div>';
+}
+
+/* --- KATALOG --- */
+var sortMode='pop';
+function vCatalog(cat,q){
+  var list=db.products.filter(function(p){return p.active});
+  var title='Tüm Ürünler', crumb;
+  if(cat){ var c=db.categories.find(function(x){return x.slug===cat});
+    if(c){ list=list.filter(function(p){return p.categoryId===c.id}); title=c.name; crumb='<a href="#/">Anasayfa</a> / <a href="#/magaza">Mağaza</a> / <b>'+esc(c.name)+'</b>'; } }
+  if(!crumb) crumb='<a href="#/">Anasayfa</a> / <b>Mağaza</b>';
+  if(q){ var t=q.toLowerCase();
+    list=list.filter(function(p){ return p.name.toLowerCase().indexOf(t)>-1||catName(p.categoryId).toLowerCase().indexOf(t)>-1 });
+    title='"'+q+'" için sonuçlar'; crumb='<a href="#/">Anasayfa</a> / Mağaza / <b>Arama</b>'; }
+  if(sortMode==='asc')list.sort(function(a,b){return a.price-b.price});
+  else if(sortMode==='desc')list.sort(function(a,b){return b.price-a.price});
+  else list.sort(function(a,b){return b.sales-a.sales});
+  var tlb=(cat||q)?'':'<a class="sec-link" href="#/" style="margin-right:18px"><i data-lucide="arrow-left"></i>Anasayfa</a>';
+  return '<div class="wrap"><div class="crumb">'+crumb+'</div>'+
+  '<div class="cat-toolbar"><div style="display:flex;align-items:center;gap:16px">'+tlb+'<h1>'+esc(title)+'</h1><span class="cat-count">'+list.length+' ürün</span></div>'+
+  '<select onchange="sortMode=this.value;render()">'+
+    '<option value="pop"'+(sortMode==='pop'?' selected':'')+'>Popülerlik</option>'+
+    '<option value="asc"'+(sortMode==='asc'?' selected':'')+'>Fiyat: Artan</option>'+
+    '<option value="desc"'+(sortMode==='desc'?' selected':'')+'>Fiyat: Azalan</option>'+
+  '</select></div>'+
+  (list.length?'<div class="grid3">'+list.map(function(p){return pCard(p)}).join('')+'</div>'
+    :'<div class="empty"><i data-lucide="search-x"></i><b>Sonuç bulunamadı</b><p style="margin-top:6px">Farklı bir arama deneyin veya tüm mağazaya göz atın.</p></div>')+
+  '</div>';
+}
+function doSearch(e,q){ e.preventDefault(); q=(q||'').trim(); if(q)go('ara/'+encodeURIComponent(q)); return false; }
+function searchSuggest(v){
+  var drop=document.getElementById('s-drop'); if(!drop)return;
+  v=(v||'').trim().toLowerCase();
+  if(v.length<2){drop.classList.remove('open');return;}
+  var res=db.products.filter(function(p){return p.active&&p.name.toLowerCase().indexOf(v)>-1}).slice(0,5);
+  drop.innerHTML=res.length?res.map(function(p){
+    return '<button onmousedown="go(\'urun/'+p.id+'\')"><img src="'+imgUrl(p,1)+'"><span>'+esc(p.name)+'</span><span class="pr">'+fmt(p.price)+'</span></button>';
+  }).join(''):'<button disabled style="color:var(--muted)">Sonuç yok…</button>';
+  drop.classList.add('open');
+}
+
+/* --- ÜRÜN DETAY --- */
+var pdQty=1;
+function vProduct(id){
+  var p=db.products.find(function(x){return x.id===id});
+  if(!p) return '<div class="wrap"><div class="empty"><i data-lucide="package-x"></i><b>Ürün bulunamadı</b></div></div>';
+  pdQty=1;
+  var disc=discOf(p);
+  var similar=db.products.filter(function(x){return x.categoryId===p.categoryId&&x.id!==p.id&&x.active}).slice(0,4);
+  var inst3=p.price*(1+2.9/100)/3, inst9=p.price*(1+8.9/100)/9;
+  return '<div class="wrap"><div class="crumb"><a href="#/">Anasayfa</a> / <a href="#/magaza/'+catSlug(p.categoryId)+'">'+esc(catName(p.categoryId))+'</a> / <b>'+esc(p.name)+'</b></div>'+
+  '<section class="pd"><div class="pd-gal">'+
+    '<img class="main" id="pd-main" src="'+imgUrl(p,1)+'" alt="'+esc(p.name)+'">'+
+    '<div class="pd-thumbs">'+[1,2,3].map(function(i){ return '<img src="'+imgUrl(p,i)+'" class="'+(i===1?'on':'')+'" onclick="pdSwap(this)">' }).join('')+'</div></div>'+
+    '<div class="pd-info"><span class="p-cat">'+esc(catName(p.categoryId))+(p.badge?' · '+esc(p.badge):'')+'</span>'+
+    '<h1>'+esc(p.name)+'</h1>'+
+    '<div class="pd-rate"><i data-lucide="star"></i>'+p.sales+'+ satış · Stok kodu: <span class="mono">'+p.id.toUpperCase()+'</span></div>'+
+    '<div class="pd-price"><b>'+fmt(p.price)+'</b>'+(p.comparePrice>p.price?'<s>'+fmt(p.comparePrice)+'</s><span class="off">%'+disc+'</span>':'')+'</div>'+
+    '<div class="pd-stock '+(p.stock<=10?'low':'ok')+'">'+(p.stock<=0?'Bu ürün şu anda tükendi.':(p.stock<=10?'Son '+p.stock+' ürün — acele edin!':'Stokta '+p.stock+' adet mevcut'))+'</div>'+
+    '<div class="pd-actions"><div class="stepper"><button onclick="pdStep(-1)">−</button><b id="pd-q">1</b><button onclick="pdStep(1)">+</button></div>'+
+    (p.stock>0?'<button class="btn" style="flex:1" onclick="addToCart(\''+p.id+'\',this,document.getElementById(\'pd-q\').textContent)"><i data-lucide="shopping-bag"></i>Sepete Ekle</button>'+
+    '<button class="btn yw" onclick="buyNow(\''+p.id+'\')">Hemen Al</button>'
+    :'<button class="btn gh" disabled><i data-lucide="package-x"></i>Tükendi</button>')+'</div>'+
+    '<div class="pd-inst"><header><span>iyzico</span> Taksit Seçenekleri</header>'+
+    '<table><tr><td>Peşin (Tek Çekim)</td><td>'+fmt(p.price)+'</td></tr>'+
+    '<tr><td>3 Taksit</td><td>'+fmt(inst3)+' × 3</td></tr>'+
+    '<tr><td>9 Taksit</td><td>'+fmt(inst9)+' × 9</td></tr></table></div>'+
+    '<div class="pd-trust">'+
+    '<div><i data-lucide="lock"></i>iyzico altyapısı ile 256-bit SSL güvenli ödeme</div>'+
+    '<div><i data-lucide="truck"></i>'+fmt(db.settings.freeShippingLimit)+' ve üzeri siparişlerde kargo bedava</div>'+
+    '<div><i data-lucide="rotate-ccw"></i>14 gün koşulsuz iade garantisi</div></div>'+
+    '<div class="pd-desc">'+esc(p.desc)+'</div></div></section>'+
+  (similar.length?'<div class="sec"><div class="sec-head"><h2><span class="kicker">Benzer</span>Bunlar da hoşunuza gidebilir</h2></div>'+
+  '<div class="grid3" style="grid-template-columns:repeat(4,1fr)">'+similar.map(function(x){return pCard(x)}).join('')+'</div></div>':'')+
+  '</div>';
+}
+function pdSwap(el){ var m=document.getElementById('pd-main'); if(m)m.src=el.src; document.querySelectorAll('.pd-thumbs img').forEach(function(t){t.classList.remove('on')}); el.classList.add('on'); }
+function pdStep(d){ pdQty=Math.min(Math.max(1,pdQty+d),20); var q=document.getElementById('pd-q'); if(q)q.textContent=pdQty; }
+
+/* --- SEPET --- */
+function vCart(){
+  var cc=cartCalc(), s=db.settings;
+  if(!cc.items.length) return '<div class="wrap"><div class="empty" style="padding:90px 20px">'+
+    '<i data-lucide="shopping-bag"></i><b style="font-size:20px">Sepetiniz boş</b>'+
+    '<p style="margin:8px 0 22px">Vitrinimize göz atın, kaçırılmayacak fırsatlar sizi bekliyor.</p>'+
+    '<button class="btn" onclick="go(\'magaza\')"><i data-lucide="shopping-bag"></i>Alışverişe Başla</button></div></div>';
+  var remain=s.freeShippingLimit-(cc.subtotal-cc.discount);
+  return '<div class="wrap"><div class="crumb"><a href="#/">Anasayfa</a> / <b>Sepetim</b></div>'+
+  '<div class="cart-wrap"><div>'+
+    cc.items.map(function(c){ return '<div class="c-line">'+
+      '<img src="'+imgUrl(c.p,1)+'" onclick="go(\'urun/'+c.id+'\')" alt="">'+
+      '<div><b onclick="go(\'urun/'+c.id+'\')">'+esc(c.p.name)+'</b><div class="u">Birim: '+fmt(c.p.price)+'</div></div>'+
+      '<div class="stepper" style="border-color:var(--line)"><button onclick="setQty(\''+c.id+'\',-1)">−</button><b>'+c.qty+'</b><button onclick="setQty(\''+c.id+'\',1)">+</button></div>'+
+      '<div class="t">'+fmt(c.p.price*c.qty)+'</div>'+
+      '<button class="rm" onclick="removeItem(\''+c.id+'\')" title="Kaldır"><i data-lucide="trash-2"></i></button></div>';
+    }).join('')+
+    '</div><div class="summary"><h3>Sipariş Özeti</h3>'+
+    '<div class="s-row"><span>Ara Toplam</span><b class="mono">'+fmt(cc.subtotal)+'</b></div>'+
+    (cc.discount?'<div class="s-row" style="color:var(--green)"><span>Kupon ('+esc(cc.coupon.code)+')</span><b class="mono">−'+fmt(cc.discount)+'</b></div>':'')+
+    '<div class="s-row"><span>Kargo</span>'+(cc.shipping===0?'<b class="free">Ücretsiz</b>':'<b class="mono">'+fmt(cc.shipping)+'</b>')+'</div>'+
+    '<div class="s-row total"><span>Toplam</span><span class="mono">'+fmt(cc.total)+'</span></div>'+
+    (cc.coupon?'<button class="btn gh sm" style="width:100%;margin:10px 0 4px" onclick="removeCoupon()"><i data-lucide="x"></i>Kuponu Kaldır</button>'
+      :'<div class="coupon-row"><input id="cpn" placeholder="Kupon kodu"><button class="btn yw sm" onclick="applyCoupon()">Uygula</button></div>')+
+    (remain>0?'<div class="ship-note"><b>'+fmt(remain)+'</b> daha ekleyin, kargo ücretsiz olsun!</div>':'<div class="ship-note" style="border-color:var(--green)">Tebrikler, kargo sizin için ücretsiz!</div>')+
+    '<button class="btn" style="width:100%;margin-top:16px" onclick="go(\'odeme\')"><i data-lucide="lock"></i>Ödemeye Geç</button>'+
+    '<div class="iyz-line"><i data-lucide="shield-check"></i>iyzico güvenli ödeme altyapısı</div>'+
+  '</div></div></div>';
+}
+function setQty(id,d){
+  var it=state.cart.find(function(c){return c.id===id}); if(!it)return;
+  var p=db.products.find(function(x){return x.id===id});
+  it.qty=Math.min(Math.max(1,it.qty+d),p?p.stock:99);
+  saveCart();render();
+}
+function removeItem(id){ state.cart=state.cart.filter(function(c){return c.id!==id}); saveCart();render(); toast('Ürün sepetten çıkarıldı'); }
+function removeCoupon(){ state.coupon=null; saveCart(); render(); toast('Kupon kaldırıldı'); }
+function applyCoupon(){
+  var inp=document.getElementById('cpn'); if(!inp)return;
+  var code=(inp.value||'').trim().toUpperCase();
+  var cc=cartCalc();
+  if(!code)return toast('Lütfen bir kupon kodu girin','warn');
+  var c=db.coupons.find(function(x){return x.code===code&&x.active});
+  if(!c)return toast('Geçersiz kupon kodu','warn');
+  if(cc.subtotal<c.min)return toast('Bu kupon en az '+fmt(c.min)+' sepet tutarında geçerli','warn');
+  state.coupon=code; saveCart(); render(); toast('Kupon uygulandı: '+code);
+}
+
+/* --- ÖDEME (iyzico akışı simülasyonu) --- */
+function vCheckout(){
+  var cc=cartCalc();
+  if(!cc.items.length) return vCart();
+  var total=cc.total;
+  var instRows=RATES.map(function(r,i){
+    var t=total*(1+r.r/100);
+    return '<label class="'+(i===0?'on':'')+'"><input type="radio" name="inst" value="'+r.n+'" '+(i===0?'checked':'')+' onchange="pickInst(this)">'+
+      (r.n===1?'Peşin — Tek Çekim':r.n+' Taksit')+'<b>'+(r.n===1?fmt(t):fmt(t/r.n)+' × '+r.n)+'</b></label>';
+  }).join('');
+  return '<div class="wrap"><div class="crumb"><a href="#/">Anasayfa</a> / <a href="#/sepet">Sepet</a> / <b>Ödeme</b></div>'+
+  '<div class="co-grid"><div>'+
+    '<div class="co-sec"><h3><span class="step">1</span>Teslimat Bilgileri</h3>'+
+    '<div style="display:flex;flex-direction:column;gap:14px">'+
+      '<div class="frow"><div class="field"><label>Ad Soyad *</label><input id="f-name" placeholder="Adınız Soyadınız"></div>'+
+      '<div class="field"><label>Telefon *</label><input id="f-phone" placeholder="05XX XXX XX XX"></div></div>'+
+      '<div class="field"><label>E-posta *</label><input id="f-mail" type="email" placeholder="ornek@posta.com"></div>'+
+      '<div class="frow"><div class="field"><label>İl *</label><input id="f-city" placeholder="İstanbul"></div>'+
+      '<div class="field"><label>İlçe *</label><input id="f-dist" placeholder="Kadıköy"></div></div>'+
+      '<div class="field"><label>Açık Adres *</label><textarea id="f-addr" rows="2" placeholder="Mahalle, sokak, no, daire…"></textarea></div>'+
+      '<div class="field"><label>Sipariş Notu</label><input id="f-note" placeholder="Kurye için not (opsiyonel)"></div>'+
+    '</div></div>'+
+    '<div class="co-sec" style="padding:0;overflow:hidden">'+
+    '<div class="iyzico-head"><div><div class="brand">iyzico <span>ile ödeme</span></div><small>Kart bilgileriniz PCI-DSS güvenlik standardıyla korunur</small></div><i data-lucide="lock" style="color:var(--yellow)"></i></div>'+
+    '<div class="iyzico-body">'+
+      '<div class="ccard"><div class="top"><span class="chip"></span><span class="brand-lg" id="ccv-brand">KART</span></div>'+
+      '<div class="num" id="ccv-num">•••• •••• •••• ••••</div>'+
+      '<div class="bot"><span><small>KART SAHİBİ</small><span id="ccv-name">AD SOYAD</span></span><span style="text-align:right"><small>GEÇERLİLİK</small><span id="ccv-exp">AA/YY</span></span></div></div>'+
+      '<div class="field"><label>Kart Numarası</label><input id="cc-num" inputmode="numeric" placeholder="0000 0000 0000 0000" oninput="fmtCardNum(this)"></div>'+
+      '<div class="field" style="margin-top:14px"><label>Kart Üzerindeki İsim</label><input id="cc-name" placeholder="AD SOYAD" oninput="cardSync()"></div>'+
+      '<div class="frow" style="margin-top:14px"><div class="field"><label>Son Kullanma</label><input id="cc-exp" inputmode="numeric" placeholder="AA/YY" oninput="fmtExp(this)"></div>'+
+      '<div class="field"><label>CVV</label><input id="cc-cvv" inputmode="numeric" placeholder="•••" oninput="fmtCvv(this)"></div></div>'+
+      '<h3 style="margin:20px 0 10px;font-size:14px;text-transform:uppercase">Taksit Seçimi</h3>'+
+      '<div class="inst-list">'+instRows+'</div>'+
+      '<div class="test-hint">Demo ortamı — Test kartı: 5528 7900 0000 0008 · 12/30 · CVV 123</div>'+
+    '</div></div></div>'+
+    '<div><div class="co-items">'+
+    '<h3 style="font-size:15px;font-weight:900;text-transform:uppercase;margin-bottom:8px">Siparişiniz</h3>'+
+    cc.items.map(function(c){ return '<div class="mini"><img src="'+imgUrl(c.p,1)+'"><span>'+esc(c.p.name)+'<div class="q">'+c.qty+' adet</div></span><span class="pr">'+fmt(c.p.price*c.qty)+'</span></div>' }).join('')+
+    '<div class="s-row" style="margin-top:10px"><span>Ara Toplam</span><b class="mono">'+fmt(cc.subtotal)+'</b></div>'+
+    (cc.discount?'<div class="s-row" style="color:var(--green)"><span>Kupon</span><b class="mono">−'+fmt(cc.discount)+'</b></div>':'')+
+    '<div class="s-row"><span>Kargo</span>'+(cc.shipping===0?'<b class="free">Ücretsiz</b>':'<b class="mono">'+fmt(cc.shipping)+'</b>')+'</div>'+
+    '<div class="s-row total"><span>Toplam</span><span class="mono" id="co-total">'+fmt(total)+'</span></div>'+
+    '<div style="font-size:12px;color:var(--muted);margin-top:6px" id="inst-info"></div>'+
+    '<button class="btn" style="width:100%;margin-top:16px" id="payBtn" onclick="placeOrder()"><i data-lucide="lock"></i>Ödemeyi Tamamla</button>'+
+    '<div class="iyz-line"><i data-lucide="shield-check"></i>3D Secure ile korunan güvenli ödeme</div>'+
+    '</div></div></div></div>';
+}
+function pickInst(r){
+  document.querySelectorAll('.inst-list label').forEach(function(l){l.classList.remove('on')});
+  r.closest('label').classList.add('on');
+  var n=+r.value, rate=RATES.find(function(x){return x.n===n}).r, t=cartCalc().total*(1+rate/100);
+  document.getElementById('co-total').textContent=fmt(t);
+  document.getElementById('inst-info').innerHTML=n>1?'Toplam taksitli tutar <b class="mono">'+fmt(t)+'</b> — aylık <b class="mono">'+fmt(t/n)+'</b>':'';
+}
+function fmtCardNum(el){ var v=el.value.replace(/\D/g,'').slice(0,16); el.value=v.replace(/(.{4})/g,'$1 ').trim(); cardSync(); }
+function fmtExp(el){ var v=el.value.replace(/\D/g,'').slice(0,4); if(v.length>2)v=v.slice(0,2)+'/'+v.slice(2); el.value=v; cardSync(); }
+function fmtCvv(el){ el.value=el.value.replace(/\D/g,'').slice(0,4); }
+function cardSync(){
+  function g(id){ return document.getElementById(id) }
+  var num=(g('cc-num').value||'').replace(/\D/g,'');
+  var chunks=num.padEnd(16,'•').match(/.{1,4}/g)||['••••'];
+  g('ccv-num').textContent=chunks.slice(0,4).join(' ');
+  g('ccv-name').textContent=(g('cc-name').value||'AD SOYAD').toUpperCase();
+  g('ccv-exp').textContent=g('cc-exp').value||'AA/YY';
+  var b='KART';
+  if(/^4/.test(num))b='VISA'; else if(/^5[1-5]/.test(num))b='<span class="mc"><i></i><i></i></span>'; else if(/^3[47]/.test(num))b='AMEX';
+  g('ccv-brand').innerHTML=b;
+}
+function markErr(id,bad){ var el=document.getElementById(id); if(el)el.classList.toggle('err',bad); return bad; }
+function placeOrder(){
+  function g(id){ return document.getElementById(id) }
+  var bad=false;
+  ['f-name','f-phone','f-mail','f-city','f-dist','f-addr'].forEach(function(id){ if(markErr(id,!g(id).value.trim()))bad=true; });
+  if(bad)return toast('Lütfen teslimat bilgilerini tamamlayın','warn');
+  var num=g('cc-num').value.replace(/\D/g,'');
+  var exp=g('cc-exp').value, mm=+exp.split('/')[0], yy=+exp.split('/')[1];
+  var cbad=false;
+  if(markErr('cc-num',!luhn(num)))cbad=true;
+  if(markErr('cc-name',!g('cc-name').value.trim()))cbad=true;
+  if(markErr('cc-exp',exp.length<5||mm<1||mm>12))cbad=true;
+  if(markErr('cc-cvv',g('cc-cvv').value.replace(/\D/g,'').length<3))cbad=true;
+  if(cbad)return toast('Kart bilgilerini kontrol edin','warn');
+  var brand='Kart'; if(/^4/.test(num))brand='Visa'; else if(/^5[1-5]/.test(num))brand='Mastercard'; else if(/^3[47]/.test(num))brand='Amex';
+  var cc=cartCalc(), n=+document.querySelector('input[name="inst"]:checked').value;
+  var btn=g('payBtn'); btn.disabled=true; btn.innerHTML='<span class="spin"></span> Ödeme İşleniyor…';
+  setTimeout(function(){
+    var rate=RATES.find(function(r){return r.n===n}).r, tw=cc.total*(1+rate/100);
+    var order={ id:uid(), no:'VT-'+Math.floor(100000+Math.random()*900000), date:Date.now(),
+      items:cc.items.map(function(c){return {id:c.id,name:c.p.name,price:c.p.price,qty:c.qty}}),
+      customer:{name:g('f-name').value.trim(),phone:g('f-phone').value.trim(),email:g('f-mail').value.trim(),
+        city:g('f-city').value.trim(),district:g('f-dist').value.trim(),address:g('f-addr').value.trim(),note:g('f-note').value.trim()},
+      amounts:{subtotal:cc.subtotal,discount:cc.discount,shipping:cc.shipping,total:cc.total,totalWithInst:tw},
+      coupon:cc.coupon?cc.coupon.code:null,
+      payment:{brand:brand,last4:num.slice(-4),holder:g('cc-name').value.toUpperCase(),installment:n},
+      status:'hazırlanıyor', trace:[{t:Date.now(),status:'hazırlanıyor',label:'Sipariş alındı'}] };
+    db.orders.unshift(order);
+    if(cc.coupon){ var cp=db.coupons.find(function(c){return c.code===cc.coupon.code}); if(cp)cp.used++; }
+    saveDB();
+    state.cart=[]; state.coupon=null; saveCart();
+    go('siparis/'+order.no);
+  },1700);
+}
+
+/* --- SİPARİŞ ONAY + TAKİP --- */
+function vSuccess(no){
+  var o=db.orders.find(function(x){return x.no===no});
+  if(!o)return vTrack();
+  return '<div class="wrap"><div class="ok-page">'+
+    '<div class="ok-circle"><i data-lucide="check"></i></div>'+
+    '<h1>Siparişiniz Alındı</h1>'+
+    '<p style="color:var(--ink-2);margin-top:8px">Ödemeniz iyzico güvenli altyapısıyla başarıyla tamamlandı. Siparişiniz hazırlanmaya başlandı.</p>'+
+    '<div class="ok-no">Sipariş No: <b>'+o.no+'</b> · '+fmt(o.amounts.total)+(o.payment.installment>1?' · '+o.payment.installment+' taksit':'')+'</div>'+
+    '<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">'+
+    '<button class="btn" onclick="go(\'takip\');setTimeout(function(){trackFill(\''+o.no+'\')},80)"><i data-lucide="package-search"></i>Siparişi Takip Et</button>'+
+    '<button class="btn gh" onclick="go(\'magaza\')"><i data-lucide="shopping-bag"></i>Alışverişe Devam</button></div>'+
+  '</div></div>';
+}
+var trackNo='';
+function vTrack(){
+  return '<div class="wrap"><div class="ok-page">'+
+    '<span class="eyebrow" style="margin:0 auto">Sipariş Takibi</span>'+
+    '<h1 style="margin-top:14px">Siparişim Nerede?</h1>'+
+    '<p style="color:var(--ink-2);margin:8px 0 22px">Ödeme sonrası verilen sipariş numarasıyla (örn. VT-482913) anlık durumunu görüntüleyin.</p>'+
+    '<form style="display:flex;gap:10px;max-width:420px;margin:0 auto" onsubmit="return trackSubmit(event)">'+
+    '<div class="field" style="flex:1"><input id="tk-no" placeholder="VT-XXXXXX" value="'+esc(trackNo)+'" style="border-radius:12px;padding:13px 16px"></div>'+
+    '<button class="btn" type="submit"><i data-lucide="search"></i>Sorgula</button></form>'+
+    '<div id="tk-res">'+trackTimeline()+'</div></div></div>';
+}
+function trackSubmit(e){ e.preventDefault(); trackNo=(document.getElementById('tk-no').value||'').trim().toUpperCase(); document.getElementById('tk-res').innerHTML=trackTimeline(); icons(); return false; }
+function trackFill(no){ var el=document.getElementById('tk-no'); if(el){trackNo=no;el.value=no;document.getElementById('tk-res').innerHTML=trackTimeline();icons();} }
+function trackTimeline(){
+  if(!trackNo)return'';
+  var o=db.orders.find(function(x){return x.no.toUpperCase()===trackNo.toUpperCase()});
+  if(!o)return '<div class="ship-note" style="max-width:420px;margin:24px auto 0;border-color:var(--red)">Bu numarayla bir sipariş bulunamadı. Lütfen kontrol edin.</div>';
+  var steps=['hazırlanıyor','kargoda','teslim'];
+  var curIdx=o.status==='iptal'?-1:steps.indexOf(o.status);
+  var rows=[];
+  o.trace.forEach(function(t){ rows.push({label:t.label,sub:new Date(t.t).toLocaleString('tr-TR'),cls:'done'}) });
+  if(o.status!=='iptal'&&o.status!=='teslim'){
+    steps.slice(curIdx+1).forEach(function(s,i){ rows.push({label:stLabel(s),sub:'Bekliyor',cls:'pend'+(i===0?' cur':'')}) });
+  }
+  if(o.status==='iptal')rows.push({label:'Sipariş iptal edildi',sub:'',cls:'cancel'});
+  return '<div class="tl">'+rows.map(function(r,i){
+    return '<div class="tl-item '+r.cls+'"><div class="dot"></div><div><b>'+esc(r.label)+'</b><small>'+esc(r.sub)+'</small></div></div>'+
+    (i<rows.length-1?'<div class="tl-item"><div class="bar" style="margin:0"></div><div></div></div>':'');
+  }).join('')+'</div>'+
+  '<div style="margin-top:30px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;text-align:left;max-width:520px;margin-left:auto;margin-right:auto">'+
+  '<b style="font-size:14px">'+o.no+'</b> <span class="st '+stClass(o.status)+'">'+stLabel(o.status)+'</span>'+
+  '<div style="font-size:13px;color:var(--muted);margin-top:6px">'+o.items.length+' ürün · '+fmt(o.amounts.total)+' · '+esc(o.payment.brand)+' ****'+o.payment.last4+'</div></div>';
+}
+
+/* =========================================================
+   ADMİN PANELİ
+========================================================= */
+function isAdmin(){ return session.get(SS_ADM)==='1' }
+function renderAdmin(){
+  var app=document.getElementById('app');
+  if(!isAdmin()){ app.innerHTML=admLogin(); icons(); return; }
+  var sub=state.route.parts[1]||'panel';
+  var titles={panel:'Genel Bakış',siparisler:'Siparişler',urunler:'Ürün Yönetimi',kategoriler:'Kategoriler',kuponlar:'Kupon Yönetimi',ayarlar:'Site Ayarları'};
+  var view;
+  if(sub==='panel')view=admDash();
+  else if(sub==='siparisler')view=admOrders();
+  else if(sub==='urunler')view=admProducts();
+  else if(sub==='kategoriler')view=admCats();
+  else if(sub==='kuponlar')view=admCoupons();
+  else if(sub==='ayarlar')view=admSettings();
+  else { view=admDash(); sub='panel'; }
+  var pending=db.orders.filter(function(o){return o.status==='hazırlanıyor'}).length;
+  var menus=[['panel','layout-dashboard','Genel Bakış',0],['siparisler','package','Siparişler',pending],['urunler','box','Ürünler',0],['kategoriler','folder-open','Kategoriler',0],['kuponlar','ticket','Kuponlar',0],['ayarlar','sliders-horizontal','Site Ayarları',0]];
+  app.innerHTML='<div class="adm"><aside class="adm-side">'+
+    '<a class="logo" href="#/"><span class="logo-mark">'+esc(db.settings.brand.charAt(0))+'</span><span><b>'+esc(db.settings.brand)+'</b><small>Yönetim Paneli</small></span></a>'+
+    '<div class="adm-menu">'+menus.map(function(m){
+      return '<button class="'+(sub===m[0]?'on':'')+'" onclick="go(\'admin/'+m[0]+'\')"><i data-lucide="'+m[1]+'"></i>'+m[2]+(m[3]?'<span class="nbadge">'+m[3]+'</span>':'')+'</button>';
+    }).join('')+'</div>'+
+    '<div class="out-link adm-menu"><button onclick="go(\'magaza\')"><i data-lucide="store"></i>Mağazaya Dön</button>'+
+    '<button onclick="admLogout()"><i data-lucide="log-out"></i>Çıkış Yap</button></div></aside>'+
+    '<div class="adm-main fade-in"><div class="adm-top"><h1>'+(titles[sub]||'')+'</h1>'+
+    '<div class="who"><i data-lucide="shield-check"></i>Yönetici oturumu aktif</div></div>'+view+'</div></div>';
+  icons();
+}
+function admLogin(){
+  var s=db.settings;
+  return '<div class="login-page fade-in"><div class="login-card">'+
+    '<a class="logo" href="#/"><span class="logo-mark">'+esc(s.brand.charAt(0))+'</span><span><b>'+esc(s.brand)+'</b><small>Yönetim Paneli</small></span></a>'+
+    '<h1>Yetkili Girişi</h1><p>Mağaza yönetim paneline erişmek için yönetici şifrenizi girin.</p>'+
+    '<form onsubmit="return admLoginSubmit(event)">'+
+    '<div class="field"><label>Yönetici Şifresi</label><input id="adm-pass" type="password" placeholder="••••••••" style="padding:13px 16px"></div>'+
+    '<button class="btn" style="width:100%;margin-top:16px"><i data-lucide="lock"></i>Giriş Yap</button></form>'+
+    '<div class="test-hint" style="margin-top:18px">Demo şifre: admin123</div>'+
+    '<a href="#/" style="display:flex;gap:7px;align-items:center;margin-top:18px;font-size:13px;color:var(--muted)"><i data-lucide="arrow-left" style="width:15px;height:15px"></i>Mağazaya dön</a>'+
+  '</div></div>';
+}
+function admLoginSubmit(e){
+  e.preventDefault();
+  if(document.getElementById('adm-pass').value===db.settings.adminPass){
+    session.set(SS_ADM,'1'); toast('Hoş geldiniz, yönetici'); go('admin/panel');
+  } else toast('Hatalı şifre','warn');
+  return false;
+}
+function admLogout(){ session.del(SS_ADM); go('magaza'); toast('Oturum kapatıldı'); }
+
+function admDash(){
+  var valid=db.orders.filter(function(o){return o.status!=='iptal'});
+  var revenue=valid.reduce(function(s,o){return s+o.amounts.total},0);
+  var today=new Date(); today.setHours(0,0,0,0);
+  var todayRev=valid.filter(function(o){return new Date(o.date)>=today}).reduce(function(s,o){return s+o.amounts.total},0);
+  var avg=valid.length?revenue/valid.length:0;
+  var low=db.products.filter(function(p){return p.stock<=10});
+  var days=[]; for(var i=0;i<14;i++){ var dd=new Date(); dd.setHours(0,0,0,0); dd.setDate(dd.getDate()-13+i); days.push({t:dd,sum:0}) }
+  valid.forEach(function(o){ var dt=new Date(o.date); dt.setHours(0,0,0,0);
+    days.forEach(function(x){ if(x.t.getTime()===dt.getTime())x.sum+=o.amounts.total }) });
+  var max=Math.max.apply(null,days.map(function(x){return x.sum}).concat([1]));
+  var topP=db.products.slice().sort(function(a,b){return b.sales-a.sales}).slice(0,4);
+  return '<div class="metrics">'+
+    '<div><small>Toplam Ciro</small><b>'+fmt(revenue)+'</b></div>'+
+    '<div><small>Bugünkü Satış</small><b class="rd">'+fmt(todayRev)+'</b></div>'+
+    '<div><small>Sipariş</small><b>'+db.orders.length+'</b></div>'+
+    '<div><small>Ort. Sepet</small><b>'+fmt(avg)+'</b></div>'+
+    '<div><small>Ürün</small><b>'+db.products.length+'</b></div></div>'+
+  '<div class="adm-card"><h3><i data-lucide="trending-up"></i>Son 14 Gün Ciro</h3>'+
+    '<div class="chart">'+days.map(function(d2){
+      return '<div class="cbar" title="'+d2.t.toLocaleDateString('tr-TR')+' — '+fmt(d2.sum)+'" style="height:'+Math.max(4,Math.round(d2.sum/max*100))+'%"><span>'+d2.t.getDate()+'</span></div>';
+    }).join('')+'</div></div>'+
+  '<div style="display:grid;grid-template-columns:1.4fr 1fr;gap:22px" class="dash2">'+
+    '<div class="adm-card" style="margin:0"><h3><i data-lucide="package"></i>Son Siparişler</h3>'+
+    '<table class="tbl"><tr><th>No</th><th>Müşteri</th><th>Tutar</th><th>Durum</th></tr>'+
+    db.orders.slice(0,5).map(function(o){
+      return '<tr style="cursor:pointer" onclick="openOrder(\''+o.id+'\')"><td class="mono">'+o.no+'</td><td>'+esc(o.customer.name)+'</td><td class="mono"><b>'+fmt(o.amounts.total)+'</b></td><td><span class="st '+stClass(o.status)+'">'+stLabel(o.status)+'</span></td></tr>';
+    }).join('')+'</table></div>'+
+    '<div class="adm-card" style="margin:0"><h3><i data-lucide="box"></i>Çok Satanlar</h3>'+
+    topP.map(function(p){
+      return '<div style="display:flex;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)"><img src="'+imgUrl(p,1)+'" style="width:38px;height:38px;border-radius:9px;object-fit:cover"><span style="flex:1;font-size:13.5px">'+esc(p.name)+'</span><b class="mono" style="font-size:12.5px;color:var(--red)">'+p.sales+'+</b></div>';
+    }).join('')+
+    (low.length?'<h3 style="margin-top:18px"><i data-lucide="alert-triangle"></i>Düşük Stok</h3>'+
+    low.map(function(p){ return '<div style="font-size:13px;display:flex;justify-content:space-between;padding:5px 0"><span>'+esc(p.name)+'</span><b class="mono" style="color:var(--red)">'+p.stock+' adet</b></div>' }).join(''):'')+
+    '</div></div>';
+}
+
+function admOrders(){
+  return '<div class="adm-card"><h3><i data-lucide="package"></i>Tüm Siparişler ('+db.orders.length+')</h3>'+
+  '<table class="tbl"><tr><th>Sipariş No</th><th>Tarih</th><th>Müşteri</th><th>Ürün</th><th>Tutar</th><th>Durum</th><th></th></tr>'+
+  db.orders.map(function(o){
+    return '<tr><td class="mono"><b>'+o.no+'</b></td>'+
+    '<td style="font-size:12.5px">'+new Date(o.date).toLocaleDateString('tr-TR')+'</td>'+
+    '<td>'+esc(o.customer.name)+'<div style="font-size:11.5px;color:var(--muted)">'+esc(o.customer.city)+'</div></td>'+
+    '<td style="font-size:12.5px">'+o.items.reduce(function(a,i){return a+i.qty},0)+' adet</td>'+
+    '<td class="mono"><b>'+fmt(o.amounts.total)+'</b></td>'+
+    '<td><span class="st '+stClass(o.status)+'">'+stLabel(o.status)+'</span></td>'+
+    '<td><div class="acts"><button onclick="openOrder(\''+o.id+'\')" title="Detay"><i data-lucide="eye"></i></button></div></td></tr>';
+  }).join('')+'</table></div>';
+}
+function openOrder(id){
+  var o=db.orders.find(function(x){return x.id===id}); if(!o)return;
+  var nextBtn=o.status==='hazırlanıyor'?'<button class="btn sm yw" onclick="setOrderStatus(\''+o.id+'\',\'kargoda\')"><i data-lucide="truck"></i>Kargoya Ver</button>'
+    :o.status==='kargoda'?'<button class="btn sm" style="background:var(--green);border-color:var(--green)" onclick="setOrderStatus(\''+o.id+'\',\'teslim\')"><i data-lucide="check"></i>Teslim Edildi</button>':'';
+  var cancelBtn=(o.status==='hazırlanıyor'||o.status==='kargoda')?'<button class="btn gh sm" onclick="setOrderStatus(\''+o.id+'\',\'iptal\')"><i data-lucide="x"></i>İptal Et</button>':'';
+  openModal('<div class="m-head"><h3>Sipariş '+o.no+'</h3><button class="icb" onclick="closeModal()"><i data-lucide="x"></i></button></div>'+
+  '<div class="m-body">'+
+    '<div style="display:flex;gap:10px;align-items:center;font-size:13px;color:var(--muted)">'+new Date(o.date).toLocaleString('tr-TR')+' · <span class="st '+stClass(o.status)+'">'+stLabel(o.status)+'</span></div>'+
+    '<table class="tbl"><tr><th>Ürün</th><th>Adet</th><th>Tutar</th></tr>'+
+    o.items.map(function(i){ return '<tr><td>'+esc(i.name)+'</td><td class="mono">'+i.qty+'</td><td class="mono">'+fmt(i.price*i.qty)+'</td></tr>' }).join('')+
+    '<tr><td colspan="2" style="text-align:right"><b>Kargo</b></td><td class="mono">'+(o.amounts.shipping===0?'Ücretsiz':fmt(o.amounts.shipping))+'</td></tr>'+
+    (o.amounts.discount?'<tr><td colspan="2" style="text-align:right"><b>Koupon ('+esc(o.coupon||'')+')</b></td><td class="mono" style="color:var(--green)">−'+fmt(o.amounts.discount)+'</td></tr>':'')+
+    '<tr><td colspan="2" style="text-align:right"><b>Toplam</b></td><td class="mono"><b>'+fmt(o.amounts.total)+'</b></td></tr></table>'+
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;font-size:13px">'+
+    '<div><b style="font-size:12px;text-transform:uppercase;color:var(--muted)">Müşteri</b><br>'+esc(o.customer.name)+'<br>'+esc(o.customer.phone)+'<br>'+esc(o.customer.email)+'</div>'+
+    '<div><b style="font-size:12px;text-transform:uppercase;color:var(--muted)">Adres</b><br>'+esc(o.customer.address)+'<br>'+esc(o.customer.district)+' / '+esc(o.customer.city)+(o.customer.note?'<br><i>Not: '+esc(o.customer.note)+'</i>':'')+'</div></div>'+
+    '<div style="background:#fff;border:1px solid var(--line);border-radius:12px;padding:13px;font-size:13px;display:flex;gap:10px;align-items:center">'+
+    '<i data-lucide="credit-card" style="color:var(--red)"></i>'+
+    '<span>'+esc(o.payment.brand)+' **** '+o.payment.last4+' — '+esc(o.payment.holder)+(o.payment.installment>1?' · '+o.payment.installment+' taksit ('+fmt(o.amounts.totalWithInst)+')':' · peşin')+'</span>'+
+    '<span style="margin-left:auto;color:var(--green);font-weight:800;font-size:11.5px">iyzico ✓</span></div>'+
+    '<div style="display:flex;gap:10px;flex-wrap:wrap">'+nextBtn+cancelBtn+
+    '<button class="btn gh sm" style="margin-left:auto" onclick="closeModal()">Kapat</button></div></div>');
+}
+function setOrderStatus(id,st){
+  var o=db.orders.find(function(x){return x.id===id}); if(!o)return;
+  o.status=st;
+  o.trace.push({t:Date.now(),status:st,label:st==='kargoda'?'Kargoya verildi':st==='teslim'?'Teslim edildi':'Sipariş iptal edildi'});
+  saveDB(); closeModal(); render(); toast('Sipariş '+o.no+' güncellendi → '+stLabel(st));
+}
+
+var pEditing=null;
+function admProducts(){
+  return '<div class="adm-card">'+
+    '<h3 style="justify-content:space-between"><span style="display:flex;gap:9px;align-items:center"><i data-lucide="box"></i>Ürünler ('+db.products.length+')</span>'+
+    '<button class="btn sm" onclick="openProductForm()"><i data-lucide="plus"></i>Yeni Ürün</button></h3>'+
+    '<table class="tbl"><tr><th>Ürün</th><th>Kategori</th><th>Fiyat</th><th>Stok</th><th>Aktif</th><th style="text-align:right">İşlem</th></tr>'+
+    db.products.map(function(p){
+      return '<tr><td><div style="display:flex;gap:12px;align-items:center"><img src="'+imgUrl(p,1)+'"><div><b>'+esc(p.name)+'</b><div style="font-size:11.5px;color:var(--muted)">'+p.sales+'+ satış</div></div></div></td>'+
+      '<td style="font-size:12.5px">'+esc(catName(p.categoryId))+'</td>'+
+      '<td class="mono"><b>'+fmt(p.price)+'</b>'+(p.comparePrice>p.price?'<div style="font-size:11px;color:var(--muted);text-decoration:line-through">'+fmt(p.comparePrice)+'</div>':'')+'</td>'+
+      '<td><input class="stock-in" type="number" min="0" value="'+p.stock+'" onchange="aSetStock(\''+p.id+'\',this.value)"></td>'+
+      '<td><div class="switch '+(p.active?'on':'')+'" onclick="aToggleProduct(\''+p.id+'\')"></div></td>'+
+      '<td><div class="acts">'+
+      '<button onclick="openProductForm(\''+p.id+'\')" title="Düzenle"><i data-lucide="pencil"></i></button>'+
+      '<button class="danger" onclick="aDeleteProduct(\''+p.id+'\')" title="Sil"><i data-lucide="trash-2"></i></button></div></td></tr>';
+    }).join('')+'</table></div>';
+}
+function openProductForm(id){
+  pEditing=id||null;
+  var p=id?db.products.find(function(x){return x.id===id}):null;
+  openModal('<div class="m-head"><h3>'+(p?'Ürünü Düzenle':'Yeni Ürün Ekle')+'</h3><button class="icb" onclick="closeModal()"><i data-lucide="x"></i></button></div>'+
+  '<div class="m-body"><form onsubmit="return aSaveProduct(event)" style="display:flex;flex-direction:column;gap:14px">'+
+  '<div class="field"><label>Ürün Adı *</label><input id="pf-name" value="'+(p?esc(p.name):'')+'" placeholder="Örn. Pulse Pro TWS Kulaklık"></div>'+
+  '<div class="frow"><div class="field"><label>Kategori</label><select id="pf-cat">'+db.categories.map(function(c){
+    return '<option value="'+c.id+'"'+(p&&p.categoryId===c.id?' selected':'')+'>'+esc(c.name)+'</option>'; }).join('')+'</select></div>'+
+  '<div class="field"><label>Stok *</label><input id="pf-stock" type="number" min="0" value="'+(p?p.stock:10)+'"></div></div>'+
+  '<div class="frow"><div class="field"><label>Fiyat (₺) *</label><input id="pf-price" type="number" step="0.01" min="0" value="'+(p?p.price:'')+'" placeholder="0,00"></div>'+
+  '<div class="field"><label>Eski Fiyat (₺)</label><input id="pf-compare" type="number" step="0.01" min="0" value="'+(p&&p.comparePrice?p.comparePrice:'')+'" placeholder="İndirim için girin"></div></div>'+
+  '<div class="frow"><div class="field"><label>Rozet</label><input id="pf-badge" value="'+(p?esc(p.badge||''):'')+'" placeholder="Çok Satan / Yeni / Fırsat"><small>Boş bırakılırsa rozet görünmez</small></div>'+
+  '<div class="field"><label>Aktif</label><select id="pf-active"><option value="1"'+(!p||p.active?' selected':'')+'>Mağazada göster</option><option value="0"'+(p&&!p.active?' selected':'')+'>Gizle</option></select></div></div>'+
+  '<div class="field"><label>Açıklama</label><textarea id="pf-desc" rows="3" placeholder="Ürün açıklaması…">'+(p?esc(p.desc):'')+'</textarea></div>'+
+  '<div style="display:flex;gap:10px;justify-content:flex-end">'+
+  '<button type="button" class="btn gh sm" onclick="closeModal()">Vazgeç</button>'+
+  '<button class="btn sm" type="submit"><i data-lucide="check"></i>'+(p?'Güncelle':'Ürünü Ekle')+'</button></div></form></div>');
+}
+function aSaveProduct(e){
+  e.preventDefault();
+  function g(id){ return document.getElementById(id) }
+  var name=g('pf-name').value.trim(), price=parseFloat(g('pf-price').value), stock=parseInt(g('pf-stock').value);
+  if(!name)return toast('Ürün adı gerekli','warn');
+  if(isNaN(price)||price<=0)return toast('Geçerli bir fiyat girin','warn');
+  if(isNaN(stock)||stock<0)return toast('Geçerli bir stok girin','warn');
+  var data={name:name,price:price,stock:stock,comparePrice:parseFloat(g('pf-compare').value)||0,categoryId:g('pf-cat').value,
+    badge:g('pf-badge').value.trim(),desc:g('pf-desc').value.trim(),active:g('pf-active').value==='1'};
+  if(pEditing){ var p=db.products.find(function(x){return x.id===pEditing}); Object.assign(p,data); toast('Ürün güncellendi'); }
+  else { db.products.unshift(Object.assign({id:'p'+uid(),seed:'vt-'+uid(),sales:0},data)); toast('Ürün eklendi: '+name); }
+  saveDB(); closeModal(); render(); return false;
+}
+function aDeleteProduct(id){
+  var p=db.products.find(function(x){return x.id===id}); if(!p)return;
+  confirmModal('Ürünü Sil','"'+p.name+'" kalıcı olarak silinecek. Devam edilsin mi?','Evet, Sil',function(){
+    db.products=db.products.filter(function(x){return x.id!==id});
+    state.cart=state.cart.filter(function(c){return c.id!==id}); saveCart(); saveDB(); render(); toast('Ürün silindi');
+  });
+}
+function aToggleProduct(id){ var p=db.products.find(function(x){return x.id===id}); p.active=!p.active; saveDB(); render(); toast(p.active?p.name+' mağazada gösteriliyor':p.name+' gizlendi'); }
+function aSetStock(id,v){ var p=db.products.find(function(x){return x.id===id}); p.stock=Math.max(0,parseInt(v)||0); saveDB(); toast(p.name+' → stok: '+p.stock); }
+
+function admCats(){
+  return '<div class="adm-card"><h3><i data-lucide="folder-open"></i>Kategoriler</h3>'+
+  '<div class="coupon-row"><input id="nc-name" placeholder="Yeni kategori adı…" onkeydown="if(event.key===\'Enter\'){event.preventDefault();aAddCategory()}"><button class="btn sm" onclick="aAddCategory()"><i data-lucide="plus"></i>Ekle</button></div>'+
+  '<table class="tbl"><tr><th>Kategori</th><th>URL</th><th>Ürün Sayısı</th><th style="text-align:right">İşlem</th></tr>'+
+  db.categories.map(function(c){
+    var n=db.products.filter(function(p){return p.categoryId===c.id}).length;
+    return '<tr><td><b>'+esc(c.name)+'</b></td><td class="mono" style="font-size:12px">/magaza/'+c.slug+'</td><td class="mono">'+n+'</td>'+
+    '<td><div class="acts"><button class="danger" onclick="aDeleteCategory(\''+c.id+'\')" title="Sil"><i data-lucide="trash-2"></i></button></div></td></tr>';
+  }).join('')+'</table></div>';
+}
+function aAddCategory(){
+  var el=document.getElementById('nc-name'); var name=(el.value||'').trim();
+  if(!name)return toast('Kategori adı girin','warn');
+  var slug=name.toLowerCase().replace(/ş/g,'s').replace(/ç/g,'c').replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ö/g,'o').replace(/ı/g,'i').replace(/[^a-z0-9]+/g,'-');
+  db.categories.push({id:'c'+uid(),name:name,slug:slug});
+  saveDB(); render(); toast('Kategori eklendi: '+name);
+}
+function aDeleteCategory(id){
+  var n=db.products.filter(function(p){return p.categoryId===id}).length;
+  if(n)return toast('Bu kategoride '+n+' ürün var; önce ürünleri taşıyın','warn');
+  var c=db.categories.find(function(x){return x.id===id});
+  confirmModal('Kategoriyi Sil','"'+c.name+'" kategorisi silinecek. Devam edilsin mi?','Evet, Sil',function(){
+    db.categories=db.categories.filter(function(x){return x.id!==id}); saveDB(); render(); toast('Kategori silindi');
+  });
+}
+
+function admCoupons(){
+  return '<div class="adm-card"><h3><i data-lucide="ticket"></i>Kuponlar</h3>'+
+  '<div style="display:grid;grid-template-columns:1fr .8fr .7fr .8fr auto;gap:10px;margin-bottom:18px" class="cpn-f">'+
+  '<div class="field"><label>Kod</label><input id="kc-code" placeholder="YAZKAMPANYA" style="text-transform:uppercase"></div>'+
+  '<div class="field"><label>Tip</label><select id="kc-type"><option value="percent">Yüzde (%)</option><option value="fixed">Sabit (₺)</option></select></div>'+
+  '<div class="field"><label>Değer</label><input id="kc-val" type="number" min="1"></div>'+
+  '<div class="field"><label>Min. Sepet (₺)</label><input id="kc-min" type="number" min="0" value="0"></div>'+
+  '<div class="field"><label>&nbsp;</label><button class="btn sm" onclick="aAddCoupon()" style="height:42px"><i data-lucide="plus"></i>Ekle</button></div></div>'+
+  '<table class="tbl"><tr><th>Kod</th><th>İndirim</th><th>Min. Sepet</th><th>Kullanım</th><th>Aktif</th><th style="text-align:right">İşlem</th></tr>'+
+  db.coupons.map(function(c){
+    return '<tr><td class="mono"><b>'+esc(c.code)+'</b></td>'+
+    '<td>'+(c.type==='percent'?'%'+c.value:fmt(c.value))+'</td>'+
+    '<td class="mono">'+(c.min?fmt(c.min):'—')+'</td><td class="mono">'+c.used+'×</td>'+
+    '<td><div class="switch '+(c.active?'on':'')+'" onclick="aToggleCoupon(\''+c.code+'\')"></div></td>'+
+    '<td><div class="acts"><button class="danger" onclick="aDeleteCoupon(\''+c.code+'\')"><i data-lucide="trash-2"></i></button></div></td></tr>';
+  }).join('')+'</table></div>';
+}
+function aAddCoupon(){
+  function g(id){ return document.getElementById(id) }
+  var code=(g('kc-code').value||'').trim().toUpperCase();
+  var val=parseFloat(g('kc-val').value);
+  if(!code)return toast('Kupon kodu girin','warn');
+  if(db.coupons.some(function(c){return c.code===code}))return toast('Bu kod zaten var','warn');
+  if(isNaN(val)||val<=0)return toast('Geçerli bir değer girin','warn');
+  if(g('kc-type').value==='percent'&&val>90)return toast('Yüzde indirimi en fazla %90 olabilir','warn');
+  db.coupons.push({code:code,type:g('kc-type').value,value:val,min:parseFloat(g('kc-min').value)||0,active:true,used:0});
+  saveDB(); render(); toast('Kupon eklendi: '+code);
+}
+function aToggleCoupon(code){ var c=db.coupons.find(function(x){return x.code===code}); c.active=!c.active; saveDB(); render(); }
+function aDeleteCoupon(code){ confirmModal('Kuponu Sil','"'+code+'" kuponu silinecek. Devam edilsin mi?','Evet, Sil',function(){ db.coupons=db.coupons.filter(function(x){return x.code!==code}); saveDB(); render(); toast('Kupon silindi'); }); }
+
+function admSettings(){
+  var s=db.settings;
+  return '<div class="adm-card"><h3><i data-lucide="sliders-horizontal"></i>Mağaza Ayarları</h3>'+
+  '<form onsubmit="return aSaveSettings(event)" style="display:flex;flex-direction:column;gap:14px">'+
+  '<div class="frow"><div class="field"><label>Marka Adı</label><input id="st-brand" value="'+esc(s.brand)+'"></div>'+
+  '<div class="field"><label>Slogan</label><input id="st-tag" value="'+esc(s.tagline)+'"></div></div>'+
+  '<div class="field"><label>Duyuru Bandı Metni</label><input id="st-ann" value="'+esc(s.announcement)+'"><small>Sitenin en üstündeki kayan bantta görünür</small></div>'+
+  '<div class="frow"><div class="field"><label>Kargo Ücreti (₺)</label><input id="st-ship" type="number" step="0.01" min="0" value="'+s.shippingFee+'"></div>'+
+  '<div class="field"><label>Ücretsiz Kargo Limiti (₺)</label><input id="st-free" type="number" step="0.01" min="0" value="'+s.freeShippingLimit+'"></div></div>'+
+  '<div class="frow"><div class="field"><label>Telefon</label><input id="st-phone" value="'+esc(s.phone)+'"></div>'+
+  '<div class="field"><label>E-posta</label><input id="st-mail" value="'+esc(s.email)+'"></div></div>'+
+  '<div class="field"><label>Adres</label><input id="st-addr" value="'+esc(s.address)+'"></div>'+
+  '<div class="frow"><div class="field"><label>Çalışma Saatleri</label><input id="st-hours" value="'+esc(s.hours)+'"></div>'+
+  '<div class="field"><label>Yeni Yönetici Şifresi</label><input id="st-pass" type="password" placeholder="Değiştirmek istemiyorsanız boş bırakın"></div></div>'+
+  '<div style="display:flex;justify-content:flex-end"><button class="btn"><i data-lucide="check"></i>Ayarları Kaydet</button></div>'+
+  '</form></div>';
+}
+function aSaveSettings(e){
+  e.preventDefault();
+  function g(id){ return document.getElementById(id) }
+  var s=db.settings;
+  s.brand=g('st-brand').value.trim()||s.brand; s.tagline=g('st-tag').value.trim();
+  s.announcement=g('st-ann').value.trim(); s.shippingFee=parseFloat(g('st-ship').value)||0;
+  s.freeShippingLimit=parseFloat(g('st-free').value)||0; s.phone=g('st-phone').value.trim();
+  s.email=g('st-mail').value.trim(); s.address=g('st-addr').value.trim(); s.hours=g('st-hours').value.trim();
+  var np=g('st-pass').value; if(np){ s.adminPass=np; toast('Şifre güncellendi'); }
+  saveDB(); render(); toast('Ayarlar kaydedildi — mağaza anında güncellendi');
+  return false;
+}
+
+/* =========================================================
+   SEPET AKSİYONLARI & RENDER
+========================================================= */
+function addToCart(id,btn,qty){
+  var p=db.products.find(function(x){return x.id===id}); if(!p||p.stock<=0)return;
+  var ex=state.cart.find(function(c){return c.id===id});
+  var q=Math.min(qty?+qty:1, p.stock-(ex?ex.qty:0));
+  if(q<=0)return toast('Sepetinizdeki adet stok sınırına ulaştı','warn');
+  if(ex)ex.qty+=q; else state.cart.push({id:id,qty:q});
+  saveCart();
+  if(btn)flyToCart(btn);
+  toast(p.name+' sepete eklendi');
+  var cb=document.getElementById('cartBtn');
+  if(cb){ cb.classList.add('bump'); setTimeout(function(){cb.classList.remove('bump')},500); }
+  var r=state.route.name;
+  if(r==='sepet'||r==='odeme')render();
+  else{ var n=state.cart.reduce(function(a,c){return a+c.qty},0);
+    var b=document.querySelector('#cartBtn .n');
+    if(b)b.textContent=n; else if(cb)cb.insertAdjacentHTML('beforeend','<span class="n">'+n+'</span>'); }
+}
+function buyNow(id){ addToCart(id,null,1); if(state.cart.some(function(c){return c.id===id}))go('odeme'); }
+function flyToCart(fromEl){
+  var r=fromEl.getBoundingClientRect(), cb=document.getElementById('cartBtn'); if(!cb)return;
+  var c=cb.getBoundingClientRect();
+  var img=document.createElement('img'); img.className='fly';
+  img.src='https://picsum.photos/seed/'+uid()+'/100/100.jpg';
+  img.style.left=(r.left+r.width/2-26)+'px'; img.style.top=(r.top+r.height/2-26)+'px';
+  document.body.appendChild(img);
+  requestAnimationFrame(function(){ requestAnimationFrame(function(){
+    img.style.transform='translate('+(c.left+c.width/2-(r.left+r.width/2))+'px,'+(c.top+c.height/2-(r.top+r.height/2))+'px) scale(.15)';
+    img.style.opacity='.4';
+  })});
+  setTimeout(function(){ img.remove() },750);
+}
+
+/* ---------- render ---------- */
+function render(){
+  state.route=parseRoute();
+  var r=state.route, app=document.getElementById('app');
+  if(r.name==='admin'){ renderAdmin(); window.scrollTo(0,0); return; }
+  var view='', active='';
+  switch(r.name){
+    case 'home': view=vHome(); active='home'; document.title=db.settings.brand+' — '+db.settings.tagline; break;
+    case 'magaza': {
+      var catObj=db.categories.find(function(c){return c.slug===r.parts[1]});
+      view=vCatalog(catObj?catObj.slug:null,null);
+      active=catObj?('cat-'+catObj.slug):'magaza';
+      document.title=(catObj?catObj.name+' — ':'Mağaza — ')+db.settings.brand; break;
+    }
+    case 'ara': view=vCatalog(null,r.parts[1]||''); document.title='Arama — '+db.settings.brand; break;
+    case 'urun': { var pp=db.products.find(function(x){return x.id===r.parts[1]}); view=vProduct(r.parts[1]); document.title=(pp?pp.name+' — ':'')+db.settings.brand; break; }
+    case 'sepet': view=vCart(); document.title='Sepetim — '+db.settings.brand; break;
+    case 'odeme': view=vCheckout(); document.title='Ödeme — '+db.settings.brand; break;
+    case 'siparis': view=vSuccess(r.parts[1]); document.title='Sipariş Alındı — '+db.settings.brand; break;
+    case 'takip': view=vTrack(); document.title='Sipariş Takibi — '+db.settings.brand; break;
+    default: view=vHome(); active='home';
+  }
+  app.innerHTML=chrome(view,active);
+  icons(); window.scrollTo(0,0);
+}
+try{ render(); }catch(err){ if(window.__fatal)window.__fatal(err.message); }
+</script>
+</body>
+</html>

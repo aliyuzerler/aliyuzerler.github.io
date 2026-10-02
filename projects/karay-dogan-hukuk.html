@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Karay & Doğan Hukuk Bürosu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root{
+    --paper:#F3EEE3; --paper2:#EFE9DB; --card:#FBF8F0;
+    --ink:#191712; --ink2:#6A6455;
+    --seal:#7E2A21; --seal-lt:#C4705F;
+    --line:rgba(25,23,18,.16); --line-lt:rgba(243,238,227,.18);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--paper);color:var(--ink);font-family:'Instrument Sans',sans-serif;-webkit-font-smoothing:antialiased}
+  ::selection{background:var(--seal);color:var(--paper)}
+  ::-webkit-scrollbar{width:10px}
+  ::-webkit-scrollbar-track{background:var(--paper)}
+  ::-webkit-scrollbar-thumb{background:rgba(25,23,18,.28);border:2px solid var(--paper)}
+  img{display:block;max-width:100%}
+  button{font-family:inherit;cursor:pointer;background:none;border:0;color:inherit}
+  a{color:inherit}
+  i[data-lucide]{display:inline-block}
+  .wrap{width:min(1280px,92%);margin-inline:auto}
+  em{font-style:italic}
+
+  /* ---------- ortak tipografi & butonlar ---------- */
+  .kick{font:600 11px/1 'Instrument Sans';letter-spacing:.26em;text-transform:uppercase;color:var(--seal);display:flex;align-items:center;gap:12px}
+  .kick::before{content:'';width:26px;height:1px;background:var(--seal)}
+  .kick.light{color:var(--seal-lt)}
+  .kick.light::before{background:var(--seal-lt)}
+  h2{font-family:'Fraunces',serif;font-weight:500;font-size:clamp(30px,4.2vw,52px);line-height:1.08;letter-spacing:-.02em;margin-top:18px}
+  h2 em,.hero-h em{color:var(--seal)}
+  .lead{color:var(--ink2);font-size:17px;line-height:1.7;max-width:46ch}
+  .btn{display:inline-flex;align-items:center;gap:10px;padding:15px 26px;background:var(--ink);color:var(--paper);border:1px solid var(--ink);font:600 14px 'Instrument Sans';letter-spacing:.02em;transition:.3s;text-decoration:none}
+  .btn:hover{background:var(--seal);border-color:var(--seal);transform:translateY(-2px)}
+  .btn.line{background:transparent;color:var(--ink)}
+  .btn.line:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .btn.paper{background:var(--paper);color:var(--ink);border-color:var(--paper)}
+  .btn.paper:hover{background:var(--seal);color:var(--paper);border-color:var(--seal)}
+  .btn.full{width:100%;justify-content:center}
+  .btn svg{width:16px;height:16px}
+
+  /* ---------- reveal & scroll animasyonları ---------- */
+  .reveal{opacity:0;transform:translateY(26px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.6,.2,1);transition-delay:calc(var(--d,0)*110ms)}
+  .reveal.in{opacity:1;transform:none}
+  @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+
+  /* ---------- nav ---------- */
+  .site-nav{position:sticky;top:0;z-index:60;background:rgba(243,238,227,.88);backdrop-filter:blur(12px);border-bottom:1px solid transparent;transition:border-color .3s}
+  .site-nav.scrolled{border-color:var(--line)}
+  .nav-in{display:flex;align-items:center;justify-content:space-between;height:74px;gap:24px}
+  .brand{display:flex;align-items:baseline;gap:12px;text-decoration:none}
+  .brand-mono{font-family:'Fraunces',serif;font-weight:600;font-size:22px;color:var(--seal)}
+  .brand-name{font:600 12px 'Instrument Sans';letter-spacing:.14em;text-transform:uppercase}
+  .nav-links{display:flex;gap:34px}
+  .nav-links button{font:500 14px 'Instrument Sans';position:relative;padding:4px 0}
+  .nav-links button::after{content:'';position:absolute;left:0;bottom:0;width:0;height:1px;background:var(--seal);transition:width .3s}
+  .nav-links button:hover::after{width:100%}
+  .nav-right{display:flex;align-items:center;gap:8px}
+  .nav-admin{display:inline-flex;align-items:center;gap:7px;font:500 12px 'Instrument Sans';letter-spacing:.08em;text-transform:uppercase;color:var(--ink2);text-decoration:none;padding:8px 12px;border:1px solid var(--line);transition:.3s}
+  .nav-admin:hover{color:var(--paper);background:var(--ink);border-color:var(--ink)}
+  .nav-admin svg{width:13px;height:13px}
+  .burger{display:none;width:40px;height:40px;align-items:center;justify-content:center}
+  .burger svg{width:22px;height:22px}
+  .nav-menu{display:none;position:absolute;top:100%;left:0;right:0;background:var(--paper);border-bottom:1px solid var(--line);flex-direction:column}
+  .nav-menu.open{display:flex}
+  .nav-menu button{text-align:left;padding:16px clamp(20px,4vw,48px);font:500 16px 'Instrument Sans';border-top:1px solid var(--line)}
+
+  /* ---------- hero ---------- */
+  .hero{padding:clamp(40px,6vh,72px) 0 0;min-height:calc(100svh - 74px);display:flex;align-items:center}
+  .hero-grid{display:grid;grid-template-columns:1.08fr .92fr;gap:clamp(24px,4vw,64px);align-items:center;width:100%}
+  .hero-h{font-family:'Fraunces',serif;font-weight:500;font-size:clamp(46px,6.6vw,94px);line-height:1.02;letter-spacing:-.025em;margin:26px 0 28px}
+  .hero-sub{color:var(--ink2);font-size:17px;line-height:1.75;max-width:48ch}
+  .hero-cta{display:flex;gap:14px;flex-wrap:wrap;margin-top:36px}
+  .hero-meta{display:flex;align-items:flex-end;gap:clamp(24px,4vw,56px);border-top:1px solid var(--line);margin-top:56px;padding-top:22px;flex-wrap:wrap}
+  .hero-meta>div span{display:block;font:600 10px 'Instrument Sans';letter-spacing:.2em;text-transform:uppercase;color:var(--ink2);margin-bottom:7px}
+  .hero-meta>div b{font:500 15px 'Fraunces',serif}
+  .scrollhint{margin-left:auto;display:flex;flex-direction:column;align-items:center;gap:10px}
+  .scrollhint span{font:600 10px 'Instrument Sans';letter-spacing:.24em;text-transform:uppercase;color:var(--ink2)}
+  .scrollhint i{width:1px;height:44px;background:var(--line);position:relative;overflow:hidden}
+  .scrollhint i::after{content:'';position:absolute;left:0;top:-30%;width:1px;height:30%;background:var(--seal);animation:drip 1.8s ease-in-out infinite}
+  @keyframes drip{to{top:110%}}
+  .hero-visual{justify-self:center;width:min(44vw,520px)}
+  .scale-cap{margin-top:14px;text-align:center;font:italic 400 14px 'Fraunces',serif;color:var(--ink2)}
+  .hero-photo{position:relative}
+  .hero-photo img{aspect-ratio:4/5;object-fit:cover;filter:grayscale(.3) contrast(1.03)}
+  .hero-photo figcaption{margin-top:12px;font:italic 400 14px 'Fraunces',serif;color:var(--ink2)}
+
+  /* terazi çizimi */
+  .scale-wrap svg{width:100%;height:auto;overflow:visible}
+  .scale-wrap .d{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.5s cubic-bezier(.55,0,.25,1) forwards;animation-delay:calc(var(--i)*110ms + .25s)}
+  @keyframes draw{to{stroke-dashoffset:0}}
+  #beam,#pL,#pR{transform-box:view-box;will-change:transform}
+  #beam{transform-origin:210px 64px}
+  #pL{transform-origin:70px 64px}
+  #pR{transform-origin:350px 64px}
+
+  /* ---------- bölümler ---------- */
+  .sec{border-top:1px solid var(--line);padding:clamp(76px,11vh,130px) 0}
+  .sec.dark{background:var(--ink);color:var(--paper)}
+  .sec-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:clamp(40px,6vh,64px)}
+
+  /* hakkımızda */
+  .about-grid{display:grid;grid-template-columns:1fr 1.15fr;gap:clamp(32px,6vw,96px);align-items:start}
+  .stats{margin-top:44px}
+  .stat{border-top:1px solid var(--line);padding:20px 0}
+  .stat b{display:block;font:500 clamp(38px,4.5vw,58px)/1 'Fraunces',serif}
+  .stat b sup{font-size:.45em;color:var(--seal);top:-.7em;position:relative}
+  .stat span{font:500 12px 'Instrument Sans';letter-spacing:.16em;text-transform:uppercase;color:var(--ink2)}
+  .about-fig{position:relative;margin-bottom:32px}
+  .about-fig img{aspect-ratio:5/6;object-fit:cover;filter:grayscale(.25) contrast(1.02)}
+  .about-fig::after{content:'';position:absolute;top:20px;left:20px;right:-20px;bottom:-20px;border:1px solid var(--seal);pointer-events:none}
+  .about-txt p{color:var(--ink2);font-size:16.5px;line-height:1.85;margin-bottom:22px;max-width:58ch}
+  .about-txt p:first-of-type{color:var(--ink)}
+
+  /* uzmanlık accordion */
+  .acc{border-top:1px solid var(--line)}
+  .acc:last-child{border-bottom:1px solid var(--line)}
+  .acc-head{display:grid;grid-template-columns:70px 1fr auto;align-items:center;gap:16px;padding:26px 0;cursor:pointer;width:100%;text-align:left}
+  .acc-num{font:500 15px 'Fraunces',serif;color:var(--seal)}
+  .acc-title{font:500 clamp(22px,3vw,36px)/1.15 'Fraunces',serif;letter-spacing:-.01em;transition:transform .35s,color .35s}
+  .acc-head:hover .acc-title{transform:translateX(10px);color:var(--seal)}
+  .acc-head svg{width:20px;height:20px;color:var(--ink2);transition:transform .4s}
+  .acc.open .acc-head svg{transform:rotate(180deg)}
+  .acc-body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .5s cubic-bezier(.4,0,.2,1)}
+  .acc.open .acc-body{grid-template-rows:1fr}
+  .acc-inner{overflow:hidden}
+  .acc-inner p{padding:0 0 30px 86px;max-width:640px;color:var(--ink2);font-size:16px;line-height:1.8}
+
+  /* ekip */
+  .strip-nav{display:flex;gap:10px}
+  .ibtn{width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center;border:1px solid var(--line);transition:.25s;border-radius:2px}
+  .ibtn:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .ibtn.danger:hover{background:var(--seal);border-color:var(--seal)}
+  .ibtn svg{width:15px;height:15px}
+  .ibtn.big{width:46px;height:46px}
+  .team-strip{display:flex;gap:clamp(16px,2.4vw,32px);overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:14px;scrollbar-width:none}
+  .team-strip::-webkit-scrollbar{display:none}
+  .t-card{flex:0 0 min(300px,74vw);scroll-snap-align:start}
+  .t-photo{overflow:hidden;margin-bottom:18px}
+  .t-photo img{aspect-ratio:3/4;width:100%;object-fit:cover;filter:grayscale(1) contrast(1.05);transition:filter .6s,transform .8s}
+  .t-card:hover .t-photo img{filter:grayscale(0);transform:scale(1.035)}
+  .t-card h3{font:500 24px 'Fraunces',serif;margin-bottom:5px}
+  .t-role{font:600 11px 'Instrument Sans';letter-spacing:.2em;text-transform:uppercase;color:var(--seal)}
+  .t-focus{margin-top:9px;color:var(--ink2);font-size:14px;line-height:1.6}
+
+  /* süreç */
+  .proc-grid{display:grid;grid-template-columns:1fr 1.2fr;gap:clamp(32px,6vw,96px);align-items:start}
+  .proc-left{position:sticky;top:110px}
+  .proc-left .lead{margin-top:24px}
+  .step{display:grid;grid-template-columns:76px 1fr;gap:20px;padding:30px 0;border-top:1px solid var(--line)}
+  .step:last-child{border-bottom:1px solid var(--line)}
+  .step-num{font:500 26px 'Fraunces',serif;color:var(--seal)}
+  .step h3{font:500 21px 'Fraunces',serif;margin-bottom:8px}
+  .step p{color:var(--ink2);font-size:15px;line-height:1.75;max-width:52ch}
+
+  /* referanslar (koyu) */
+  .t-stage{display:grid;min-height:190px}
+  .t-slide{grid-area:1/1;opacity:0;transform:translateY(14px);transition:opacity .7s,transform .7s;pointer-events:none}
+  .t-slide.on{opacity:1;transform:none;pointer-events:auto}
+  .t-slide blockquote{font:400 clamp(23px,3.2vw,38px)/1.35 'Fraunces',serif;max-width:22ch;letter-spacing:-.01em}
+  .t-slide figcaption{margin-top:28px;display:flex;flex-direction:column;gap:4px}
+  .t-slide figcaption b{font:600 14px 'Instrument Sans'}
+  .t-slide figcaption span{font:400 13px 'Instrument Sans';color:#B7B0A0}
+  .t-dots{display:flex;gap:10px;margin-top:40px}
+  .t-dots button{width:28px;height:2px;background:var(--line-lt);transition:.3s}
+  .t-dots button.on{background:var(--seal-lt)}
+
+  /* iletişim */
+  .contact-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(32px,6vw,96px)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 24px}
+  .c-form .field{margin-bottom:26px}
+  .c-form label{display:block;font:600 11px 'Instrument Sans';letter-spacing:.2em;text-transform:uppercase;color:var(--ink2);margin-bottom:6px}
+  .c-form input,.c-form textarea,.c-form select{width:100%;background:transparent;border:0;border-bottom:1px solid var(--line);padding:12px 2px;font:400 16px 'Instrument Sans';color:var(--ink);border-radius:0;transition:border-color .3s}
+  .c-form input:focus,.c-form textarea:focus,.c-form select:focus{outline:none;border-bottom-color:var(--ink)}
+  .c-form textarea{resize:vertical;line-height:1.6}
+  .form-note{margin-top:18px;font:italic 400 13.5px 'Fraunces',serif;color:var(--ink2)}
+  .info-row{display:flex;gap:16px;align-items:flex-start;padding:22px 0;border-top:1px solid var(--line)}
+  .info-row svg{width:19px;height:19px;color:var(--seal);flex:none;margin-top:2px}
+  .info-row span{display:block;font:600 10.5px 'Instrument Sans';letter-spacing:.2em;text-transform:uppercase;color:var(--ink2);margin-bottom:5px}
+  .info-row p{font:500 15.5px 'Fraunces',serif;line-height:1.55;max-width:34ch}
+  .c-info{padding-top:8px}
+
+  /* footer */
+  .footer{background:var(--ink);color:var(--paper);padding:clamp(70px,10vh,110px) 0 0}
+  .f-cta h2{color:var(--paper)}
+  .f-cta .btn{margin-top:34px}
+  .f-grid{display:grid;grid-template-columns:1.3fr .8fr 1fr;gap:40px;border-top:1px solid var(--line-lt);margin-top:64px;padding:52px 0}
+  .f-brand{font:600 clamp(44px,5vw,68px)/1 'Fraunces',serif;color:var(--seal-lt)}
+  .f-name{margin-top:12px;font:500 13px 'Instrument Sans';letter-spacing:.1em;text-transform:uppercase;color:#B7B0A0}
+  .f-col h4{font:600 11px 'Instrument Sans';letter-spacing:.22em;text-transform:uppercase;color:#8F8877;margin-bottom:18px}
+  .f-col a,.f-col button{display:block;text-align:left;color:#D9D3C4;text-decoration:none;font-size:15px;padding:5px 0;transition:color .25s}
+  .f-col a:hover,.f-col button:hover{color:var(--seal-lt)}
+  .f-col p{color:#B7B0A0;font-size:14.5px;line-height:1.8}
+  .f-bot{border-top:1px solid var(--line-lt);padding:22px 0;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+  .f-bot span{font-size:13px;color:#8F8877}
+  .f-admin{display:inline-flex;align-items:center;gap:8px;font:500 12px 'Instrument Sans';letter-spacing:.1em;text-transform:uppercase;color:#B7B0A0;text-decoration:none;transition:color .25s}
+  .f-admin:hover{color:var(--paper)}
+  .f-admin svg{width:13px;height:13px}
+
+  /* ---------- admin ---------- */
+  .adm{display:grid;grid-template-columns:262px 1fr;min-height:100vh;background:var(--paper2)}
+  .adm-side{background:var(--ink);color:var(--paper);display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
+  .adm-brand{padding:26px 22px;border-bottom:1px solid var(--line-lt)}
+  .adm-brand .mono{display:block;font:600 26px 'Fraunces',serif;color:var(--seal-lt)}
+  .adm-brand span:last-child{font:600 10.5px 'Instrument Sans';letter-spacing:.24em;text-transform:uppercase;color:#8F8877}
+  .adm-menu{padding:16px 0;flex:1;overflow-y:auto}
+  .adm-menu button{display:flex;align-items:center;gap:13px;width:100%;text-align:left;padding:13px 22px;font:500 14px 'Instrument Sans';color:#B7B0A0;border-left:2px solid transparent;transition:.25s}
+  .adm-menu button:hover{color:var(--paper)}
+  .adm-menu button.on{color:var(--paper);border-left-color:var(--seal-lt);background:rgba(243,238,227,.05)}
+  .adm-menu button svg{width:16px;height:16px}
+  .badge{margin-left:auto;background:var(--seal);color:var(--paper);font:600 11px 'Instrument Sans';min-width:20px;height:20px;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;padding:0 6px}
+  .adm-side-foot{border-top:1px solid var(--line-lt);padding:14px 0}
+  .adm-slink{display:flex;align-items:center;gap:13px;width:100%;text-align:left;padding:12px 22px;font:500 13.5px 'Instrument Sans';color:#B7B0A0;text-decoration:none;transition:.25s}
+  .adm-slink:hover{color:var(--paper)}
+  .adm-slink svg{width:15px;height:15px}
+  .adm-main{padding:0 clamp(20px,4vw,56px) 70px}
+  .adm-top{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:30px 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+  .adm-top h1{font:500 30px 'Fraunces',serif;letter-spacing:-.01em}
+  .save-state{display:flex;align-items:center;gap:9px;font:500 12.5px 'Instrument Sans';color:var(--ink2)}
+  .save-state .dot{width:8px;height:8px;border-radius:50%;background:#5E7D4C;transition:.3s}
+  .save-state.busy .dot{background:var(--seal);animation:pulse 1s infinite}
+  @keyframes pulse{50%{opacity:.3}}
+  .adm-body{max-width:860px;padding-top:34px}
+  .adm-note{display:flex;gap:11px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-left:2px solid var(--seal);padding:14px 16px;font-size:13.5px;color:var(--ink2);line-height:1.6;margin-bottom:26px}
+  .adm-note svg{width:15px;height:15px;flex:none;margin-top:2px;color:var(--seal)}
+
+  .field{margin-bottom:22px}
+  .field label{display:block;font:600 10.5px 'Instrument Sans';letter-spacing:.2em;text-transform:uppercase;color:var(--ink2);margin-bottom:8px}
+  .field input,.field textarea,.field select{width:100%;background:var(--card);border:1px solid var(--line);border-radius:2px;padding:12px 14px;font:400 14.5px 'Instrument Sans';color:var(--ink);transition:border-color .25s}
+  .field input:focus,.field textarea:focus{outline:none;border-color:var(--ink)}
+  .field textarea{resize:vertical;line-height:1.65}
+  .abtn{display:inline-flex;align-items:center;gap:9px;padding:11px 18px;background:var(--ink);color:var(--paper);font:600 13px 'Instrument Sans';border:1px solid var(--ink);transition:.25s;border-radius:2px}
+  .abtn:hover{background:var(--seal);border-color:var(--seal)}
+  .abtn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+  .abtn.ghost:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .abtn.ghost.danger{color:var(--seal)}
+  .abtn.ghost.danger:hover{background:var(--seal);color:var(--paper);border-color:var(--seal)}
+  .abtn svg{width:15px;height:15px}
+  .litem{background:var(--card);border:1px solid var(--line);border-radius:2px;padding:20px;margin-bottom:14px}
+  .lit-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+  .lit-idx{font:500 15px 'Fraunces',serif;color:var(--seal)}
+  .lit-acts{display:flex;gap:6px}
+  .imgrow{display:flex;gap:16px;align-items:flex-start}
+  .imgprev{width:96px;height:96px;flex:none;border:1px solid var(--line);background:var(--paper2);display:grid;place-items:center;overflow:hidden;border-radius:2px}
+  .imgprev img{width:100%;height:100%;object-fit:cover}
+  .imgph svg{width:22px;height:22px;color:var(--ink2)}
+  .imgctl{flex:1;display:flex;flex-direction:column;gap:9px}
+  .statrow{display:grid;grid-template-columns:1fr 84px 1.6fr;gap:12px;margin-bottom:14px}
+  .statrow .field{margin:0}
+  .list-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;gap:12px;flex-wrap:wrap}
+  .list-top p{font-size:13.5px;color:var(--ink2)}
+
+  /* mesajlar */
+  .msg{background:var(--card);border:1px solid var(--line);border-radius:2px;margin-bottom:12px;border-left:3px solid transparent}
+  .msg.unread{border-left-color:var(--seal)}
+  .msg-row{display:flex;justify-content:space-between;gap:14px;padding:16px 18px;cursor:pointer;align-items:baseline;flex-wrap:wrap}
+  .msg-row b{font:600 14.5px 'Instrument Sans'}
+  .msg-mail{color:var(--ink2);font-size:13px;margin-left:10px}
+  .msg-meta{display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--ink2)}
+  .pill{background:var(--seal);color:var(--paper);font:600 10px 'Instrument Sans';letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:10px}
+  .msg-sub{padding:0 18px 14px;font:italic 400 14.5px 'Fraunces',serif;color:var(--ink2)}
+  .msg-body{display:none;padding:4px 18px 18px;border-top:1px dashed var(--line)}
+  .msg.open .msg-body{display:block}
+  .msg-body p{font-size:14.5px;line-height:1.75;color:var(--ink);white-space:pre-wrap;padding-top:14px}
+  .msg-acts{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+  .empty{border:1px dashed var(--line);padding:56px 20px;text-align:center;color:var(--ink2)}
+  .empty svg{width:30px;height:30px;margin:0 auto 14px;display:block;color:var(--seal)}
+
+  /* giriş ekranı */
+  .login{min-height:100vh;display:grid;place-items:center;background:var(--paper);position:relative;overflow:hidden;padding:24px}
+  .login-wm{position:absolute;font:600 44vw/1 'Fraunces',serif;color:rgba(25,23,18,.035);user-select:none;pointer-events:none}
+  .login-card{position:relative;width:min(400px,100%);background:var(--card);border:1px solid var(--line);padding:40px 36px;text-align:center}
+  .login-ic{width:52px;height:52px;margin:0 auto 20px;display:grid;place-items:center;border:1px solid var(--seal);border-radius:50%;color:var(--seal)}
+  .login-ic svg{width:20px;height:20px}
+  .login-card h1{font:500 28px 'Fraunces',serif;margin-bottom:8px}
+  .login-card>p{font-size:14px;color:var(--ink2);margin-bottom:26px;line-height:1.6}
+  .pwrow{display:flex;gap:8px;margin-bottom:8px}
+  .pwrow input{flex:1;border:1px solid var(--line);background:var(--paper);padding:13px 14px;font:400 15px 'Instrument Sans';border-radius:2px}
+  .pwrow input:focus{outline:none;border-color:var(--ink)}
+  .login-err{min-height:20px;font-size:13px;color:var(--seal);margin-bottom:6px}
+  .login-err.shake{animation:shake .4s}
+  @keyframes shake{20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
+  .login-hint{margin-top:18px;font-size:12.5px;color:var(--ink2)}
+  .login-hint code{font-family:monospace;background:var(--paper);border:1px solid var(--line);padding:2px 7px;border-radius:2px}
+  .login-back{display:inline-block;margin-top:14px;font-size:13px;color:var(--ink2);text-decoration:none}
+  .login-back:hover{color:var(--ink)}
+
+  /* toast & modal */
+  #toast-root{position:fixed;bottom:26px;right:26px;z-index:300}
+  .toast{display:flex;align-items:center;gap:11px;background:var(--ink);color:var(--paper);padding:15px 20px;font:500 14px 'Instrument Sans';border-left:3px solid var(--seal-lt);animation:tin .35s cubic-bezier(.2,.9,.3,1.2);max-width:360px}
+  .toast svg{width:17px;height:17px;color:var(--seal-lt);flex:none}
+  .toast.out{transition:.3s;opacity:0;transform:translateX(20px)}
+  @keyframes tin{from{opacity:0;transform:translateX(30px)}}
+  .m-ov{position:fixed;inset:0;background:rgba(25,23,18,.55);backdrop-filter:blur(4px);display:grid;place-items:center;z-index:250;padding:20px}
+  .m-card{background:var(--paper);border:1px solid var(--line);padding:32px;width:min(440px,100%);animation:tin .3s}
+  .m-card h3{font:500 22px 'Fraunces',serif;margin-bottom:10px}
+  .m-card p{font-size:14.5px;color:var(--ink2);line-height:1.65;margin-bottom:24px}
+  .m-acts{display:flex;justify-content:flex-end;gap:10px}
+
+  /* ---------- responsive ---------- */
+  @media (max-width:1020px){
+    .hero-grid{grid-template-columns:1fr}
+    .hero{min-height:auto;padding-bottom:56px}
+    .hero-visual{width:min(76vw,380px);order:2}
+    .hero-meta{margin-top:40px}
+    .scrollhint{display:none}
+    .about-grid,.proc-grid,.contact-grid{grid-template-columns:1fr}
+    .proc-left{position:static}
+    .f-grid{grid-template-columns:1fr 1fr}
+  }
+  @media (max-width:860px){
+    .nav-links{display:none}
+    .burger{display:inline-flex}
+    .brand-name{display:none}
+    .adm{grid-template-columns:1fr}
+    .adm-side{position:static;height:auto;flex-direction:row;align-items:center;overflow-x:auto}
+    .adm-brand{border-bottom:0;border-right:1px solid var(--line-lt);padding:16px 20px;white-space:nowrap;flex:none}
+    .adm-menu{display:flex;padding:0;overflow:visible}
+    .adm-menu button{white-space:nowrap;width:auto;border-left:0;border-bottom:2px solid transparent;padding:16px 14px}
+    .adm-menu button.on{border-bottom-color:var(--seal-lt);background:none}
+    .adm-side-foot{display:flex;border-top:0;margin-left:auto}
+    .adm-slink{white-space:nowrap;width:auto;padding:16px 12px}
+    .statrow{grid-template-columns:1fr}
+    .grid2{grid-template-columns:1fr}
+  }
+  @media (max-width:640px){
+    .f-grid{grid-template-columns:1fr}
+    .acc-head{grid-template-columns:44px 1fr auto}
+    .acc-inner p{padding-left:60px}
+    .nav-admin span{display:none}
+    .msg-mail{display:block;margin:4px 0 0}
+  }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="toast-root"></div>
+<div id="modal-root"></div>
+
+<script>
+/* ============================================================
+   KARAY & DOĞAN — Kurumsal Site + Yönetim Paneli
+   Tüm içerik localStorage'da saklanır; panel değişiklikleri
+   anında siteye yansır.
+   ============================================================ */
+
+const $  = s => document.querySelector(s);
+const $$ = s => document.querySelectorAll(s);
+const uid = () => 'x' + Math.random().toString(36).slice(2, 8);
+const esc = s => s == null ? '' : String(s)
+  .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const nl = s => esc(s).replace(/\n/g, '<br>');
+const enc = s => { try { return btoa(s); } catch(e){ return s; } };
+
+/* ---------- varsayılan içerik ---------- */
+const SEED = {
+  settings: {
+    name: 'Karay & Doğan Hukuk Bürosu',
+    shortName: 'K&D',
+    est: '2008',
+    phone: '+90 (212) 264 18 40',
+    email: 'info@karaydogan.av.tr',
+    address: 'Nispetiye Cd. Levent İş Merkezi\nNo: 12 K: 7, Beşiktaş / İstanbul',
+    hours: 'Pazartesi – Cuma · 09.00 – 18.30',
+    kicker: 'Avukatlık Ortaklığı · İstanbul · Est. 2008',
+    heroTitle: 'Karmaşık dosyalar,',
+    heroAccent: 'net çözümler.',
+    heroSub: 'Ticaretten aile hukukuna uzanan geniş bir yelpazede; dosyanızı öngörüyle yöneten, ulaşılabilir ve sonuç odaklı bir hukuk ekibi.',
+    heroImg: '',
+    aboutTitle: 'Her dosya bizim için\nbir ilişkinin adıdır.',
+    aboutP1: 'Karay & Doğan Hukuk Bürosu, 2008 yılında Av. Selin Karay ve Av. Murat Doğan tarafından İstanbul’da kuruldu. Büromuz; ticaret, aile, iş ve gayrimenkul hukuku başta olmak üzere geniş bir alanda, bireysel ve kurumsal müvekkillerine çözüm odaklı hizmet verir.',
+    aboutP2: 'Sürecin her adımında sizinle aynı masada oturur, hukuki dili günlük hayata çevirir ve kararlarınızı net bilgilerle destekleriz. Bizim için başarı; kazanılmış bir dava değil, doğru kurulmuş bir güven ilişkisidir.',
+    aboutImg: 'https://picsum.photos/seed/kd-ofis/900/1080.jpg',
+    s1n: '18', s1s: '',  s1l: 'Yıllık Tecrübe',
+    s2n: '1400', s2s: '+', s2l: 'Sonuçlanan Dosya',
+    s3n: '6', s3s: '',  s3l: 'Uzmanlık Alanı',
+    _pw: btoa('admin123')
+  },
+  practice: [
+    { id:'p1', title:'Ticaret ve Şirketler Hukuku', desc:'Şirket kuruluşundan birleşmelere, sözleşme müzakerelerinden ortaklık uyuşmazlıklarına; işinizi her aşamada hukuki güvenceye alıyoruz.' },
+    { id:'p2', title:'Aile ve Miras Hukuku', desc:'Anlaşmalı ve çekişmeli boşanma, velayet, mal rejimi ve miras planlaması süreçlerinde; hassas ama kararlı bir temsil.' },
+    { id:'p3', title:'İş ve Sosyal Güvenlik Hukuku', desc:'İşe iade, kıdem–ihbar tazminatı, mobbing ve SGK uyuşmazlıklarında hem işçi hem işveren tarafında derin deneyim.' },
+    { id:'p4', title:'Gayrimenkul ve İnşaat Hukuku', desc:'Kentsel dönüşüm, kat karşılığı inşaat, tapu iptali ve kira uyuşmazlıklarında saha bilinciyle çalışırız.' },
+    { id:'p5', title:'Ceza Hukuku', desc:'Soruşturma aşamasından temyize; savunma hakkını en geniş biçimde kullanan, titiz bir ceza pratiği.' },
+    { id:'p6', title:'Fikri Mülkiyet ve Bilişim Hukuku', desc:'Marka, telif ve veri korumasından yazılım lisanslarına; dijital çağın uyuşmazlıklarına özel yaklaşım.' }
+  ],
+  team: [
+    { id:'t1', name:'Av. Selin Karay',  role:'Kurucu Ortak',   focus:'Ticaret ve Şirketler Hukuku · Birleşme ve Devralma', photo:'https://picsum.photos/seed/kd-av1/600/800.jpg' },
+    { id:'t2', name:'Av. Murat Doğan',  role:'Kurucu Ortak',   focus:'Aile ve Miras Hukuku · Arabuluculuk',                photo:'https://picsum.photos/seed/kd-av2/600/800.jpg' },
+    { id:'t3', name:'Av. Deniz Acar',   role:'Kıdemli Avukat', focus:'İş ve Sosyal Güvenlik Hukuku',                        photo:'https://picsum.photos/seed/kd-av3/600/800.jpg' },
+    { id:'t4', name:'Av. Zeynep Korkmaz', role:'Avukat',       focus:'Fikri Mülkiyet ve Bilişim Hukuku',                    photo:'https://picsum.photos/seed/kd-av4/600/800.jpg' }
+  ],
+  testimonials: [
+    { id:'q1', quote:'Ticari bir uyuşmazlıkta süreci baştan sona öngörüyle yönettiler. Kurulumuz için artık sabit hukuk danışmanları.', author:'Elif A.',  role:'Şirket Ortağı, Lojistik' },
+    { id:'q2', quote:'Miras dosyamızda hem hukuki hem insani yaklaşımlarıyla bize gerçekten güven verdiler.',                          author:'M. Tuncer', role:'Emekli Öğretmen' },
+    { id:'q3', quote:'Sözleşme süreçlerimizdeki hızları ve net dilleri rakipsiz. Girişimlerinize gönül rahatlığıyla öneririm.',         author:'S. Aydın',  role:'Kurucu, Yazılım Girişimi' }
+  ],
+  messages: []
+};
+
+const STORE_KEY = 'kd_data_v1';
+let data;
+try { data = JSON.parse(localStorage.getItem(STORE_KEY)) || null; } catch(e){ data = null; }
+if (!data) { data = JSON.parse(JSON.stringify(SEED)); persist(); }
+
+function persist(){
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(data)); }
+  catch(e){ toast('Depolama alanı doldu — büyük görselleri küçültün', 'alert-triangle'); }
+}
+let saveTimer = null;
+function saveSoon(){
+  const st = $('#saveState');
+  if (st){ st.classList.add('busy'); st.innerHTML = '<i class="dot"></i> Kaydediliyor…'; }
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => { persist(); setSaved(); }, 500);
+}
+function setSaved(){
+  const st = $('#saveState');
+  if (st){
+    st.classList.remove('busy');
+    st.innerHTML = '<i class="dot"></i> Tüm değişiklikler kayıtlı';
+  }
+}
+
+/* ---------- toast & modal ---------- */
+let toastTimer;
+function toast(msg, icon = 'check'){
+  const r = $('#toast-root');
+  r.innerHTML = `<div class="toast"><i data-lucide="${icon}"></i><span>${esc(msg)}</span></div>`;
+  lucide.createIcons();
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    const t = r.firstChild;
+    if (t){ t.classList.add('out'); setTimeout(() => r.innerHTML = '', 320); }
+  }, 2800);
+}
+function confirmModal(title, text, okLabel, cb){
+  $('#modal-root').innerHTML = `
+    <div class="m-ov" onclick="if(event.target===this)closeModal()">
+      <div class="m-card">
+        <h3>${esc(title)}</h3><p>${esc(text)}</p>
+        <div class="m-acts">
+          <button class="abtn ghost" onclick="closeModal()">Vazgeç</button>
+          <button class="abtn" id="mOk">${esc(okLabel)}</button>
+        </div>
+      </div>
+    </div>`;
+  $('#mOk').onclick = () => { closeModal(); cb(); };
+  lucide.createIcons();
+}
+function closeModal(){ $('#modal-root').innerHTML = ''; }
+
+/* ============================================================
+   TANITIM SİTESİ
+   ============================================================ */
+const app = $('#app');
+let siteTimers = [];
+
+function stopTimers(){
+  siteTimers.forEach(t => { clearInterval(t); clearTimeout(t); cancelAnimationFrame(t); });
+  siteTimers = [];
+}
+
+/* Adalet terazisi — imza çizim */
+function scaleSVG(){
+  const d = (i, p) => `<path class="d" style="--i:${i}" pathLength="1" d="${p}"/>`;
+  return `
+  <div class="scale-wrap" id="scaleWrap">
+    <svg viewBox="0 0 420 500" fill="none" aria-hidden="true">
+      <g stroke="var(--ink)" stroke-width="1.5" stroke-linecap="round">
+        ${d(0,'M150 472 H270')}
+        ${d(1,'M168 472 H252')}
+        ${d(2,'M210 472 V74')}
+        ${d(3,'M210 64 V44')}
+        <circle class="d" style="--i:4" pathLength="1" cx="210" cy="40" r="4"/>
+        <circle class="d" style="--i:5" pathLength="1" cx="210" cy="64" r="7" fill="var(--paper)"/>
+        <g id="beam">
+          ${d(6,'M70 64 H350')}
+          <circle class="d" style="--i:7" pathLength="1" cx="70"  cy="64" r="3"/>
+          <circle class="d" style="--i:7" pathLength="1" cx="350" cy="64" r="3"/>
+          <g id="pL">
+            ${d(8,'M70 64 L46 176')}
+            ${d(9,'M70 64 L94 176')}
+            ${d(10,'M40 176 H100')}
+            ${d(11,'M40 176 Q70 198 100 176')}
+          </g>
+          <g id="pR">
+            ${d(8,'M350 64 L326 176')}
+            ${d(9,'M350 64 L374 176')}
+            ${d(10,'M320 176 H380')}
+            ${d(11,'M320 176 Q350 198 380 176')}
+          </g>
+        </g>
+      </g>
+    </svg>
+    <p class="scale-cap">— tartıda hakkaniyet, işte tüm mesleğimiz.</p>
+  </div>`;
+}
+
+function renderSite(){
+  const s = data.settings;
+  const year = new Date().getFullYear();
+  const steps = [
+    ['İlk Görüşme',    'Dosyanızı dinliyor, hukuki çerçeveyi ve olası senaryoları ilk görüşmede netleştiriyoruz. İlk görüşme her zaman ücretsizdir.'],
+    ['Dosya Analizi',  'Belgeler, güncel içtihat ve süre hesaplarıyla kapsamlı bir ön inceleme yapıp riskleri masaya koyuyoruz.'],
+    ['Strateji',       'Size özel yol haritasını, öngörülen süreci ve maliyeti yazılı olarak sunuyoruz; sürprizsiz bir başlangıç.'],
+    ['Takip ve Sonuç', 'Süreci düzenli raporlarla şeffaf biçimde yürütüyor, her gelişmeyi ilk sizinle paylaşıyoruz.']
+  ];
+  const subjects = ['Ticaret ve Şirketler','Aile ve Miras','İş Hukuku','Gayrimenkul ve İnşaat','Ceza','Fikri Mülkiyet ve Bilişim','Diğer'];
+
+  app.innerHTML = `
+  <div class="site">
+
+    <nav class="site-nav" id="siteNav">
+      <div class="wrap nav-in">
+        <a class="brand" href="javascript:void(0)" onclick="goTo('top')">
+          <span class="brand-mono">${esc(s.shortName)}</span>
+          <span class="brand-name">${esc(s.name)}</span>
+        </a>
+        <div class="nav-links">
+          <button onclick="goTo('hakkimizda')">Hakkımızda</button>
+          <button onclick="goTo('uzmanlik')">Uzmanlık</button>
+          <button onclick="goTo('ekip')">Ekip</button>
+          <button onclick="goTo('iletisim')">İletişim</button>
+        </div>
+        <div class="nav-right">
+          <a class="nav-admin" href="#/admin"><i data-lucide="lock"></i><span>Yönetim</span></a>
+          <button class="burger" onclick="toggleMenu()" aria-label="Menü"><i data-lucide="menu"></i></button>
+        </div>
+      </div>
+      <div class="nav-menu" id="navMenu">
+        <button onclick="goTo('hakkimizda')">Hakkımızda</button>
+        <button onclick="goTo('uzmanlik')">Uzmanlık Alanları</button>
+        <button onclick="goTo('ekip')">Ekibimiz</button>
+        <button onclick="goTo('surec')">Çalışma Süreci</button>
+        <button onclick="goTo('iletisim')">İletişim</button>
+      </div>
+    </nav>
+
+    <header class="hero wrap" id="top">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <p class="kick reveal">${esc(s.kicker)}</p>
+          <h1 class="hero-h reveal" style="--d:1">${nl(s.heroTitle)}<br><em>${nl(s.heroAccent)}</em></h1>
+          <p class="hero-sub reveal" style="--d:2">${esc(s.heroSub)}</p>
+          <div class="hero-cta reveal" style="--d:3">
+            <button class="btn" onclick="goTo('iletisim')">Randevu Alın <i data-lucide="arrow-right"></i></button>
+            <button class="btn line" onclick="goTo('uzmanlik')">Uzmanlık Alanları</button>
+          </div>
+          <div class="hero-meta reveal" style="--d:4">
+            <div><span>Kuruluş</span><b>${esc(s.est)}</b></div>
+            <div><span>Telefon</span><b>${esc(s.phone)}</b></div>
+            <div><span>Mesai</span><b>${esc(s.hours)}</b></div>
+            <div class="scrollhint"><span>Kaydırın</span><i></i></div>
+          </div>
+        </div>
+        <div class="hero-visual reveal" style="--d:2">
+          ${s.heroImg
+            ? `<figure class="hero-photo"><img src="${esc(s.heroImg)}" alt="Hukuk büromuz" loading="lazy"><figcaption>— ${esc(s.name)}</figcaption></figure>`
+            : scaleSVG()}
+        </div>
+      </div>
+    </header>
+
+    <section id="hakkimizda" class="sec">
+      <div class="wrap about-grid">
+        <div>
+          <p class="kick reveal">Hakkımızda</p>
+          <h2 class="reveal" style="--d:1">${nl(s.aboutTitle)}</h2>
+          <div class="stats">
+            <div class="stat reveal" style="--d:2"><b class="cnt" data-count="${esc(s.s1n)}" data-suffix="${esc(s.s1s)}">0</b><span>${esc(s.s1l)}</span></div>
+            <div class="stat reveal" style="--d:3"><b class="cnt" data-count="${esc(s.s2n)}" data-suffix="${esc(s.s2s)}">0</b><span>${esc(s.s2l)}</span></div>
+            <div class="stat reveal" style="--d:4"><b class="cnt" data-count="${esc(s.s3n)}" data-suffix="${esc(s.s3s)}">0</b><span>${esc(s.s3l)}</span></div>
+          </div>
+        </div>
+        <div class="about-txt">
+          <figure class="about-fig reveal"><img src="${esc(s.aboutImg)}" alt="Büromuz" loading="lazy"></figure>
+          <p class="reveal" style="--d:1">${esc(s.aboutP1)}</p>
+          <p class="reveal" style="--d:2">${esc(s.aboutP2)}</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="uzmanlik" class="sec">
+      <div class="wrap">
+        <div class="sec-head">
+          <div>
+            <p class="kick reveal">Uzmanlık Alanları</p>
+            <h2 class="reveal" style="--d:1">Altı alan,<br><em>tek bir ölçü:</em> özen.</h2>
+          </div>
+          <p class="lead reveal" style="--d:2">Her alanda ayrı bir ekip, aynı titizlik. Satırlara dokunun.</p>
+        </div>
+        <div>
+          ${data.practice.map((p,i)=>`
+          <div class="acc reveal" style="--d:${Math.min(i,3)}">
+            <button class="acc-head" onclick="toggleAcc(this)">
+              <span class="acc-num">${String(i+1).padStart(2,'0')}</span>
+              <span class="acc-title">${esc(p.title)}</span>
+              <i data-lucide="chevron-down"></i>
+            </button>
+            <div class="acc-body"><div class="acc-inner"><p>${esc(p.desc)}</p></div></div>
+          </div>`).join('')}
+        </div>
+      </div>
+    </section>
+
+    <section id="ekip" class="sec">
+      <div class="wrap">
+        <div class="sec-head">
+          <div>
+            <p class="kick reveal">Ekibimiz</p>
+            <h2 class="reveal" style="--d:1">Dosyanızın arkasındaki<br><em>isimler.</em></h2>
+          </div>
+          <div class="strip-nav reveal" style="--d:2">
+            <button class="ibtn big" onclick="scrollTeam(-1)" aria-label="Geri"><i data-lucide="chevron-left"></i></button>
+            <button class="ibtn big" onclick="scrollTeam(1)" aria-label="İleri"><i data-lucide="chevron-right"></i></button>
+          </div>
+        </div>
+        <div class="team-strip">
+          ${data.team.map((m,i)=>`
+          <article class="t-card reveal" style="--d:${i%4}">
+            <div class="t-photo"><img src="${esc(m.photo)}" alt="${esc(m.name)}" loading="lazy"></div>
+            <h3>${esc(m.name)}</h3>
+            <span class="t-role">${esc(m.role)}</span>
+            <p class="t-focus">${esc(m.focus)}</p>
+          </article>`).join('')}
+        </div>
+      </div>
+    </section>
+
+    <section id="surec" class="sec">
+      <div class="wrap proc-grid">
+        <div class="proc-left">
+          <p class="kick reveal">Nasıl Çalışıyoruz</p>
+          <h2 class="reveal" style="--d:1">Net bir sürecin<br><em>net sonuçları</em> olur.</h2>
+          <p class="lead reveal" style="--d:2">Her dosyada aynı dört adımı izliyoruz. Çünkü hukukta sürprizi sevmeyiz — rakiplerimiz kadar.</p>
+        </div>
+        <div>
+          ${steps.map((st,i)=>`
+          <div class="step reveal" style="--d:${i}">
+            <span class="step-num">0${i+1}</span>
+            <div><h3>${st[0]}</h3><p>${st[1]}</p></div>
+          </div>`).join('')}
+        </div>
+      </div>
+    </section>
+
+    <section id="referanslar" class="sec dark">
+      <div class="wrap">
+        <div class="sec-head">
+          <div>
+            <p class="kick light reveal">Müvekkil Sözleri</p>
+            <h2 class="reveal" style="--d:1">Bizi en iyi,<br><em>onlar anlatır.</em></h2>
+          </div>
+        </div>
+        <div class="t-stage reveal" style="--d:2">
+          ${data.testimonials.map((t,i)=>`
+          <figure class="t-slide ${i===0?'on':''}">
+            <blockquote>&ldquo;${esc(t.quote)}&rdquo;</blockquote>
+            <figcaption><b>${esc(t.author)}</b><span>${esc(t.role)}</span></figcaption>
+          </figure>`).join('')}
+        </div>
+        <div class="t-dots">
+          ${data.testimonials.map((t,i)=>`<button class="${i===0?'on':''}" onclick="showT(${i})" aria-label="Referans ${i+1}"></button>`).join('')}
+        </div>
+      </div>
+    </section>
+
+    <section id="iletisim" class="sec">
+      <div class="wrap contact-grid">
+        <div>
+          <p class="kick reveal">İletişim</p>
+          <h2 class="reveal" style="--d:1">İlk adımı<br><em>atın.</em></h2>
+          <form class="c-form" style="margin-top:38px" onsubmit="sendMsg(event)">
+            <div class="grid2">
+              <div class="field"><label>Ad Soyad</label><input name="nm" required placeholder="Adınız Soyadınız"></div>
+              <div class="field"><label>E-posta</label><input name="ml" type="email" required placeholder="ornek@posta.com"></div>
+            </div>
+            <div class="field"><label>Konu</label>
+              <select name="sb" required>
+                <option value="" disabled selected>Hukuk alanı seçin</option>
+                ${subjects.map(x=>`<option>${x}</option>`).join('')}
+              </select>
+            </div>
+            <div class="field"><label>Mesajınız</label><textarea name="ms" rows="5" required placeholder="Dosyanızı birkaç cümleyle anlatın…"></textarea></div>
+            <button class="btn" type="submit">Mesajı Gönder <i data-lucide="send"></i></button>
+            <p class="form-note">İlk görüşme ücretsizdir; mesajınızı en geç 24 saat içinde yanıtlıyoruz.</p>
+          </form>
+        </div>
+        <div class="c-info">
+          <div class="info-row reveal"><i data-lucide="map-pin"></i><div><span>Adres</span><p>${nl(s.address)}</p></div></div>
+          <div class="info-row reveal" style="--d:1"><i data-lucide="phone"></i><div><span>Telefon</span><p>${esc(s.phone)}</p></div></div>
+          <div class="info-row reveal" style="--d:2"><i data-lucide="mail"></i><div><span>E-posta</span><p>${esc(s.email)}</p></div></div>
+          <div class="info-row reveal" style="--d:3"><i data-lucide="clock"></i><div><span>Çalışma Saatleri</span><p>${esc(s.hours)}</p></div></div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="wrap">
+        <div class="f-cta reveal">
+          <p class="kick light">İlk Adım</p>
+          <h2>Dosyanızı birlikte<br><em>değerlendirelim.</em></h2>
+          <button class="btn paper" onclick="goTo('iletisim')">Randevu Talebi <i data-lucide="arrow-up-right"></i></button>
+        </div>
+        <div class="f-grid">
+          <div>
+            <p class="f-brand">${esc(s.shortName)}</p>
+            <p class="f-name">${esc(s.name)}</p>
+          </div>
+          <div class="f-col">
+            <h4>Site</h4>
+            <button onclick="goTo('hakkimizda')">Hakkımızda</button>
+            <button onclick="goTo('uzmanlik')">Uzmanlık Alanları</button>
+            <button onclick="goTo('ekip')">Ekibimiz</button>
+            <button onclick="goTo('iletisim')">İletişim</button>
+          </div>
+          <div class="f-col">
+            <h4>İletişim</h4>
+            <p>${nl(s.address)}<br>${esc(s.phone)}<br>${esc(s.email)}</p>
+          </div>
+        </div>
+        <div class="f-bot">
+          <span>© ${year} ${esc(s.name)} — Tüm hakları saklıdır.</span>
+          <a class="f-admin" href="#/admin"><i data-lucide="lock"></i> Yönetim Girişi</a>
+        </div>
+      </div>
+    </footer>
+  </div>`;
+
+  lucide.createIcons();
+  bindSite();
+}
+
+/* ---------- site etkileşimleri ---------- */
+let revealIO = null, cntIO = null, tIdx = 0;
+
+function bindSite(){
+  /* görünüm animasyonları */
+  if (revealIO) revealIO.disconnect();
+  revealIO = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting){ e.target.classList.add('in'); revealIO.unobserve(e.target); }
+  }), { threshold:.12 });
+  $$('.reveal').forEach(el => revealIO.observe(el));
+
+  /* sayaçlar */
+  if (cntIO) cntIO.disconnect();
+  cntIO = new IntersectionObserver(es => es.forEach(e => {
+    if (e.isIntersecting){ animCount(e.target); cntIO.unobserve(e.target); }
+  }), { threshold:.5 });
+  $$('.cnt').forEach(el => cntIO.observe(el));
+
+  /* terazi */
+  initScale();
+
+  /* referans döngüsü */
+  tIdx = 0;
+  if (data.testimonials.length > 1){
+    siteTimers.push(setInterval(() => showT((tIdx + 1) % data.testimonials.length), 6000));
+  }
+}
+
+function animCount(el){
+  const target = parseFloat(el.dataset.count);
+  const suf = el.dataset.suffix || '';
+  if (isNaN(target)){ el.textContent = el.dataset.count + suf; return; }
+  const t0 = performance.now(), D = 1500;
+  (function f(t){
+    const p = Math.min(1, (t - t0) / D);
+    const e = 1 - Math.pow(1 - p, 3);
+    el.innerHTML = Math.round(target * e).toLocaleString('tr-TR') + (suf ? `<sup>${esc(suf)}</sup>` : '');
+    if (p < 1) requestAnimationFrame(f);
+  })(t0);
+}
+
+function initScale(){
+  const beam = $('#beam'), pL = $('#pL'), pR = $('#pR'), wrap = $('#scaleWrap');
+  if (!beam) return;
+  let cur = 0, mouse = 0, t = 0, alive = true;
+  const coarse = matchMedia('(pointer:coarse)').matches;
+  if (!coarse){
+    wrap.addEventListener('mousemove', e => {
+      const r = wrap.getBoundingClientRect();
+      mouse = ((e.clientX - r.left) / r.width - .5) * 9;
+    });
+    wrap.addEventListener('mouseleave', () => mouse = 0);
+  }
+  (function loop(){
+    if (!alive) return;
+    t += 16;
+    const idle = Math.sin(t / 2600) * (coarse ? 3 : 1.1);
+    const tgt = mouse + idle;
+    cur += (tgt - cur) * .06;
+    beam.style.transform = `rotate(${cur}deg)`;
+    pL.style.transform = `rotate(${-cur}deg)`;
+    pR.style.transform = `rotate(${-cur}deg)`;
+    siteTimers[0] = requestAnimationFrame(loop);
+  })();
+  siteTimers.push({ }); // yer tutucu; rAF iptali için alive flag'i
+  siteTimers.push(() => {}); // temizlik uyumluluğu
+  siteTimers.stop = () => { alive = false; };
+}
+
+function toggleAcc(head){
+  const item = head.parentElement;
+  const open = item.classList.contains('open');
+  $$('.acc.open').forEach(a => a.classList.remove('open'));
+  if (!open) item.classList.add('open');
+}
+function showT(i){
+  tIdx = i;
+  $$('.t-slide').forEach((s,k)=>s.classList.toggle('on', k===i));
+  $$('.t-dots button').forEach((d,k)=>d.classList.toggle('on', k===i));
+}
+function scrollTeam(dir){
+  const el = $('.team-strip');
+  if (el) el.scrollBy({ left: dir * 340, behavior:'smooth' });
+}
+function goTo(id){
+  $('#navMenu')?.classList.remove('open');
+  if (id === 'top'){ window.scrollTo({ top:0, behavior:'smooth' }); return; }
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior:'smooth' });
+}
+function toggleMenu(){ $('#navMenu').classList.toggle('open'); }
+function sendMsg(e){
+  e.preventDefault();
+  const f = e.target, g = n => f.querySelector(`[name=${n}]`).value.trim();
+  data.messages.unshift({ id: uid(), name:g('nm'), email:g('ml'), subject:g('sb'), message:g('ms'), date: Date.now(), read:false });
+  persist();
+  f.reset();
+  toast('Mesajınız alındı — en kısa sürede dönüş yapacağız.', 'mail-check');
+}
+
+/* nav gölgesi — tek global dinleyici */
+window.addEventListener('scroll', () => {
+  const nav = $('#siteNav');
+  if (nav) nav.classList.toggle('scrolled', window.scrollY > 12);
+});
+
+/* ============================================================
+   YÖNETİM PANELİ
+   ============================================================ */
+let currentTab = 'genel';
+
+function logout(){ sessionStorage.removeItem('kd_adm'); renderAdmin(); }
+
+function renderAdmin(){
+  if (sessionStorage.getItem('kd_adm') !== '1'){
+    app.innerHTML = `
+    <div class="login">
+      <div class="login-wm">${esc(data.settings.shortName)}</div>
+      <div class="login-card">
+        <span class="login-ic"><i data-lucide="lock"></i></span>
+        <h1>Yönetim Girişi</h1>
+        <p>Site içeriğini düzenlemek için<br>panel şifrenizi girin.</p>
+        <div class="pwrow">
+          <input type="password" id="pw" placeholder="Şifre" onkeydown="if(event.key==='Enter')tryLogin()">
+          <button class="ibtn" onclick="togglePw()" aria-label="Şifreyi göster"><i data-lucide="eye"></i></button>
+        </div>
+        <p class="login-err" id="loginErr"></p>
+        <button class="btn full" onclick="tryLogin()">Giriş Yap <i data-lucide="arrow-right"></i></button>
+        <p class="login-hint">Demo şifre: <code>admin123</code> &nbsp;·&nbsp; Genel ayarlarından değiştirilebilir</p>
+        <a class="login-back" href="#/">← Siteye dön</a>
+      </div>
+    </div>`;
+    lucide.createIcons();
+    $('#pw').focus();
+    return;
+  }
+
+  const unread = data.messages.filter(m => !m.read).length;
+  const MENU = [
+    ['genel','settings-2','Genel Ayarlar',''],
+    ['hero','type','Hero Bölümü',''],
+    ['hakkimizda','info','Hakkımızda',''],
+    ['uzmanlik','scale','Uzmanlık Alanları',''],
+    ['ekip','users','Ekip',''],
+    ['referanslar','quote','Referanslar',''],
+    ['mesajlar','inbox','Gelen Mesajlar', unread]
+  ];
+  app.innerHTML = `
+  <div class="adm">
+    <aside class="adm-side">
+      <div class="adm-brand"><span class="mono">${esc(data.settings.shortName)}</span><span>Yönetim Paneli</span></div>
+      <nav class="adm-menu">
+        ${MENU.map(m=>`
+        <button data-tab="${m[0]}" onclick="admTab('${m[0]}')">
+          <i data-lucide="${m[1]}"></i>${m[2]}
+          ${m[3] ? `<span class="badge">${m[3]}</span>` : ''}
+        </button>`).join('')}
+      </nav>
+      <div class="adm-side-foot">
+        <a href="#/" class="adm-slink"><i data-lucide="globe"></i>Siteyi Görüntüle</a>
+        <button class="adm-slink" onclick="logout()"><i data-lucide="log-out"></i>Çıkış Yap</button>
+      </div>
+    </aside>
+    <main class="adm-main">
+      <header class="adm-top">
+        <h1 id="admTitle"></h1>
+        <div class="save-state" id="saveState"><i class="dot"></i> Tüm değişiklikler kayıtlı</div>
+      </header>
+      <div class="adm-body" id="admBody"></div>
+    </main>
+  </div>`;
+  lucide.createIcons();
+  admTab(currentTab);
+}
+
+const TAB_TITLES = {
+  genel:'Genel Ayarlar', hero:'Hero Bölümü', hakkimizda:'Hakkımızda',
+  uzmanlik:'Uzmanlık Alanları', ekip:'Ekip', referanslar:'Referanslar', mesajlar:'Gelen Mesajlar'
+};
+
+function admTab(t){
+  currentTab = t;
+  $$('.adm-menu button').forEach(b => b.classList.toggle('on', b.dataset.tab === t));
+  $('#admTitle').textContent = TAB_TITLES[t];
+  const body = $('#admBody');
+  body.innerHTML = ({
+    genel:tabGeneral, hero:tabHero, hakkimizda:tabAbout, uzmanlik:tabPractice,
+    ekip:tabTeam, referanslar:tabTesti, mesajlar:tabMsgs
+  })[t]();
+  lucide.createIcons();
+  window.scrollTo(0, 0);
+}
+function refreshTab(){ admTab(currentTab); }
+
+/* --- yardımcı alan bileşenleri --- */
+function fld(label, key, opts = {}){
+  const v = data.settings[key] ?? '';
+  const tag = opts.rows ? 'textarea' : 'input';
+  const extra = opts.rows ? `rows="${opts.rows}"` : `type="${opts.type||'text'}"`;
+  return `<div class="field" ${opts.wide?'style="grid-column:1/-1"':''}>
+    <label>${label}</label>
+    <${tag} ${extra} value="${esc(v)}" ${opts.ph?`placeholder="${esc(opts.ph)}"`:''}
+      oninput="setS('${key}', this.value)">${tag==='textarea'?esc(v):''}</${tag}>
+  </div>`;
+}
+function imgField(key, label){
+  const v = data.settings[key] || '';
+  return `<div class="field" style="grid-column:1/-1">
+    <label>${label}</label>
+    <div class="imgrow">
+      <div class="imgprev">${v ? `<img src="${esc(v)}" alt="">` : `<span class="imgph"><i data-lucide="image"></i></span>`}</div>
+      <div class="imgctl">
+        <input type="text" value="${esc(v)}" placeholder="https://… görsel adresi" oninput="setS('${key}', this.value)">
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="abtn ghost" onclick="pickS('${key}')"><i data-lucide="upload"></i>Bilgisayardan Yükle</button>
+          ${v ? `<button class="abtn ghost danger" onclick="setS('${key}','');refreshTab()"><i data-lucide="x"></i>Kaldır</button>` : ''}
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+/* görsel yükleme: tarayıcıda otomatik yeniden boyutlandırma (kota dostu) */
+function pickImage(cb){
+  const inp = document.createElement('input');
+  inp.type = 'file'; inp.accept = 'image/*';
+  inp.onchange = () => {
+    const f = inp.files[0]; if (!f) return;
+    const r = new FileReader();
+    r.onload = ev => {
+      const img = new Image();
+      img.onload = () => {
+        const M = 1400;
+        let w = img.width, h = img.height;
+        if (w > M){ h = Math.round(h * M / w); w = M; }
+        const c = document.createElement('canvas');
+        c.width = w; c.height = h;
+        c.getContext('2d').drawImage(img, 0, 0, w, h);
+        cb(c.toDataURL('image/jpeg', .85));
+      };
+      img.src = ev.target.result;
+    };
+    r.readAsDataURL(f);
+  };
+  inp.click();
+}
+function pickS(key){
+  pickImage(url => { setS(key, url); refreshTab(); toast('Görsel yüklendi'); });
+}
+function pickL(list, id, key){
+  pickImage(url => { setL(list, id, key, url); refreshTab(); toast('Görsel yüklendi'); });
+}
+
+/* --- veri yazma yardımcıları --- */
+function setS(k, v){ data.settings[k] = v; saveSoon(); }
+function setL(list, id, k, v){
+  const it = data[list].find(x => x.id === id);
+  if (it){ it[k] = v; saveSoon(); }
+}
+function moveL(list, id, dir){
+  const a = data[list], i = a.findIndex(x => x.id === id), j = i + dir;
+  if (i < 0 || j < 0 || j >= a.length) return;
+  [a[i], a[j]] = [a[j], a[i]];
+  persist(); refreshTab();
+}
+const TEMPLATES = {
+  practice: () => ({ id:uid(), title:'Yeni Uzmanlık Alanı', desc:'Bu alandaki yaklaşımınızı ve verdiğiniz hizmetleri kısaca anlatın.' }),
+  team: () => ({ id:uid(), name:'Ad Soyad', role:'Avukat', focus:'Uzmanlık Alanı', photo:`https://picsum.photos/seed/${uid()}/600/800.jpg` }),
+  testimonials: () => ({ id:uid(), quote:'Müvekkil alıntısını buraya yazın.', author:'Ad Soyad', role:'Unvan, Kurum' })
+};
+function addL(list){
+  data[list].push(TEMPLATES[list]());
+  persist(); refreshTab(); toast('Yeni öğe eklendi', 'plus');
+}
+function delL(list, id, label){
+  confirmModal('Öğeyi Sil', `"${label}" kalıcı olarak silinecek. Emin misiniz?`, 'Sil', () => {
+    data[list] = data[list].filter(x => x.id !== id);
+    persist(); refreshTab(); toast('Öğe silindi', 'trash-2');
+  });
+}
+function litHead(list, idx, item, label){
+  return `<div class="lit-head">
+    <span class="lit-idx">${String(idx+1).padStart(2,'0')}</span>
+    <div class="lit-acts">
+      <button class="ibtn" onclick="moveL('${list}','${item.id}',-1)" title="Yukarı taşı"><i data-lucide="arrow-up"></i></button>
+      <button class="ibtn" onclick="moveL('${list}','${item.id}',1)" title="Aşağı taşı"><i data-lucide="arrow-down"></i></button>
+      <button class="ibtn danger" onclick="delL('${list}','${item.id}','${esc(label).replace(/'/g,'')}')" title="Sil"><i data-lucide="trash-2"></i></button>
+    </div>
+  </div>`;
+}
+
+/* --- sekmeler --- */
+function tabGeneral(){
+  const s = data.settings;
+  return `
+  <div class="adm-note"><i data-lucide="info"></i>
+    <span>Bu bölümdeki bilgiler sitenin her yerinde (menü, hero, iletişim, altbilgi) otomatik güncellenir. Metin alanlarında değişiklik yaptığınız anda kaydedilir.</span>
+  </div>
+  <div class="grid2">
+    ${fld('Büro Adı','name',{wide:true,ph:'Karay & Doğan Hukuk Bürosu'})}
+    ${fld('Kısa Ad / Monogram','shortName')}
+    ${fld('Kuruluş Yılı','est')}
+    ${fld('Telefon','phone')}
+    ${fld('E-posta','email')}
+    ${fld('Çalışma Saatleri','hours',{wide:true})}
+    ${fld('Adres','address',{wide:true,rows:2})}
+    ${fld('Yeni Panel Şifresi (boş bırakılırsa değişmez)','_newpw',{wide:true,type:'password'})}
+  </div>
+  <div style="margin-top:28px;padding-top:22px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap">
+    <p style="font-size:13px;color:var(--ink2)">Tüm içeriği fabrika ayarlarına döndürün.</p>
+    <button class="abtn ghost danger" onclick="resetAll()"><i data-lucide="rotate-ccw"></i>Verileri Sıfırla</button>
+  </div>`;
+}
+
+function tabHero(){
+  return `
+  <div class="adm-note"><i data-lucide="info"></i>
+    <span>Hero görseli boş bırakılırsa ziyaretçiler sallanan adalet terazisi çizimini görür; bir görsel yüklerseniz onunla değişir.</span>
+  </div>
+  <div class="grid2">
+    ${fld('Üst Etiket (kicker)','kicker',{wide:true})}
+    ${fld('Ana Başlık','heroTitle',{wide:true,rows:2,ph:'Karmaşık dosyalar,'})}
+    ${fld('Vurgulu Satır (italik)','heroAccent',{wide:true,rows:1,ph:'net çözümler.'})}
+    ${fld('Alt Açıklama','heroSub',{wide:true,rows:3})}
+    ${imgField('heroImg','Hero Görseli (opsiyonel)')}
+  </div>`;
+}
+
+function tabAbout(){
+  const s = data.settings;
+  const statRow = (n, l1, k, l2) => `
+    <div class="statrow">
+      <div class="field"><label>${l1}</label><input value="${esc(s[k])}" oninput="setS('${k}', this.value)"></div>
+      <div class="field"><label>Sonek</label><input value="${esc(s[k.replace('n','s')])}" oninput="setS('${k.replace('n','s')}', this.value)"></div>
+      <div class="field"><label>${l2}</label><input value="${esc(s[k.replace('n','l')])}" oninput="setS('${k.replace('n','l')}', this.value)"></div>
+    </div>`;
+  return `
+  <div class="adm-note"><i data-lucide="info"></i>
+    <span>Sayı alanına yalnızca rakam yazın (örn. 1400); “+” gibi işaretleri Sonek alanına girin. Böylece ziyaretçide sayı animasyonla sayarak yükselir.</span>
+  </div>
+  <div class="grid2">
+    ${fld('Bölüm Başlığı','aboutTitle',{wide:true,rows:2})}
+    ${fld('1. Paragraf','aboutP1',{wide:true,rows:4})}
+    ${fld('2. Paragraf','aboutP2',{wide:true,rows:4})}
+    ${imgField('aboutImg','Büro Görseli')}
+  </div>
+  <h3 style="font:500 20px 'Fraunces',serif;margin:30px 0 16px">İstatistikler</h3>
+  ${statRow(1,'Sayı','s1n','Etiket')}
+  ${statRow(2,'Sayı','s2n','Etiket')}
+  ${statRow(3,'Sayı','s3n','Etiket')}`;
+}
+
+function tabPractice(){
+  return `
+  <div class="list-top">
+    <p>Sitede numaralı satırlar hâlinde, açılır-kapanır listede görünür.</p>
+    <button class="abtn" onclick="addL('practice')"><i data-lucide="plus"></i>Yeni Alan</button>
+  </div>
+  ${data.practice.map((p,i)=>`
+  <div class="litem">
+    ${litHead('practice', i, p, p.title)}
+    <div class="field"><label>Başlık</label><input value="${esc(p.title)}" oninput="setL('practice','${p.id}','title', this.value)"></div>
+    <div class="field" style="margin:0"><label>Açıklama</label><textarea rows="2" oninput="setL('practice','${p.id}','desc', this.value)">${esc(p.desc)}</textarea></div>
+  </div>`).join('')}`;
+}
+
+function tabTeam(){
+  return `
+  <div class="list-top">
+    <p>Üyeler soldan sağa yatay şeritte görünür; fotoğrafa gelince renklenir.</p>
+    <button class="abtn" onclick="addL('team')"><i data-lucide="plus"></i>Yeni Üye</button>
+  </div>
+  ${data.team.map((m,i)=>`
+  <div class="litem">
+    ${litHead('team', i, m, m.name)}
+    <div class="grid2">
+      <div class="field"><label>Ad Soyad</label><input value="${esc(m.name)}" oninput="setL('team','${m.id}','name', this.value)"></div>
+      <div class="field"><label>Unvan</label><input value="${esc(m.role)}" oninput="setL('team','${m.id}','role', this.value)"></div>
+    </div>
+    <div class="field"><label>Uzmanlık</label><input value="${esc(m.focus)}" oninput="setL('team','${m.id}','focus', this.value)"></div>
+    <div class="field" style="margin:0"><label>Fotoğraf</label>
+      <div class="imgrow">
+        <div class="imgprev" style="height:128px">${m.photo?`<img src="${esc(m.photo)}" alt="">`:`<span class="imgph"><i data-lucide="image"></i></span>`}</div>
+        <div class="imgctl">
+          <input type="text" value="${esc(m.photo)}" placeholder="https://…" oninput="setL('team','${m.id}','photo', this.value)">
+          <button class="abtn ghost" onclick="pickL('team','${m.id}','photo')"><i data-lucide="upload"></i>Bilgisayardan Yükle</button>
+        </div>
+      </div>
+    </div>
+  </div>`).join('')}`;
+}
+
+function tabTesti(){
+  return `
+  <div class="list-top">
+    <p>Alıntılar koyu bölümde 6 saniyede bir otomatik değişir.</p>
+    <button class="abtn" onclick="addL('testimonials')"><i data-lucide="plus"></i>Yeni Alıntı</button>
+  </div>
+  ${data.testimonials.map((q,i)=>`
+  <div class="litem">
+    ${litHead('testimonials', i, q, q.author)}
+    <div class="field"><label>Alıntı</label><textarea rows="3" oninput="setL('testimonials','${q.id}','quote', this.value)">${esc(q.quote)}</textarea></div>
+    <div class="grid2">
+      <div class="field" style="margin:0"><label>Ad</label><input value="${esc(q.author)}" oninput="setL('testimonials','${q.id}','author', this.value)"></div>
+      <div class="field" style="margin:0"><label>Unvan / Kurum</label><input value="${esc(q.role)}" oninput="setL('testimonials','${q.id}','role', this.value)"></div>
+    </div>
+  </div>`).join('')}`;
+}
+
+function tabMsgs(){
+  const fmt = d => new Date(d).toLocaleString('tr-TR', { day:'numeric', month:'long', hour:'2-digit', minute:'2-digit' });
+  if (!data.messages.length) return `
+    <div class="empty"><i data-lucide="inbox"></i>Henüz mesaj yok.<br>Sitedeki iletişim formundan gelen mesajlar burada listelenecek.</div>`;
+  return data.messages.map(m => `
+  <div class="msg ${m.read?'':'unread'}" id="msg-${m.id}">
+    <div class="msg-row" onclick="openMsg('${m.id}')">
+      <div><b>${esc(m.name)}</b><span class="msg-mail">${esc(m.email)}</span></div>
+      <div class="msg-meta">${fmt(m.date)} ${m.read?'':'<span class="pill">Yeni</span>'}</div>
+    </div>
+    <p class="msg-sub">${esc(m.subject)}</p>
+    <div class="msg-body">
+      <p>${esc(m.message)}</p>
+      <div class="msg-acts">
+        <a class="abtn ghost" href="mailto:${esc(m.email)}?subject=Yanıt: ${esc(m.subject)}"><i data-lucide="send"></i>Yanıtla</a>
+        ${m.read?'':`<button class="abtn ghost" onclick="markRead('${m.id}');event.stopPropagation()"><i data-lucide="check"></i>Okundu İşaretle</button>`}
+        <button class="abtn ghost danger" onclick="delMsg('${m.id}');event.stopPropagation()"><i data-lucide="trash-2"></i>Sil</button>
+      </div>
+    </div>
+  </div>`).join('');
+}
+function openMsg(id){
+  const el = document.getElementById('msg-' + id);
+  el.classList.toggle('open');
+  const m = data.messages.find(x => x.id === id);
+  if (m && !m.read){ m.read = true; persist(); el.classList.remove('unread'); el.querySelector('.pill')?.remove(); }
+}
+function markRead(id){
+  const m = data.messages.find(x => x.id === id);
+  if (m){ m.read = true; persist(); refreshTab(); }
+}
+function delMsg(id){
+  confirmModal('Mesajı Sil', 'Bu mesaj kalıcı olarak silinecek.', 'Sil', () => {
+    data.messages = data.messages.filter(x => x.id !== id);
+    persist(); refreshTab(); toast('Mesaj silindi', 'trash-2');
+  });
+}
+function resetAll(){
+  confirmModal('Verileri Sıfırla', 'Tüm yazılar, fotoğraflar ve mesajlar fabrika ayarlarına dönecek. Bu işlem geri alınamaz.', 'Sıfırla', () => {
+    localStorage.removeItem(STORE_KEY);
+    data = JSON.parse(JSON.stringify(SEED));
+    sessionStorage.removeItem('kd_adm');
+    renderAdmin();
+    toast('İçerik fabrika ayarlarına döndürüldü', 'rotate-ccw');
+  });
+}
+
+/* --- giriş işlemleri --- */
+function tryLogin(){
+  const v = $('#pw').value;
+  if (enc(v) === data.settings._pw){
+    sessionStorage.setItem('kd_adm', '1');
+    renderAdmin();
+    toast('Hoş geldiniz', 'check');
+  } else {
+    const err = $('#loginErr');
+    err.textContent = 'Şifre hatalı, tekrar deneyin.';
+    err.classList.remove('shake'); void err.offsetWidth; err.classList.add('shake');
+  }
+}
+function togglePw(){
+  const inp = $('#pw');
+  const show = inp.type === 'password';
+  inp.type = show ? 'text' : 'password';
+  inp.parentElement.querySelector('button').innerHTML =
+    `<i data-lucide="${show ? 'eye-off' : 'eye'}"></i>`;
+  lucide.createIcons();
+  inp.focus();
+}
+
+/* --- şifre kaydı: Genel sekmesindeki özel alan --- */
+const _setS = setS;
+setS = function(k, v){
+  if (k === '_newpw'){ if (v) data.settings._pw = enc(v); saveSoon(); return; }
+  if (k === '_pw') return; // doğrudan üzerine yazılmasın
+  _setS(k, v);
+};
+
+/* ============================================================
+   YÖNLENDİRME
+   ============================================================ */
+function route(){
+  stopTimers();
+  if (location.hash.startsWith('#/admin')) renderAdmin();
+  else { renderSite(); window.scrollTo(0, 0); }
+}
+window.addEventListener('hashchange', route);
+/* panel başka sekmede güncellenirse siteyi canlı yenile */
+window.addEventListener('storage', e => {
+  if (e.key === STORE_KEY && !location.hash.startsWith('#/admin')){
+    try { data = JSON.parse(e.newValue); } catch(err){}
+    route();
+  }
+});
+route();
+</script>
+</body>
+</html>

@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TOUCHLINE — Football, Live.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0C0F0D; --panel:#121613; --line:#232A25; --line2:#2C3530;
+  --text:#F2F5F0; --muted:#96A099; --faint:#6C7770;
+  --volt:#C6F53F; --ink:#0C0F0D; --live:#FF4B3E; --gold:#E8C35A;
+  --anton:'Anton',sans-serif; --arch:'Archivo',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--arch);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body.modal-open,body.has-player{overflow-x:hidden}
+body.has-player{padding-bottom:84px}
+::selection{background:var(--volt);color:var(--ink)}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+input{font:inherit}
+::-webkit-scrollbar{width:10px;height:8px}
+::-webkit-scrollbar-thumb{background:#262E29;border-radius:6px}
+::-webkit-scrollbar-track{background:transparent}
+:focus-visible{outline:2px solid var(--volt);outline-offset:2px}
+.wrap{max-width:1240px;margin:0 auto;padding:0 24px}
+.icon{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+/* ---------- ticker ---------- */
+.ticker{border-bottom:1px solid var(--line);background:#0F1310;height:42px;display:flex;align-items:stretch;overflow:hidden}
+.tick-label{display:flex;align-items:center;gap:8px;padding:0 16px;background:var(--live);color:#fff;font-weight:800;font-size:11px;letter-spacing:.14em;flex:none}
+.tick-label .dot{width:7px;height:7px;border-radius:50%;background:#fff;animation:blink 1.2s infinite}
+@keyframes blink{50%{opacity:.25}}
+.tick-view{flex:1;overflow:hidden;display:flex;align-items:center;-webkit-mask-image:linear-gradient(90deg,transparent,#000 3%,#000 97%,transparent);mask-image:linear-gradient(90deg,transparent,#000 3%,#000 97%,transparent)}
+.tick-track{display:flex;width:max-content;animation:tick 60s linear infinite}
+.ticker:hover .tick-track{animation-play-state:paused}
+@keyframes tick{to{transform:translateX(-50%)}}
+.tk{display:flex;align-items:center;gap:9px;padding:0 24px;font-size:13px;font-weight:600;white-space:nowrap;border-right:1px solid var(--line);cursor:default}
+.tk .st{font-size:10px;font-weight:800;letter-spacing:.08em;color:var(--faint);font-variant-numeric:tabular-nums}
+.tk.live .st{color:var(--live)}
+.tk .sc{font-family:var(--anton);font-size:14px;letter-spacing:.05em}
+.tk .tm{color:var(--muted);font-size:11px;font-weight:700}
+.badge{width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:8.5px;font-weight:800;letter-spacing:.02em;flex:none}
+.badge.sm{width:17px;height:17px;font-size:6.5px}
+
+/* ---------- header ---------- */
+.hdr{position:sticky;top:0;z-index:50;background:rgba(12,15,13,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.hdr-in{display:flex;align-items:center;gap:30px;height:64px}
+.logo{font-family:var(--anton);font-weight:400;font-size:26px;letter-spacing:.03em;flex:none}
+.logo b{color:var(--volt);font-weight:400}
+.nav{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nav a{padding:8px 13px;font-size:13px;font-weight:600;color:var(--muted);white-space:nowrap;border-bottom:2px solid transparent}
+.nav a:hover{color:var(--text)}
+.hdr-r{margin-left:auto;display:flex;gap:10px;align-items:center;flex:none}
+.iconbtn{width:38px;height:38px;border:1px solid var(--line);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--muted)}
+.iconbtn:hover{border-color:var(--volt);color:var(--volt)}
+.livepill{display:flex;gap:8px;align-items:center;padding:8px 15px;border:1px solid rgba(255,75,62,.45);color:#FF6A5E;font-weight:800;font-size:12px;letter-spacing:.1em;border-radius:999px;white-space:nowrap}
+.livepill:hover{border-color:var(--live)}
+.livepill .dot{width:8px;height:8px;background:var(--live);border-radius:50%;animation:pulse 1.4s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,75,62,.5)}70%{box-shadow:0 0 0 8px rgba(255,75,62,0)}100%{box-shadow:0 0 0 0 rgba(255,75,62,0)}}
+
+/* ---------- hero ---------- */
+.hero{padding:48px 0 64px;position:relative;overflow:hidden}
+.pitch-deco{position:absolute;right:-180px;top:-240px;pointer-events:none;opacity:.06}
+.hero-grid{display:grid;grid-template-columns:1.55fr 1fr;gap:44px;position:relative}
+.lead{cursor:pointer}
+.lead .thumb{overflow:hidden}
+.lead img{aspect-ratio:16/9;width:100%;object-fit:cover;transition:transform .6s ease}
+.lead:hover img{transform:scale(1.03)}
+.chip{background:var(--volt);color:var(--ink);font-size:10px;font-weight:800;letter-spacing:.16em;padding:4px 10px;text-transform:uppercase;display:inline-flex;align-items:center;gap:6px}
+.lead .chiprow{margin:20px 0 12px;display:flex;align-items:center;gap:14px}
+.lead h1{font-family:var(--anton);font-weight:400;font-size:clamp(32px,4.4vw,56px);line-height:1.05;letter-spacing:.005em;text-transform:uppercase;transition:color .25s}
+.lead:hover h1{color:var(--volt)}
+.lead .dek{color:var(--muted);font-size:16.5px;max-width:620px;margin-top:14px;line-height:1.6}
+.meta{display:flex;flex-wrap:wrap;gap:8px 16px;color:var(--faint);font-size:11.5px;letter-spacing:.06em;margin-top:16px;font-weight:600;text-transform:uppercase}
+.meta .by{color:var(--text)}
+.meta i{font-style:normal;color:#3A443D}
+
+/* canlı maç paneli */
+.livebox{border:1px solid var(--line2);background:var(--panel);position:relative;overflow:hidden}
+.livebox.flash{animation:flash 1s ease}
+@keyframes flash{0%{border-color:var(--volt);box-shadow:inset 0 0 0 1px var(--volt)}100%{border-color:var(--line2)}}
+.livebox-head{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line);font-size:10.5px;letter-spacing:.1em;font-weight:700;color:var(--muted);text-transform:uppercase}
+.live-tag{color:#fff;background:var(--live);padding:3px 9px;font-size:10px;display:flex;gap:6px;align-items:center;letter-spacing:.12em;flex:none}
+.live-tag .dot{width:6px;height:6px;background:#fff;border-radius:50%;animation:blink 1.2s infinite}
+.minute{margin-left:auto;font-variant-numeric:tabular-nums;color:var(--live);font-weight:800;font-size:13px;letter-spacing:.06em}
+.livebox-score{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:22px 16px 16px;gap:10px}
+.lt{display:flex;flex-direction:column;align-items:center;gap:9px}
+.lt .tn{font-weight:800;font-size:14px;letter-spacing:.01em}
+.scoreline{font-family:var(--anton);font-size:46px;display:flex;gap:12px;align-items:center;line-height:1}
+.scoreline span{min-width:36px;text-align:center}
+.scoreline .sep{color:var(--faint);min-width:auto}
+.scoreline span.pop{animation:pop .55s ease}
+@keyframes pop{30%{transform:scale(1.4);color:var(--volt)}}
+.comp-row{padding:0 16px 16px;color:var(--faint);font-size:12px;font-weight:600}
+.feed{border-top:1px solid var(--line);max-height:262px;overflow-y:auto}
+.fev{display:flex;gap:12px;padding:11px 16px;border-bottom:1px solid var(--line);font-size:13px;color:var(--muted);line-height:1.45;animation:feedin .4s ease}
+@keyframes feedin{from{opacity:0;transform:translateY(-8px)}}
+.fev .fm{color:var(--faint);font-weight:800;min-width:34px;font-size:11.5px;font-variant-numeric:tabular-nums;padding-top:1px}
+.fev.goal{background:rgba(198,245,63,.08);color:var(--text)}
+.fev.goal .fm{color:var(--volt)}
+.fev.goal .gtag{color:var(--volt);font-weight:800;letter-spacing:.1em;font-size:10.5px;margin-right:6px}
+.fev.card .fm{color:var(--gold)}
+.mcbtn{display:flex;justify-content:space-between;align-items:center;padding:13px 16px;font-weight:800;font-size:12px;letter-spacing:.1em;text-transform:uppercase;border-top:1px solid var(--line);width:100%}
+.mcbtn:hover{color:var(--volt)}
+.goal-ov{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(198,245,63,.95);color:var(--ink);font-family:var(--anton);font-size:60px;letter-spacing:.04em;opacity:0;pointer-events:none;z-index:5}
+.goal-ov.show{animation:goalpop .95s ease}
+@keyframes goalpop{0%{opacity:0;transform:scale(.85)}12%{opacity:1;transform:scale(1)}78%{opacity:1}100%{opacity:0}}
+
+.hero-latest{margin-top:22px;border:1px solid var(--line)}
+.hl-h{padding:11px 16px;font-size:10.5px;font-weight:800;letter-spacing:.18em;color:var(--faint);text-transform:uppercase;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+.hl-h .live-dot{width:7px;height:7px;background:var(--volt);border-radius:50%;animation:blink 1.2s infinite}
+.hlr{display:flex;gap:14px;padding:13px 16px;border-bottom:1px solid var(--line);cursor:pointer;align-items:center}
+.hlr:last-child{border-bottom:0}
+.hlr:hover .t{color:var(--volt)}
+.hlr img{width:62px;height:62px;object-fit:cover;flex:none}
+.hlr .t{font-weight:700;font-size:13.5px;line-height:1.35;transition:color .2s}
+.hlr .tm{color:var(--faint);font-size:11px;font-weight:600;margin-top:5px;letter-spacing:.05em;text-transform:uppercase}
+
+/* ---------- sections ---------- */
+.sec{padding:64px 0;border-top:1px solid var(--line)}
+.sec-head{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:30px;gap:20px;flex-wrap:wrap}
+.sec-tag{font-size:11px;letter-spacing:.24em;color:var(--volt);font-weight:800;margin-bottom:10px;font-variant-numeric:tabular-nums}
+.sec-title{font-family:var(--anton);font-weight:400;font-size:clamp(26px,3vw,38px);letter-spacing:.01em;text-transform:uppercase;line-height:1}
+.viewall{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.viewall:hover{color:var(--volt)}
+
+/* ---------- matches ---------- */
+.tabs{display:flex;border:1px solid var(--line);width:max-content;margin-bottom:24px}
+.tab{padding:11px 24px;font-size:12px;font-weight:800;letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
+.tab.on{background:var(--volt);color:var(--ink)}
+.tab:not(.on):hover{color:var(--text)}
+.dayhead{font-size:11px;color:var(--faint);letter-spacing:.2em;font-weight:800;padding:0 0 12px;text-transform:uppercase}
+.mlist{border:1px solid var(--line)}
+.mrow{border-bottom:1px solid var(--line)}
+.mrow:last-child{border-bottom:0}
+.mrow-main{display:grid;grid-template-columns:64px 1fr 120px 1fr 30px;align-items:center;padding:15px 20px;cursor:pointer;gap:10px}
+.mrow-main:hover{background:var(--panel)}
+.m-status{font-size:10px;font-weight:800;letter-spacing:.1em;color:var(--muted)}
+.m-team{display:flex;align-items:center;gap:11px;font-weight:700;font-size:15px;min-width:0}
+.m-team span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.m-team.right{justify-content:flex-end;text-align:right}
+.m-team.lose span,.m-team.lose{color:var(--muted)}
+.m-score{font-family:var(--anton);font-size:21px;text-align:center;letter-spacing:.06em}
+.m-time{font-weight:800;font-size:14px;text-align:center;letter-spacing:.05em;font-variant-numeric:tabular-nums}
+.m-chev{color:var(--faint);display:flex;justify-content:center}
+.m-chev svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;transition:transform .35s}
+.mrow.open .m-chev svg{transform:rotate(180deg)}
+.m-detail{display:grid;grid-template-rows:0fr;transition:grid-template-rows .45s ease}
+.mrow.open .m-detail{grid-template-rows:1fr}
+.m-detail-in{overflow:hidden;background:var(--panel)}
+.m-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;padding:18px 22px 8px}
+.evcol h4{font-size:10px;letter-spacing:.18em;color:var(--faint);margin-bottom:10px;font-weight:800;display:flex;align-items:center;gap:8px}
+.evl{display:flex;gap:9px;align-items:center;font-size:13px;color:var(--muted);padding:4px 0}
+.evl .m{color:var(--text);font-weight:800;min-width:36px;font-variant-numeric:tabular-nums;font-size:12px}
+.evl .icon{width:13px;height:13px;color:var(--faint)}
+.evl .icon.ball{color:var(--volt)}
+.evl .icon.yc{color:var(--gold)}
+.mstats{display:flex;flex-wrap:wrap;gap:10px 28px;border-top:1px solid var(--line);margin:14px 22px 0;padding:14px 0 16px;font-size:12px;color:var(--muted);grid-column:1/-1}
+.mstats b{color:var(--text);font-variant-numeric:tabular-nums}
+.mcomp{font-size:11px;color:var(--faint);font-weight:600;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;align-self:center}
+.bellbtn{width:36px;height:36px;border:1px solid var(--line);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--muted);flex:none}
+.bellbtn:hover{border-color:var(--volt);color:var(--volt)}
+
+/* ---------- newsroom ---------- */
+.news-top{display:grid;grid-template-columns:1.4fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);margin-bottom:44px}
+.ncell{background:var(--bg);cursor:pointer}
+.ncell .thumb{overflow:hidden}
+.ncell img{aspect-ratio:16/9;object-fit:cover;width:100%;transition:transform .6s ease}
+.ncell:hover img{transform:scale(1.04)}
+.nbody{padding:20px 22px 24px}
+.nbody h3{font-size:19px;font-weight:800;line-height:1.3;letter-spacing:-.01em;margin:12px 0 8px;transition:color .2s}
+.ncell:hover h3{color:var(--volt)}
+.ncell.big h3{font-size:25px;line-height:1.22}
+.nbody .dek{color:var(--muted);font-size:14px;line-height:1.55}
+.nstack{display:flex;flex-direction:column;background:var(--bg)}
+.nstack .ncell{border-bottom:1px solid var(--line)}
+.nstack .ncell:last-child{border-bottom:0}
+.nov{position:relative;overflow:hidden;min-height:250px;display:flex;align-items:flex-end;cursor:pointer;background:#000}
+.nov img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .6s ease}
+.nov:hover img{transform:scale(1.05)}
+.nov-in{position:relative;background:rgba(10,12,10,.78);padding:16px 20px 18px;width:100%}
+.nov-in h3{font-size:18px;font-weight:800;line-height:1.3;margin-top:10px}
+.nov:hover h3{color:var(--volt)}
+.lhead{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+.lhead h3{font-family:var(--anton);font-weight:400;font-size:22px;letter-spacing:.02em;text-transform:uppercase}
+.lhead .rule{flex:1;height:1px;background:var(--line)}
+.hl{display:grid;grid-template-columns:96px 96px 1fr 120px;align-items:center;gap:20px;padding:17px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.hl:hover .hlt{color:var(--volt)}
+.hl .htime{font-size:11px;color:var(--faint);font-weight:700;letter-spacing:.06em;font-variant-numeric:tabular-nums;text-transform:uppercase}
+.hl .hcat{font-size:10px;font-weight:800;letter-spacing:.14em;color:var(--volt);text-transform:uppercase}
+.hl .hlt{font-size:17.5px;font-weight:700;letter-spacing:-.01em;line-height:1.35;transition:color .2s}
+.hl img{width:120px;height:68px;object-fit:cover}
+
+/* ---------- watch ---------- */
+.watch-grid{display:grid;grid-template-columns:1.9fr 1fr;gap:44px}
+.vbig{cursor:pointer}
+.vimg{position:relative;overflow:hidden}
+.vbig img{aspect-ratio:16/9;width:100%;object-fit:cover;transition:transform .6s ease}
+.vbig:hover img{transform:scale(1.04)}
+.vplay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.vplay .pb{width:76px;height:76px;border-radius:50%;background:var(--volt);color:var(--ink);display:flex;align-items:center;justify-content:center;transition:transform .3s}
+.vplay .pb .icon{width:26px;height:26px}
+.vbig:hover .pb{transform:scale(1.12)}
+.vdur{position:absolute;bottom:12px;right:12px;background:rgba(8,10,9,.85);font-size:11px;font-weight:800;padding:4px 9px;letter-spacing:.08em;font-variant-numeric:tabular-nums}
+.vtitle{font-size:22px;font-weight:800;margin-top:18px;line-height:1.3;transition:color .2s}
+.vbig:hover .vtitle{color:var(--volt)}
+.vmeta{color:var(--faint);font-size:12px;margin-top:7px;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.vr{display:grid;grid-template-columns:150px 1fr 44px;gap:16px;padding:16px 0;border-bottom:1px solid var(--line);cursor:pointer;align-items:center}
+.vr:first-child{padding-top:0}
+.vr img{aspect-ratio:16/10;width:100%;object-fit:cover}
+.vr .vrt{font-weight:700;font-size:15px;line-height:1.35;transition:color .2s}
+.vr:hover .vrt{color:var(--volt)}
+.vr .vrm{color:var(--faint);font-size:11.5px;margin-top:6px;font-variant-numeric:tabular-nums;font-weight:600}
+.vr .mini-pb{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--muted)}
+.vr:hover .mini-pb{border-color:var(--volt);color:var(--volt)}
+.vr .mini-pb .icon{width:14px;height:14px}
+
+/* ---------- gallery ---------- */
+.gal{display:flex;gap:14px;overflow-x:auto;padding-bottom:10px;scroll-snap-type:x mandatory}
+.gal-i{flex:0 0 282px;scroll-snap-align:start;cursor:pointer;position:relative}
+.gal-i img{aspect-ratio:4/3;width:100%;object-fit:cover;transition:transform .5s ease}
+.gal-i:hover img{transform:scale(1.03)}
+.gal-i .gnum{position:absolute;top:10px;left:10px;background:rgba(8,10,9,.85);padding:4px 9px;font-size:10px;font-weight:800;letter-spacing:.12em}
+.gcap{font-size:12.5px;color:var(--muted);margin-top:9px;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
+/* ---------- players ---------- */
+.pl-grid{display:grid;grid-template-columns:1.15fr 1fr;gap:44px;align-items:start}
+.pl-card{border:1px solid var(--line2);background:var(--panel);position:relative;overflow:hidden;padding:30px;animation:cardin .35s ease}
+@keyframes cardin{from{opacity:.25}}
+.pl-card .bignum{position:absolute;right:14px;top:-8px;font-family:var(--anton);font-size:170px;line-height:1;color:rgba(242,245,240,.045);pointer-events:none}
+.pl-top{display:flex;gap:26px;position:relative}
+.pl-img{width:150px;height:182px;object-fit:cover;filter:grayscale(.85) contrast(1.05);border:1px solid var(--line2);transition:filter .4s}
+.pl-card:hover .pl-img{filter:grayscale(0)}
+.pl-name{font-family:var(--anton);font-weight:400;font-size:clamp(26px,2.6vw,36px);text-transform:uppercase;line-height:1.08}
+.pl-sub{display:flex;flex-wrap:wrap;gap:12px;align-items:center;color:var(--muted);font-size:13px;margin-top:12px;font-weight:600}
+.pl-sub .badge{width:19px;height:19px;font-size:7px}
+.pl-sub i{font-style:normal;color:#39433C}
+.pl-stats{margin-top:28px;display:flex;flex-direction:column;gap:15px;position:relative}
+.stat .srow{display:flex;justify-content:space-between;font-size:11.5px;font-weight:800;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;margin-bottom:7px}
+.stat .val{color:var(--text);font-variant-numeric:tabular-nums}
+.bar{height:6px;background:var(--line);position:relative;overflow:hidden}
+.bar i{position:absolute;left:0;top:0;bottom:0;background:var(--volt);width:0;transition:width .9s cubic-bezier(.2,.8,.2,1)}
+.pl-foot{margin-top:24px;padding-top:16px;border-top:1px solid var(--line);color:var(--faint);font-size:12px;font-weight:600;letter-spacing:.06em;font-variant-numeric:tabular-nums;text-transform:uppercase;position:relative}
+.pl-list .plrow{display:grid;grid-template-columns:26px 40px 1fr auto;gap:14px;align-items:center;padding:15px 18px;border:1px solid var(--line);border-bottom:0;cursor:pointer}
+.pl-list .plrow:last-child{border-bottom:1px solid var(--line)}
+.plrow:hover{background:var(--panel)}
+.plrow.on{background:var(--panel);border-left:3px solid var(--volt);padding-left:15px}
+.plrow .idx{font-variant-numeric:tabular-nums;font-size:12px;color:var(--faint);font-weight:700}
+.plrow .badge{width:19px;height:19px;font-size:7px}
+.plrow .pn{font-weight:800;font-size:15px;line-height:1.2}
+.plrow .pm{color:var(--faint);font-size:11.5px;font-weight:600;margin-top:2px;letter-spacing:.03em;text-transform:uppercase}
+.plrow .gls{text-align:right}
+.plrow .gls b{font-family:var(--anton);font-weight:400;font-size:22px;display:block;line-height:1}
+.plrow .gls small{font-size:9px;letter-spacing:.16em;color:var(--faint);font-weight:800}
+.plrow.on .gls b{color:var(--volt)}
+
+/* ---------- podcast ---------- */
+.pod-grid{display:grid;grid-template-columns:1fr 1.4fr;gap:52px;align-items:start}
+.mic-big{width:66px;height:66px;border:1px solid var(--volt);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--volt);margin-bottom:22px}
+.pod-show h3{font-family:var(--anton);font-weight:400;font-size:38px;line-height:1;text-transform:uppercase}
+.pod-show .host{color:var(--volt);font-size:11.5px;font-weight:800;letter-spacing:.18em;margin-top:12px;text-transform:uppercase}
+.pod-show p{color:var(--muted);font-size:15px;margin-top:16px;max-width:380px}
+.platforms{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+.pbtn{border:1px solid var(--line);padding:10px 16px;font-size:11px;font-weight:800;letter-spacing:.12em;display:flex;gap:9px;align-items:center;color:var(--muted)}
+.pbtn:hover{border-color:var(--volt);color:var(--volt)}
+.pbtn .icon{width:13px;height:13px}
+.ep{display:grid;grid-template-columns:66px 1fr auto;gap:20px;padding:19px 0;border-bottom:1px solid var(--line);cursor:pointer;align-items:center}
+.ep:first-child{padding-top:0}
+.ep .epno{font-family:var(--anton);font-weight:400;font-size:36px;color:var(--faint);line-height:.9;font-variant-numeric:tabular-nums;transition:color .25s}
+.ep:hover .epno{color:var(--volt)}
+.ep .ept{font-weight:700;font-size:16px;line-height:1.35}
+.ep .epm{color:var(--faint);font-size:12px;margin-top:5px;font-variant-numeric:tabular-nums;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.ep .pb2{width:48px;height:48px;border-radius:50%;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--muted);transition:.25s}
+.ep:hover .pb2{border-color:var(--volt);color:var(--volt);background:rgba(198,245,63,.08)}
+.ep .pb2 .icon{width:16px;height:16px}
+
+/* ---------- bottom player ---------- */
+.bp{position:fixed;left:0;right:0;bottom:0;z-index:60;background:#0E120F;border-top:1px solid var(--line2);display:none;align-items:center;gap:18px;padding:13px 24px}
+body.has-player .bp{display:flex}
+.bp img{width:48px;height:48px;object-fit:cover;flex:none}
+.bpt{min-width:0;width:190px}
+.bpt .t{font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bpt .m{color:var(--faint);font-size:11px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bp-controls{display:flex;align-items:center;gap:18px;flex:1;min-width:0}
+.bpp{width:44px;height:44px;border-radius:50%;background:var(--volt);color:var(--ink);display:flex;align-items:center;justify-content:center;flex:none}
+.bpp .icon{width:16px;height:16px}
+.timeline{flex:1;height:24px;display:flex;align-items:center;cursor:pointer;min-width:60px}
+.tl{height:4px;background:var(--line2);position:relative;flex:1}
+.tl i{position:absolute;left:0;top:0;bottom:0;background:var(--volt);width:0}
+.bptime{font-variant-numeric:tabular-nums;font-size:11px;color:var(--muted);font-weight:600;white-space:nowrap}
+.bpclose{color:var(--faint);display:flex}
+.bpclose:hover{color:var(--text)}
+
+/* ---------- modals ---------- */
+.modal{position:fixed;inset:0;z-index:100;display:none;align-items:flex-start;justify-content:center;overflow-y:auto;padding:6vh 20px 48px}
+.modal.open{display:flex}
+.modal-bg{position:fixed;inset:0;background:rgba(6,8,7,.84)}
+.modal-box{position:relative;background:#111512;border:1px solid var(--line2);max-width:760px;width:100%;animation:mup .35s ease}
+@keyframes mup{from{opacity:0;transform:translateY(26px)}}
+.mclose{position:absolute;top:14px;right:14px;z-index:5;width:42px;height:42px;background:rgba(10,12,10,.75);border-radius:50%;display:flex;align-items:center;justify-content:center}
+.mclose:hover{color:var(--volt);border:1px solid var(--volt)}
+.art-head{padding:32px 36px 0}
+.art-head h2{font-family:var(--anton);font-weight:400;font-size:clamp(24px,3.4vw,36px);line-height:1.1;text-transform:uppercase;margin:16px 0 14px}
+.art-head .meta{margin-top:0}
+.art-body{padding:26px 36px 38px}
+.art-body img{margin:26px 0}
+.art-body p{color:#C6CEC8;font-size:16px;line-height:1.75;margin-bottom:18px}
+.art-body p:first-of-type::first-letter{float:left;font-family:var(--anton);font-size:52px;line-height:.9;color:var(--volt);padding:4px 10px 0 0}
+.vmodal{max-width:920px;background:#0E110E}
+.vscreen{position:relative;aspect-ratio:16/9;overflow:hidden;background:#000}
+.vscreen img{width:100%;height:100%;object-fit:cover}
+.vscreen img.playing{animation:kenburns 26s linear infinite alternate}
+@keyframes kenburns{from{transform:scale(1)}to{transform:scale(1.09) translate(1.5%,-1.5%)}}
+.vcenter{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.vcenter .pb{width:80px;height:80px;border-radius:50%;background:var(--volt);color:var(--ink);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .25s}
+.vscreen:hover .vcenter .pb,.vcenter .pb.dim{opacity:1}
+.vcenter .pb .icon{width:28px;height:28px}
+.vfoot{padding:16px 20px 20px}
+.vfoot .vt{font-weight:800;font-size:16px;line-height:1.3}
+.vctrl{display:flex;align-items:center;gap:16px;padding:0 20px 8px;max-width:920px}
+.vpb{color:var(--text);display:flex}
+.vpb:hover{color:var(--volt)}
+.vpb .icon{width:26px;height:26px}
+
+/* ---------- lightbox ---------- */
+.lb{position:fixed;inset:0;z-index:110;background:rgba(6,8,7,.93);display:none;flex-direction:column}
+.lb.open{display:flex}
+.lb-top{display:flex;justify-content:space-between;padding:18px 26px;align-items:center}
+.lb-count{font-variant-numeric:tabular-nums;font-size:13px;color:var(--muted);font-weight:700;letter-spacing:.1em}
+.lb-main{flex:1;display:flex;align-items:center;justify-content:center;gap:22px;padding:0 26px;min-height:0}
+.lb-main img{max-width:min(920px,84vw);max-height:70vh;object-fit:contain;animation:mup .3s ease}
+.lb-nav{width:52px;height:52px;border:1px solid var(--line2);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--muted);flex:none}
+.lb-nav:hover{border-color:var(--volt);color:var(--volt)}
+.lb-cap{padding:18px 26px 30px;text-align:center;color:var(--muted);font-size:14px}
+
+/* ---------- search ---------- */
+.search{position:fixed;inset:0;z-index:120;background:rgba(8,10,9,.92);backdrop-filter:blur(10px);display:none;justify-content:center;padding-top:13vh}
+.search.open{display:flex}
+.search-box{width:min(680px,92vw)}
+.sinput{display:flex;gap:16px;align-items:center;border-bottom:2px solid var(--volt);padding:14px 8px}
+.sinput .icon{width:24px;height:24px;color:var(--volt)}
+.sinput input{flex:1;background:none;border:0;outline:0;color:var(--text);font-size:22px;font-weight:600;font-family:var(--arch)}
+.sinput input::placeholder{color:var(--faint)}
+.sres .sr{display:flex;justify-content:space-between;gap:16px;padding:15px 10px;border-bottom:1px solid var(--line);cursor:pointer;align-items:center}
+.sres .sr:hover{background:var(--panel)}
+.sr .t{font-weight:700;font-size:15px;line-height:1.35}
+.sr .c{color:var(--faint);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:800;flex:none}
+.shint{color:var(--faint);padding:18px 10px;font-size:13.5px}
+
+/* ---------- toast ---------- */
+.toasts{position:fixed;right:22px;bottom:96px;z-index:200;display:flex;flex-direction:column;gap:10px}
+.toast{display:flex;gap:13px;align-items:center;background:#151A16;border:1px solid var(--line2);border-left:3px solid var(--volt);padding:14px 18px;font-size:13.5px;font-weight:600;animation:tin .35s ease;min-width:260px;max-width:360px;line-height:1.4}
+.toast .icon{color:var(--volt);width:17px;height:17px}
+.toast.out{animation:tout .3s forwards}
+@keyframes tin{from{opacity:0;transform:translateX(24px)}}
+@keyframes tout{to{opacity:0;transform:translateX(24px)}}
+
+/* ---------- footer ---------- */
+footer{border-top:1px solid var(--line);padding:50px 0 40px}
+.foot{display:flex;justify-content:space-between;gap:40px;flex-wrap:wrap;align-items:flex-start}
+.foot .logo{font-size:30px}
+.foot p{color:var(--muted);font-size:13.5px;margin-top:10px;max-width:300px}
+.flinks{display:flex;flex-wrap:wrap;gap:8px 28px;font-size:12px;font-weight:700;letter-spacing:.1em;color:var(--muted);text-transform:uppercase}
+.flinks a:hover{color:var(--volt)}
+.foot-alt{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-top:38px;padding-top:22px;border-top:1px solid var(--line);color:var(--faint);font-size:12px}
+
+/* ---------- responsive ---------- */
+@media (max-width:1020px){
+  .hero-grid,.news-top,.watch-grid,.pl-grid,.pod-grid{grid-template-columns:1fr}
+  .news-top{border:1px solid var(--line)}
+  .hero{padding:36px 0}
+  .sec{padding:48px 0}
+}
+@media (max-width:640px){
+  .mrow-main{grid-template-columns:38px 1fr 84px 1fr 22px;padding:12px 12px;gap:7px}
+  .m-team{gap:8px;font-size:12.5px}
+  .badge{width:18px;height:18px;font-size:7px}
+  .m-score{font-size:17px}
+  .m-detail-grid{grid-template-columns:1fr}
+  .mcomp{display:none}
+  .hl{grid-template-columns:1fr 92px}
+  .hl .htime,.hl .hcat{display:none}
+  .nbody{padding:16px}
+  .ncell.big h3{font-size:21px}
+  .bpt{display:none}
+  .pl-top{gap:18px}
+  .pl-img{width:112px;height:140px}
+  .ep{grid-template-columns:44px 1fr auto;gap:12px}
+  .ep .epno{font-size:26px}
+  .vr{grid-template-columns:110px 1fr 38px}
+  .toasts{right:14px;left:14px}
+  .toast{min-width:0;max-width:none}
+}
+</style>
+</head>
+<body>
+
+<!-- SVG ikon sprite'ı -->
+<svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-ball" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7.2l4.7 3.4-1.8 5.5H9.1l-1.8-5.5z"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><path d="M7 5h3.4v14H7zM13.6 5H17v14h-3.4z" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h15M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6"/><path d="M10.3 20a2 2 0 0 0 3.4 0"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/></symbol>
+  <symbol id="i-card" viewBox="0 0 24 24"><rect x="7" y="4.5" width="10" height="15" rx="1.5"/></symbol>
+  <symbol id="i-swap" viewBox="0 0 24 24"><path d="M16 7H6M16 7l-3-3M16 7l-3 3M8 17h10M8 17l3-3M8 17l3 3"/></symbol>
+  <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
+  <symbol id="i-left" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+  <symbol id="i-right" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></symbol>
+</svg>
+
+<!-- Canlı skor bandı -->
+<div class="ticker">
+  <div class="tick-label"><span class="dot"></span>LIVE SCORES</div>
+  <div class="tick-view"><div class="tick-track" id="tickTrack"></div></div>
+</div>
+
+<!-- Header -->
+<header class="hdr">
+  <div class="wrap hdr-in">
+    <a href="#" class="logo">TOUCH<b>LINE</b></a>
+    <nav class="nav">
+      <a href="#news">News</a>
+      <a href="#matches">Matches</a>
+      <a href="#watch">Watch</a>
+      <a href="#gallery">Gallery</a>
+      <a href="#players">Players</a>
+      <a href="#podcast">Podcast</a>
+    </nav>
+    <div class="hdr-r">
+      <button class="iconbtn" id="searchBtn" title="Search ( / )"><svg class="icon"><use href="#i-search"/></svg></button>
+      <a class="livepill" href="#live"><span class="dot"></span>3 LIVE</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- HERO: manşet + canlı maç paneli -->
+  <section class="hero">
+    <svg class="pitch-deco" width="640" height="640" viewBox="0 0 640 640" fill="none" stroke="#fff" stroke-width="1.5">
+      <circle cx="320" cy="320" r="300"/><circle cx="320" cy="320" r="70"/><path d="M20 320h600"/>
+    </svg>
+    <div class="wrap hero-grid">
+      <article class="lead" id="leadArt"></article>
+      <aside>
+        <div class="livebox" id="live">
+          <div class="livebox-head">
+            <span class="live-tag"><span class="dot"></span>LIVE</span>
+            <span>Premier League · Etihad Stadium</span>
+            <span class="minute" id="lbMinute">63'</span>
+          </div>
+          <div class="livebox-score">
+            <div class="lt"><span class="badge lg" id="lbHome"></span><span class="tn" id="lbHomeN"></span></div>
+            <div class="scoreline" id="lbScore"><span>2</span><span class="sep">–</span><span>2</span></div>
+            <div class="lt"><span class="badge lg" id="lbAway"></span><span class="tn" id="lbAwayN"></span></div>
+          </div>
+          <div class="comp-row" id="lbComp">Kick-off 16:30 GMT · Referee: Michael Oliver</div>
+          <div class="feed" id="lbFeed"></div>
+          <button class="mcbtn" id="mcBtn">Match Centre <svg class="icon" style="width:15px;height:15px"><use href="#i-arrow"/></svg></button>
+          <div class="goal-ov" id="goalOv">GOAL!</div>
+        </div>
+        <div class="hero-latest">
+          <div class="hl-h"><span>BREAKING</span><span class="live-dot"></span></div>
+          <div id="heroLatest"></div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- MAÇLAR -->
+  <section class="sec" id="matches">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><div class="sec-tag">01 / MATCHDAY</div><h2 class="sec-title">Results &amp; Fixtures</h2></div>
+        <a class="viewall" href="#matches">Full fixture list <svg class="icon" style="width:14px;height:14px"><use href="#i-arrow"/></svg></a>
+      </div>
+      <div class="tabs">
+        <button class="tab on" data-pane="res">Results</button>
+        <button class="tab" data-pane="fix">Fixtures</button>
+      </div>
+      <div id="pane-res"></div>
+      <div id="pane-fix" style="display:none"></div>
+    </div>
+  </section>
+
+  <!-- HABERLER -->
+  <section class="sec" id="news">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><div class="sec-tag">02 / NEWSROOM</div><h2 class="sec-title">The Story So Far</h2></div>
+        <a class="viewall" href="#news">All news <svg class="icon" style="width:14px;height:14px"><use href="#i-arrow"/></svg></a>
+      </div>
+      <div class="news-top" id="newsTop"></div>
+      <div class="lhead"><h3>Latest News</h3><span class="rule"></span></div>
+      <div id="latestList"></div>
+    </div>
+  </section>
+
+  <!-- VİDEO -->
+  <section class="sec" id="watch">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><div class="sec-tag">03 / WATCH</div><h2 class="sec-title">Video &amp; Highlights</h2></div>
+        <a class="viewall" href="#watch">All videos <svg class="icon" style="width:14px;height:14px"><use href="#i-arrow"/></svg></a>
+      </div>
+      <div class="watch-grid">
+        <div id="vBig"></div>
+        <div id="vList"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALERİ -->
+  <section class="sec" id="gallery">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><div class="sec-tag">04 / GALLERY</div><h2 class="sec-title">Weekend in Pictures</h2></div>
+        <a class="viewall" href="#gallery">All galleries <svg class="icon" style="width:14px;height:14px"><use href="#i-arrow"/></svg></a>
+      </div>
+      <div class="gal" id="gal"></div>
+    </div>
+  </section>
+
+  <!-- OYUNCULAR -->
+  <section class="sec" id="players">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><div class="sec-tag">05 / PLAYERS</div><h2 class="sec-title">Player Profiles</h2></div>
+        <a class="viewall" href="#players">Full database <svg class="icon" style="width:14px;height:14px"><use href="#i-arrow"/></svg></a>
+      </div>
+      <div class="pl-grid">
+        <div class="pl-card" id="plCard"></div>
+        <div class="pl-list" id="plList"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PODCAST -->
+  <section class="sec" id="podcast">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><div class="sec-tag">06 / PODCAST</div><h2 class="sec-title">The Touchline</h2></div>
+      </div>
+      <div class="pod-grid">
+        <div class="pod-show">
+          <div class="mic-big"><svg class="icon" style="width:26px;height:26px"><use href="#i-mic"/></svg></div>
+          <h3>The<br>Touchline</h3>
+          <div class="host">With James Callaghan &amp; Nia Okoye</div>
+          <p>Twice a week on the game's big decisions — tactics, transfers and the politics behind the headlines. No shouting, actual reporting.</p>
+          <div class="platforms">
+            <button class="pbtn">SPOTIFY <svg class="icon"><use href="#i-arrow"/></svg></button>
+            <button class="pbtn">APPLE <svg class="icon"><use href="#i-arrow"/></svg></button>
+            <button class="pbtn">RSS <svg class="icon"><use href="#i-arrow"/></svg></button>
+          </div>
+        </div>
+        <div id="epList"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <a href="#" class="logo">TOUCH<b>LINE</b></a>
+        <p>Football, live. Independent reporting on the game's biggest stories, seven days a week.</p>
+      </div>
+      <div class="flinks">
+        <a href="#news">Newsroom</a><a href="#matches">Matchday</a><a href="#watch">Watch</a><a href="#players">Players</a><a href="#podcast">Podcast</a>
+      </div>
+      <div class="flinks">
+        <a href="#">About</a><a href="#">Advertise</a><a href="#">Careers</a><a href="#">Contact</a>
+      </div>
+    </div>
+    <div class="foot-alt"><span>© 2025 Touchline Media Ltd. All rights reserved.</span><span>Privacy · Terms · Cookies</span></div>
+  </div>
+</footer>
+
+<!-- Alt podcast çaları -->
+<div class="bp" id="bp">
+  <img id="bpImg" src="" alt="">
+  <div class="bpt"><div class="t" id="bpTitle"></div><div class="m" id="bpMeta"></div></div>
+  <div class="bp-controls">
+    <button class="bpp" id="bpToggle"><svg class="icon"><use href="#i-play" id="bpUse"/></svg></button>
+    <div class="timeline" id="bpTl"><div class="tl"><i id="bpFill"></i></div></div>
+    <span class="bptime" id="bpTime">0:00 / 0:00</span>
+    <button class="bpclose" id="bpClose"><svg class="icon"><use href="#i-close"/></svg></button>
+  </div>
+</div>
+
+<!-- Makale modal -->
+<div class="modal" id="artModal">
+  <div class="modal-bg" data-close></div>
+  <div class="modal-box">
+    <button class="mclose" data-close><svg class="icon"><use href="#i-close"/></svg></button>
+    <div id="artContent"></div>
+  </div>
+</div>
+
+<!-- Video modal -->
+<div class="modal" id="vidModal">
+  <div class="modal-bg" data-close></div>
+  <div class="modal-box vmodal">
+    <div class="vscreen">
+      <img id="vidImg" src="" alt="">
+      <div class="vcenter"><button class="pb dim" id="vidCenter"><svg class="icon"><use href="#i-play" id="vidUse"/></svg></button></div>
+    </div>
+    <div class="vfoot"><div class="vt" id="vidTitle"></div><div class="vmeta" id="vidMeta"></div></div>
+    <div class="vctrl">
+      <button class="vpb" id="vidPlay"><svg class="icon"><use href="#i-play" id="vidUse2"/></svg></button>
+      <div class="timeline" id="vidTl"><div class="tl"><i id="vidFill"></i></div></div>
+      <span class="bptime" id="vidTime">0:00 / 0:00</span>
+    </div>
+  </div>
+</div>
+
+<!-- Lightbox -->
+<div class="lb" id="lb">
+  <div class="lb-top">
+    <span class="lb-count" id="lbCount"></span>
+    <button class="lb-nav" id="lbClose"><svg class="icon"><use href="#i-close"/></svg></button>
+  </div>
+  <div class="lb-main">
+    <button class="lb-nav" id="lbPrev"><svg class="icon"><use href="#i-left"/></svg></button>
+    <img id="lbImg" src="" alt="">
+    <button class="lb-nav" id="lbNext"><svg class="icon"><use href="#i-right"/></svg></button>
+  </div>
+  <div class="lb-cap" id="lbCap"></div>
+</div>
+
+<!-- Arama -->
+<div class="search" id="search">
+  <div class="search-box">
+    <div class="sinput">
+      <svg class="icon"><use href="#i-search"/></svg>
+      <input id="searchInput" type="text" placeholder="Search news, transfers, analysis…" autocomplete="off">
+      <svg class="icon" style="color:var(--faint);cursor:pointer" id="searchClose"><use href="#i-close"/></svg>
+    </div>
+    <div class="sres" id="searchRes"></div>
+  </div>
+</div>
+
+<div class="toasts" id="toasts"></div>
+
+<script>
+/* ================= yardımcılar ================= */
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const lum=h=>{const n=parseInt(h.slice(1),16);return .299*(n>>16&255)+.587*(n>>8&255)+.114*(n&255)};
+const badge=(t,cls='')=>`<span class="badge ${cls}" style="background:${t.c};color:${lum(t.c)>150?'#0C0F0D':'#fff'}">${t.s}</span>`;
+const img=(seed,w,h)=>`https://picsum.photos/seed/${seed}/${w}/${h}.jpg`;
+const fmt=s=>String(Math.floor(s/60)).padStart(2,'0')+':'+String(Math.floor(s%60)).padStart(2,'0');
+function toast(msg,icon='bell'){
+  const el=document.createElement('div');el.className='toast';
+  el.innerHTML=`<svg class="icon"><use href="#i-${icon}"/></svg><span>${msg}</span>`;
+  $('#toasts').appendChild(el);
+  setTimeout(()=>{el.classList.add('out');setTimeout(()=>el.remove(),320)},3400);
+}
+
+/* ================= veri ================= */
+const T={
+  ARS:{n:'Arsenal',s:'ARS',c:'#EF0107'}, MCI:{n:'Manchester City',s:'MCI',c:'#6CABDD'},
+  LIV:{n:'Liverpool',s:'LIV',c:'#C8102E'}, CHE:{n:'Chelsea',s:'CHE',c:'#034694'},
+  RMA:{n:'Real Madrid',s:'RMA',c:'#FEBE10'}, BAR:{n:'Barcelona',s:'BAR',c:'#A50044'},
+  INT:{n:'Inter Milan',s:'INT',c:'#0B2E6B'}, JUV:{n:'Juventus',s:'JUV',c:'#1A1A1A'},
+  BAY:{n:'Bayern Munich',s:'BAY',c:'#DC052D'}, DOR:{n:'Dortmund',s:'BVB',c:'#FDE100'},
+  NEW:{n:'Newcastle',s:'NEW',c:'#242D33'}, AVL:{n:'Aston Villa',s:'AVL',c:'#95BFE5'},
+  WHU:{n:'West Ham',s:'WHU',c:'#7A263A'}, BHA:{n:'Brighton',s:'BHA',c:'#005DAA'},
+  EVE:{n:'Everton',s:'EVE',c:'#003399'}, MU:{n:'Manchester Utd',s:'MUN',c:'#DA291C'},
+  NAP:{n:'Napoli',s:'NAP',c:'#12A0D7'}, MIL:{n:'AC Milan',s:'MIL',c:'#FB090B'},
+  ATM:{n:'Atlético Madrid',s:'ATM',c:'#CB3524'}, PSG:{n:'Paris Saint-Germain',s:'PSG',c:'#004170'}
+};
+
+/* --- makaleler --- */
+const ART={
+  city:{cat:'Analysis',title:'The Machine, Rebuilt: Inside Manchester City\u2019s Quiet Revolution',
+    dek:'Pep Guardiola has torn up the template that won four straight titles. What emerges is stranger — and more dangerous — than anyone expected.',
+    by:'Marcus Whitfield',time:'2h ago',read:'9 min read',seed:'cityrebuild',
+    body:[
+      'There is a particular kind of silence that falls over the Etihad when the machine stutters — and for four weeks last autumn, it was deafening. Five games without a win. Questions about legs, about hunger, about whether the greatest project of the modern era had finally reached its natural end. Guardiola\u2019s response was not a rant, and not a splurge in the transfer market. It was a whiteboard, a stopwatch, and a ruthless little truth: the team had become predictable because it had become comfortable.',
+      'What has followed is the most quietly radical rebuild of his reign. The false nine is gone; in its place, a rotating front five that swaps positions every few phases. Rodri, no longer asked to carry the whole tempo, now shares build-up duties with a back three that shifts into a box midfield the moment possession is won. The data tells one story — City\u2019s directness has doubled — but the eye tells a better one: this is a team playing like it has something to prove again.',
+      '\u201CPeople said we were finished,\u201D Guardiola remarked last week, with the half-smile of a man who has heard this story before. \u201CMaybe in March they will say it again. I hope so.\u201D Behind the defiance, the coaching staff know the real work is done: the pressing traps have been rebuilt around younger legs, and the squad\u2019s average age has dropped by nearly two years without a single marquee signing.',
+      'The title race will be decided by margins — a deflection here, a suspension there. But the deeper story of this season is already being written on the training pitches of east Manchester. The machine was never broken. It was simply waiting to be rebuilt.']},
+  setp:{cat:'Tactics',title:'The Set-Piece Economy: How Dead Balls Became the League\u2019s Most Valuable Currency',
+    dek:'One in three goals now comes from a dead ball. Behind the number sits an arms race of specialist coaches, 3D tracking and corners treated like shoot-outs.',
+    by:'Sofia Almeida',time:'5h ago',read:'7 min read',seed:'setpiece',
+    body:[
+      'Roughly one in every three goals in the Premier League this season has come from a dead ball — the highest share since records began. Behind that number sits an arms race few fans ever see: specialist coaches on seven-figure salaries, three-dimensional tracking software, and training sessions where a corner is treated with the seriousness of a penalty shoot-out.',
+      'The revolution\u2019s effects are quietly redistributing wealth across the table. Mid-table sides with elite delivery are outperforming their expected goals by whole margins; glamorous attacking units are being undone by clubs who simply practise the boring things better. \u201CWe stopped being embarrassed about it,\u201D one head coach admitted. \u201CA goal is a goal. Nobody asks how it arrived.\u201D']},
+  isak:{cat:'Transfers',title:'Bayern Table Record Bid for Isak as Newcastle Standoff Drags On',
+    dek:'An initial £78m offer has been rejected, but a third approach structured around achievable add-ons may force a genuine decision on Tyneside.',
+    by:'Daniel Kerr',time:'8h ago',read:'6 min read',seed:'isakbid',
+    body:[
+      'Bayern Munich have tabled a club-record offer understood to be worth an initial £78m for Alexander Isak, as Newcastle United brace themselves for a battle to keep their prize asset beyond the winter window. The German champions\u2019 first two approaches were rejected out of hand, but there is a growing sense on Tyneside that a third, structured around achievable add-ons, will force a genuine decision.',
+      'Newcastle\u2019s position remains public and stubborn: the striker is not for sale this month, with Champions League qualification the stated priority. Privately, though, officials acknowledge that a bid approaching nine figures for a player signed for £63m would be difficult to wave away — and that the player himself, while settled, has never hidden his admiration for the Bundesliga.']},
+  wsl:{cat:'Women\u2019s Game',title:'WSL Title Race Goes to the Final Day After Chelsea Fight Back at the Emirates',
+    dek:'A 78th-minute equaliser redirects the destiny of the trophy to the last ninety minutes of the season. Arsenal led twice; Chelsea refused to lose.',
+    by:'Hannah Rowe',time:'11h ago',read:'5 min read',seed:'wslrace',
+    body:[
+      'A rivalry that has defined the Women\u2019s Super League for a decade will be settled on the final day after Chelsea fought back from two goals down to draw 2–2 at the Emirates. Arsenal led through two set-piece headers and seemed destined to reclaim control of the title, before a 78th-minute equaliser redirected the destiny of the trophy to the last ninety minutes of the season.',
+      'Attention now turns to a final-day scenario that guarantees drama: Chelsea travel to Manchester City needing a point, while Arsenal host a West Ham side with nothing to lose. \u201CThis is why we play,\u201D said the Arsenal manager afterwards. \u201CThe league deserves this finish.\u201D']},
+  rodri:{cat:'Injury News',title:'Rodri Cleared to Return Ahead of Title Run-In',
+    dek:'The Ballon d\u2019Or winner has been cleared to resume full training, with a first-team return targeted for the first week of March.',
+    by:'Marcus Whitfield',time:'1d ago',read:'4 min read',seed:'rodriback',
+    body:[
+      'Manchester City have received the news they have waited five months for: Rodri has been cleared by specialists to resume full training, with a first-team return targeted for the first week of March. The Ballon d\u2019Or winner has been sidelined since damaging knee ligaments in September, an injury initially expected to end his season.',
+      'Medical staff have deliberately kept expectations muted — no competitive minutes before the Champions League quarter-finals, regardless of the fixture list — but the sight of Rodri joining contact work this week has already altered the psychology of the title race. \u201CHe is the thermostat of that team,\u201D one rival analyst noted. \u201CYou can measure City\u2019s whole identity in how he walks out of the tunnel.\u201D']},
+  bell:{cat:'El Clásico',title:'Real Madrid Sweat on Bellingham Fitness Ahead of El Clásico',
+    dek:'Scans have ruled out ligament damage, but a final call on the midfielder will come only after Saturday\u2019s last session at Valdebebas.',
+    by:'Elena Vidal',time:'1d ago',read:'3 min read',seed:'bellingfit',
+    body:[
+      'Real Madrid are giving Jude Bellingham every chance of making Sunday\u2019s Clásico after the midfielder rolled his ankle in training on Thursday. Scans have ruled out ligament damage, but the club\u2019s medical staff will make a final call only after Saturday\u2019s final session at Valdebebas.',
+      'The stakes are difficult to exaggerate: a four-point gap at the top of La Liga, a head-to-head record that could decide a title, and a fixture that has produced thirty-one goals in the last six meetings. \u201CIf there is any risk, he will not play,\u201D the manager insisted. \u201CBut Jude does not have many normal weeks.\u201D']},
+  saka:{cat:'Transfers',title:'Arsenal Open Talks Over New Saka Deal',
+    dek:'A new long-term contract would make the 23-year-old the highest-paid player in the club\u2019s history. Talks are described as relaxed and positive.',
+    by:'Daniel Kerr',time:'1d ago',read:'3 min read',seed:'sakadeal',
+    body:[
+      'Arsenal have opened talks over a new long-term contract for Bukayo Saka that would make the 23-year-old the highest-paid player in the club\u2019s history. Negotiations are at an early stage but described by sources on both sides as \u201Crelaxed and positive\u201D.',
+      'Saka\u2019s current deal runs until 2027, but the club are determined to reward a homegrown talisman whose numbers now sit alongside the best wingers in Europe. Real Madrid and Bayern have monitored his situation for years — a fact Arsenal\u2019s board are fully aware of.']},
+  offic:{cat:'Official',title:'Premier League Confirms Officiating Changes for Next Season',
+    dek:'Semi-automated offside technology will be used in every match from the opening weekend, cutting average decision time from seventy seconds to under twenty-five.',
+    by:'Newsroom',time:'2d ago',read:'3 min read',seed:'officiating',
+    body:[
+      'The Premier League has confirmed that semi-automated offside technology will be used in every match from the opening weekend of next season, ending years of controversy over marginal calls. The system, already trialled in European competition, reduces average decision time from seventy seconds to under twenty-five.',
+      'Referees\u2019 chief Howard Webb called the change \u201Cthe single biggest operational improvement of my tenure\u201D. Managers, briefed this week, are more blunt: they simply want fewer Monday mornings spent analysing lines drawn on frozen frames.']},
+  haaland:{cat:'Stats',title:'Haaland Edges Closer to 40 as City Hit Five Again',
+    dek:'Two more goals move the striker within seven of a third consecutive 40-goal season — a mark no Premier League player has ever reached even once.',
+    by:'Marcus Whitfield',time:'2d ago',read:'4 min read',seed:'haaland40',
+    body:[
+      'Erling Haaland scored twice in a five-goal rout to move within seven goals of a third consecutive 40-goal season — a mark no Premier League player has ever reached even once. His second, a first-time volley from an acute angle, drew a standing ovation from the away end.',
+      '\u201CRecords are for other people to count,\u201D the striker said, flatly, afterwards. City\u2019s staff are more effusive: privately, coaches describe a player who has added link play to his game without surrendering a single yard of the penalty box.']}
+};
+
+/* --- videolar --- */
+const VIDS=[
+  {t:'HIGHLIGHTS: Newcastle 1–0 Aston Villa — The Moment That Decided It',dur:'05:32',seed:'newchigh',meta:'412K views · 14h ago'},
+  {t:'Tactics Board: How Newcastle\u2019s Mid-Block Strangled Villa',dur:'08:14',seed:'tacticsvid',meta:'186K views · 1d ago'},
+  {t:'Top 5: Saka\u2019s Best Goals of the Season So Far',dur:'03:47',seed:'sakagoals',meta:'623K views · 2d ago'},
+  {t:'Deadline Day Live: Every Confirmed Deal',dur:'12:02',seed:'deadlineday',meta:'1.1M views · 3d ago'}
+];
+
+/* --- galeri --- */
+const GAL=[
+  'Anfield under the lights — Merseyside derby night|angfield',
+  'Isak\u2019s ice-cold finish sends St James\u2019 Park into raptures|isakgoal',
+  'Yamal, seventeen, and already unmarkable|yamalpic',
+  'The away end at full voice in Dortmund|dortmundend',
+  'Golden hour training in Madrid|madridtrain',
+  'A goalkeeper\u2019s long walk after the final whistle|keeperwalk'
+].map(x=>{const [cap,seed]=x.split('|');return {cap,seed}});
+
+/* --- oyuncular --- */
+const PLAYERS={
+  saka:{name:'Bukayo Saka',team:'ARS',pos:'Right Wing',no:7,age:23,comp:'Premier League',seed:'pl-saka',
+    st:[['Goals',12,25],['Assists',14,16],['xG',8.4,22],['Pass accuracy',84,100]],foot:'28 apps · 2,311 mins · 4 MOTM'},
+  haaland:{name:'Erling Haaland',team:'MCI',pos:'Striker',no:9,age:24,comp:'Premier League',seed:'pl-haaland',
+    st:[['Goals',24,25],['Assists',3,16],['xG',21.6,22],['Pass accuracy',71,100]],foot:'27 apps · 2,204 mins · 7 MOTM'},
+  bellingham:{name:'Jude Bellingham',team:'RMA',pos:'Attacking Mid',no:5,age:21,comp:'La Liga',seed:'pl-jude',
+    st:[['Goals',15,25],['Assists',8,16],['xG',10.2,22],['Pass accuracy',88,100]],foot:'26 apps · 2,098 mins · 5 MOTM'},
+  yamal:{name:'Lamine Yamal',team:'BAR',pos:'Right Wing',no:10,age:17,comp:'La Liga',seed:'pl-yamal',
+    st:[['Goals',9,25],['Assists',12,16],['xG',7.8,22],['Pass accuracy',81,100]],foot:'29 apps · 1,984 mins · 3 MOTM'},
+  palmer:{name:'Cole Palmer',team:'CHE',pos:'Attacking Mid',no:20,age:22,comp:'Premier League',seed:'pl-palmer',
+    st:[['Goals',14,25],['Assists',10,16],['xG',11.4,22],['Pass accuracy',85,100]],foot:'30 apps · 2,410 mins · 6 MOTM'},
+  isak:{name:'Alexander Isak',team:'NEW',pos:'Striker',no:14,age:25,comp:'Premier League',seed:'pl-isak',
+    st:[['Goals',17,25],['Assists',5,16],['xG',14.9,22],['Pass accuracy',76,100]],foot:'25 apps · 1,932 mins · 5 MOTM'}
+};
+
+/* --- podcast --- */
+const PODS=[
+  {no:112,t:'The January window that wasn\u2019t',d:'Jan 28 · 47:12',sec:2832,seed:'pod112'},
+  {no:111,t:'Anatomy of a set piece',d:'Jan 24 · 38:05',sec:2285,seed:'pod111'},
+  {no:110,t:'Klopp\u2019s legacy and Slot\u2019s blueprint',d:'Jan 21 · 52:40',sec:3160,seed:'pod110'},
+  {no:109,t:'Inside the academy conveyor belt',d:'Jan 17 · 44:18',sec:2658,seed:'pod109'}
+];
+
+/* --- maçlar --- */
+const RESULTS=[
+  {h:'ARS',a:'CHE',s:[3,1],
+   he:[['23\u2032','Bukayo Saka','ball'],['41\u2032','Martin Ødegaard','ball'],['67\u2032','Kai Havertz','ball']],
+   ae:[['55\u2032','Cole Palmer (pen)','ball'],['71\u2032','Moises Caicedo','yc']],
+   stats:['Possession <b>58–42</b>','Shots <b>14–8</b>','xG <b>2.1–0.9</b>'],comp:'Premier League'},
+  {h:'LIV',a:'WHU',s:[2,0],
+   he:[['18\u2032','Mohamed Salah','ball'],['77\u2032','Darwin Núñez','ball']],ae:[],
+   stats:['Possession <b>63–37</b>','Shots <b>19–6</b>','xG <b>2.4–0.7</b>'],comp:'Premier League'},
+  {h:'NEW',a:'AVL',s:[1,0],
+   he:[['64\u2032','Alexander Isak','ball']],ae:[['83\u2032','Youri Tielemans','yc']],
+   stats:['Possession <b>44–56</b>','Shots <b>9–11</b>','xG <b>1.2–1.0</b>'],comp:'Premier League'},
+  {h:'BHA',a:'EVE',s:[1,1],
+   he:[['34\u2032','Kaoru Mitoma','ball']],ae:[['59\u2032','Dwight McNeil','ball']],
+   stats:['Possession <b>54–46</b>','Shots <b>12–10</b>','xG <b>1.4–1.1</b>'],comp:'Premier League'},
+  {h:'INT',a:'JUV',s:[1,0],
+   he:[['51\u2032','Marcus Thuram','ball']],ae:[['88\u2032','Manuel Locatelli','yc']],
+   stats:['Possession <b>51–49</b>','Shots <b>13–9</b>','xG <b>1.6–0.8</b>'],comp:'Champions League'}
+];
+const FIXTURES=[
+  {h:'RMA',a:'BAR',d:'Today 20:00',comp:'La Liga · El Clásico',tv:'Premier Sports 1'},
+  {h:'MU',a:'CHE',d:'Tomorrow 17:30',comp:'Premier League',tv:'Sky Sports Main Event'},
+  {h:'ATM',a:'PSG',d:'Tuesday 21:00',comp:'Champions League · R16',tv:'TNT Sports 1'},
+  {h:'JUV',a:'DOR',d:'Wednesday 21:00',comp:'Champions League · R16',tv:'TNT Sports 2'}
+];
+
+/* ================= ticker ================= */
+const SEC_SIM=[{h:'NAP',a:'MIL',s:[2,1],min:55,id:'S1'},{h:'BAY',a:'DOR',s:[3,2],min:72,id:'S2'}];
+function tickItemHTML(m){
+  const st=m.live?`<span class="st" data-st>${m.min}\u2032</span>`:m.ft?`<span class="st">FT</span>`:`<span class="st">${m.day}</span>`;
+  const mid=m.pre?`<span class="tm">${m.time}</span>`:`<span class="sc" data-sc>${m.s[0]}–${m.s[1]}</span>`;
+  return `<div class="tk ${m.live?'live':''}" data-tk="${m.id||''}">${st}${badge(T[m.h],'sm')}${mid}${badge(T[m.a],'sm')}</div>`;
+}
+function buildTicker(){
+  const items=[
+    {live:true,h:'MCI',a:'ARS',s:[2,2],min:63,id:'L1'},
+    ...SEC_SIM.map(m=>({live:true,h:m.h,a:m.a,s:m.s,min:m.min,id:m.id})),
+    {ft:true,h:'LIV',a:'WHU',s:[2,0]},{ft:true,h:'BHA',a:'EVE',s:[1,1]},
+    {ft:true,h:'NEW',a:'AVL',s:[1,0]},{ft:true,h:'INT',a:'JUV',s:[1,0]},
+    {pre:true,h:'RMA',a:'BAR',day:'TODAY',time:'20:00'},
+    {pre:true,h:'MU',a:'CHE',day:'TMRW',time:'17:30'},
+    {pre:true,h:'ATM',a:'PSG',day:'TUE',time:'21:00'}
+  ];
+  const html=items.map(tickItemHTML).join('');
+  $('#tickTrack').innerHTML=html+html; // iki kopya: kesintisiz akış
+}
+function updTick(id,sel,val){$$(`[data-tk="${id}"]`).forEach(el=>{const t=el.querySelector(sel);if(t)t.textContent=val})}
+
+/* ================= canlı maç simülasyonu ================= */
+const SIM={h:'MCI',a:'ARS',s:[2,2],min:63,run:true};
+const SQUAD={
+  MCI:['De Bruyne','Foden','Haaland','Rodri','Gvardiol','Bernardo Silva','Grealish','Ederson'],
+  ARS:['Saka','Ødegaard','Havertz','Rice','Martinelli','Saliba','Gabriel','White']
+};
+const FILL=[
+  t=>`Corner, ${t.n}. ${pk(t)} swings it towards the near post — headed clear.`,
+  t=>`Chance! ${pk(t)} lets fly from twenty yards — inches wide of the upright.`,
+  t=>`${pk(t)} skips past two and wins a free-kick in a dangerous area.`,
+  t=>`Big block! The defence throws itself in front of ${pk(t)}\u2019s effort.`,
+  t=>`End to end stuff — ${pk(t)} breaks at pace before the defence recovers superbly.`
+];
+const pk=t=>{const code=(typeof t==='string')?t:(t&&t.s)||Object.keys(SQUAD)[0];const arr=SQUAD[code]||SQUAD[Object.keys(SQUAD)[0]]||[];return arr.length?arr[Math.floor(Math.random()*arr.length)]:'Player';};
+const teamOf=k=>k==='h'?T[SIM.h]:T[SIM.a];
+
+function feedItem(m,html,cls=''){
+  const el=document.createElement('div');el.className='fev '+cls;
+  el.innerHTML=`<span class="fm">${m}\u2032</span><span>${html}</span>`;
+  $('#lbFeed').prepend(el);
+  while($('#lbFeed').children.length>30)$('#lbFeed').lastChild.remove();
+}
+function renderScore(pop){
+  const sl=$('#lbScore');
+  sl.innerHTML=`<span ${pop?'class="pop"':''}>${SIM.s[0]}</span><span class="sep">–</span><span ${pop?'class="pop"':''}>${SIM.s[1]}</span>`;
+  updTick('L1','.sc',`${SIM.s[0]}–${SIM.s[1]}`);
+}
+function goal(){
+  const k=Math.random()<.5?'h':'a';
+  const scorer=pk(teamOf(k));
+  SIM.s[k==='h'?0:1]++;
+  renderScore(true);
+  feedItem(SIM.min,`<span class="gtag">GOAL</span>${scorer} — ${teamOf(k).n} ${SIM.s[0]}–${SIM.s[1]}`,'goal');
+  const box=$('#live');box.classList.remove('flash');void box.offsetWidth;box.classList.add('flash');
+  const ov=$('#goalOv');ov.classList.remove('show');void ov.offsetWidth;ov.classList.add('show');
+}
+function finish(){
+  SIM.run=false;
+  $('#lbMinute').textContent='FT';
+  $('.live-tag').innerHTML='<span>FT</span>';
+  updTick('L1','.st','FT');
+  feedItem(90,`<b>Full time</b> — ${T[SIM.h].n} ${SIM.s[0]}–${SIM.s[1]} ${T[SIM.a].n}.`,'goal');
+  toast(`Full time: ${T[SIM.h].n} ${SIM.s[0]}–${SIM.s[1]} ${T[SIM.a].n} — match report incoming.`,'ball');
+}
+setInterval(()=>{
+  if(!SIM.run)return;
+  SIM.min++;
+  $('#lbMinute').textContent=SIM.min+'\u2032';
+  updTick('L1','.st',SIM.min+'\u2032');
+  const r=Math.random();
+  if(r<.07)goal(); else if(r<.17)feedItem(SIM.min,`Yellow card — ${pk(teamOf(Math.random()<.5?'h':'a'))} (${Math.random()<.5?T[SIM.h].n:T[SIM.a].n}).`,'card');
+  else if(r<.6){const t=Math.random()<.5?T[SIM.h]:T[SIM.a];feedItem(SIM.min,FILL[Math.floor(Math.random()*FILL.length)](t));}
+  // ikincil canlı maçlar da akıyor
+  SEC_SIM.forEach(m=>{ if(m.min<90){m.min++; if(m.min>=90){m.min=90; updTick(m.id,'.st','FT');} else updTick(m.id,'.st',m.min+'\u2032');
+    if(Math.random()<.045){const i=Math.random()<.5?0:1;m.s[i]++;updTick(m.id,'.sc',`${m.s[0]}–${m.s[1]}`);}}});
+  if(SIM.min>=90){SIM.min=90;finish();}
+},1600);
+
+function initLive(){
+  $('#lbHome').outerHTML=badge(T[SIM.h],'lg');$('#lbAway').outerHTML=badge(T[SIM.a],'lg');
+  $('#lbHomeN').textContent=T[SIM.h].n;$('#lbAwayN').textContent=T[SIM.a].n;
+  renderScore();
+  // başlangıç olay akışı (en yeni en üstte)
+  [['62',`<span class="gtag">GOAL</span>Kai Havertz — Arsenal 2–2`,'goal'],
+   ['54',`<span class="gtag">GOAL</span>Erling Haaland — Manchester City 2–1`,'goal'],
+   ['47','Yellow card — Rodri (Manchester City) for a late challenge.','card'],
+   ['45','Half time: Manchester City 1–1 Arsenal.',''],
+   ['38','Yellow card — Gabriel (Arsenal) for a foul on Haaland.','card'],
+   ['26',`<span class="gtag">GOAL</span>Bukayo Saka — Arsenal 1–1. Ødegaard with the assist.`,'goal'],
+   ['21','Big chance! Saka\u2019s low drive is pushed away by Ederson.',''],
+   ['12',`<span class="gtag">GOAL</span>Kevin De Bruyne — Manchester City 1–0.`,'goal']
+  ].forEach(x=>feedItem(...x));
+}
+
+/* ================= maçlar bölümü ================= */
+function evRow(e){const ic=e[2]==='ball'?'ball':e[2]==='yc'?'yc':'';return `<div class="evl"><span class="m">${e[0]}</span><svg class="icon ${ic}"><use href="#i-${e[2]==='yc'?'card':'ball'}"/></svg><span>${e[1]}</span></div>`}
+function buildResults(){
+  $('#pane-res').innerHTML=`<div class="dayhead">Recent results</div><div class="mlist">`+RESULTS.map((m,i)=>{
+    const w=m.s[0]>m.s[1]?0:m.s[1]>m.s[0]?1:-1;
+    return `<div class="mrow" data-i="${i}">
+      <div class="mrow-main">
+        <span class="m-status">FT</span>
+        <div class="m-team ${w===1?'lose':''}">${badge(T[m.h])}<span>${T[m.h].n}</span></div>
+        <div class="m-score">${m.s[0]} – ${m.s[1]}</div>
+        <div class="m-team right ${w===0?'lose':''}"><span>${T[m.a].n}</span>${badge(T[m.a])}</div>
+        <div class="m-chev"><svg><use href="#i-chev"/></svg></div>
+      </div>
+      <div class="m-detail"><div class="m-detail-in"><div class="m-detail-grid">
+        <div class="evcol"><h4>${badge(T[m.h],'sm')}${T[m.h].n}</h4>${m.he.map(evRow).join('')||'<div class="evl"><span class="m">—</span><span>No goals</span></div>'}</div>
+        <div class="evcol"><h4>${badge(T[m.a],'sm')}${T[m.a].n}</h4>${m.ae.map(evRow).join('')||'<div class="evl"><span class="m">—</span><span>No goals</span></div>'}</div>
+        <div class="mstats"><span class="mcomp">${m.comp}</span>${m.stats.map(s=>`<span>${s}</span>`).join('')}</div>
+      </div></div></div>
+    </div>`}).join('')+`</div>`;
+  $$('#pane-res .mrow-main').forEach(r=>r.addEventListener('click',()=>{
+    const row=r.parentElement,open=row.classList.contains('open');
+    $$('#pane-res .mrow').forEach(x=>x.classList.remove('open'));
+    if(!open)row.classList.add('open');
+  }));
+  $('#pane-fix').innerHTML=`<div class="dayhead">Upcoming fixtures</div><div class="mlist">`+FIXTURES.map(m=>`
+    <div class="mrow"><div class="mrow-main" style="cursor:default">
+      <span class="m-status" style="color:var(--volt)">${m.d.split(' ')[0].toUpperCase()}</span>
+      <div class="m-team">${badge(T[m.h])}<span>${T[m.h].n}</span></div>
+      <div class="m-time">${m.d.split(' ').slice(1).join(' ')}</div>
+      <div class="m-team right"><span>${T[m.a].n}</span>${badge(T[m.a])}</div>
+      <button class="bellbtn" title="Set reminder"><svg class="icon"><use href="#i-bell"/></svg></button>
+    </div></div>`).join('')+`<div class="mstats" style="border:1px solid var(--line);border-top:0;margin:0;padding:14px 22px">
+      <span class="mcomp" style="align-self:center">${FIXTURES.map(f=>f.comp).join(' · ')}</span></div>`;
+  $$('#pane-fix .bellbtn').forEach((b,i)=>b.addEventListener('click',e=>{
+    e.stopPropagation();toast(`Reminder set for ${T[FIXTURES[i].h].n} v ${T[FIXTURES[i].a].n} — we\u2019ll notify you 30 minutes before kick-off.`);
+  }));
+  $$('.tab').forEach(t=>t.addEventListener('click',()=>{
+    $$('.tab').forEach(x=>x.classList.remove('on'));t.classList.add('on');
+    $('#pane-res').style.display=t.dataset.pane==='res'?'':'none';
+    $('#pane-fix').style.display=t.dataset.pane==='fix'?'':'none';
+  }));
+}
+
+/* ================= haberler ================= */
+const cardHTML=k=>{const a=ART[k];return `<div class="thumb"><img src="${img(a.seed,900,560)}" alt="" loading="lazy"></div>
+  <div class="nbody"><span class="chip">${a.cat}</span><h3>${a.title}</h3><p class="dek">${a.dek}</p>
+  <div class="meta"><span class="by">${a.by}</span><i>·</i><span>${a.time}</span><i>·</i><span>${a.read}</span></div></div>`};
+function buildNews(){
+  $('#leadArt').innerHTML=`<div class="thumb" style="overflow:hidden"><img src="${img(ART.city.seed,1100,620)}" alt=""></div>
+    <div class="chiprow"><span class="chip">${ART.city.cat}</span><span class="meta" style="margin:0">${ART.city.by} · ${ART.city.time}</span></div>
+    <h1>${ART.city.title}</h1><p class="dek">${ART.city.dek}</p>
+    <div class="meta"><span class="by">${ART.city.by}</span><i>·</i><span>${ART.city.time}</span><i>·</i><span>${ART.city.read}</span></div>`;
+  $('#leadArt').onclick=()=>openArticle('city');
+  $('#newsTop').innerHTML=`
+    <div class="ncell big" data-art="setp">${cardHTML('setp')}</div>
+    <div class="nstack">
+      <div class="ncell" data-art="isak">${cardHTML('isak')}</div>
+      <div class="nov" data-art="wsl"><img src="${img(ART.wsl.seed,900,640)}" alt="" loading="lazy">
+        <div class="nov-in"><span class="chip">${ART.wsl.cat}</span><h3>${ART.wsl.title}</h3>
+        <div class="meta" style="margin-top:10px">${ART.wsl.by} · ${ART.wsl.time}</div></div></div>
+    </div>`;
+  $$('#newsTop [data-art]').forEach(el=>el.addEventListener('click',()=>openArticle(el.dataset.art)));
+  $('#heroLatest').innerHTML=['bell','saka','offic'].map(k=>`<div class="hlr" data-art="${k}">
+    <img src="${img(ART[k].seed,160,160)}" alt=""><div><div class="t">${ART[k].title}</div><div class="tm">${ART[k].cat} · ${ART[k].time}</div></div></div>`).join('');
+  $$('#heroLatest .hlr').forEach(el=>el.addEventListener('click',()=>openArticle(el.dataset.art)));
+  $('#latestList').innerHTML=['rodri','bell','saka','offic','haaland'].map(k=>`<div class="hl" data-art="${k}">
+    <span class="htime">${ART[k].time}</span><span class="hcat">${ART[k].cat}</span>
+    <span class="hlt">${ART[k].title}</span><img src="${img(ART[k].seed,240,136)}" alt="" loading="lazy"></div>`).join('');
+  $$('#latestList .hl').forEach(el=>el.addEventListener('click',()=>openArticle(el.dataset.art)));
+}
+function openArticle(k){
+  const a=ART[k];
+  $('#artContent').innerHTML=`<div class="art-head"><span class="chip">${a.cat}</span>
+    <h2>${a.title}</h2><div class="meta"><span class="by">${a.by}</span><i>·</i><span>${a.time}</span><i>·</i><span>${a.read}</span></div></div>
+    <div class="art-body"><img src="${img(a.seed,1200,700)}" alt="">${a.body.map(p=>`<p>${p}</p>`).join('')}</div>`;
+  openModal('#artModal');
+}
+
+/* ================= video ================= */
+function openVideo(i){
+  const v=VIDS[i];
+  $('#vidImg').src=img(v.seed,1200,675);$('#vidImg').classList.add('playing');
+  $('#vidTitle').textContent=v.t;$('#vidMeta').textContent=v.meta;
+  V.dur=+v.dur.split(':')[0]*60+ +v.dur.split(':')[1].split(' ')[0];V.t=0;V.playing=true;
+  setUse(['#vidUse','#vidUse2'],'#i-pause');V.timer=setInterval(()=>{if(V.playing){V.t=Math.min(V.dur,V.t+1);renderV()}},1000);
+  renderV();openModal('#vidModal');
+}
+const V={dur:0,t:0,playing:false,timer:null};
+const setUse=(sels,id)=>sels.forEach(s=>{const u=$(s);u&&u.setAttribute('href',id)});
+function renderV(){$('#vidFill').style.width=(V.t/V.dur*100)+'%';$('#vidTime').textContent=fmt(V.t)+' / '+fmt(V.dur)}
+function vidToggle(){V.playing=!V.playing;
+  $('#vidImg').classList.toggle('playing',V.playing);
+  setUse(['#vidUse','#vidUse2'],V.playing?'#i-pause':'#i-play')}
+function buildVideos(){
+  const v=VIDS[0];
+  $('#vBig').innerHTML=`<div class="vbig"><div class="vimg"><img src="${img(v.seed,1000,562)}" alt="">
+    <div class="vplay"><span class="pb"><svg class="icon"><use href="#i-play"/></svg></span></div>
+    <span class="vdur">${v.dur}</span></div>
+    <div class="vtitle">${v.t}</div><div class="vmeta">${v.meta}</div></div>`;
+  $('#vBig .vbig').onclick=()=>openVideo(0);
+  $('#vList').innerHTML=VIDS.slice(1).map((v,i)=>`<div class="vr" data-v="${i+1}">
+    <img src="${img(v.seed,480,300)}" alt="" loading="lazy">
+    <div><div class="vrt">${v.t}</div><div class="vrm">${v.dur} · ${v.meta}</div></div>
+    <span class="mini-pb"><svg class="icon"><use href="#i-play"/></svg></span></div>`).join('');
+  $$('#vList .vr').forEach(el=>el.addEventListener('click',()=>openVideo(+el.dataset.v)));
+}
+ $('#vidCenter').onclick=vidToggle;$('#vidPlay').onclick=vidToggle;
+ $('#vidTl').addEventListener('click',e=>{const r=e.currentTarget.getBoundingClientRect();V.t=Math.round((e.clientX-r.left)/r.width*V.dur);renderV()});
+ $('#vidModal').addEventListener('click',e=>{if(e.target.dataset.close!==undefined){clearInterval(V.timer);V.playing=false;closeModal('#vidModal')}});
+
+/* ================= galeri / lightbox ================= */
+let lbIdx=0;
+function buildGallery(){
+  $('#gal').innerHTML=GAL.map((g,i)=>`<div class="gal-i" data-g="${i}"><img src="${img(g.seed,700,525)}" alt="" loading="lazy">
+    <span class="gnum">${String(i+1).padStart(2,'0')} / ${String(GAL.length).padStart(2,'0')}</span>
+    <div class="gcap">${g.cap}</div></div>`).join('');
+  $$('#gal .gal-i').forEach(el=>el.addEventListener('click',()=>openLB(+el.dataset.g)));
+}
+function openLB(i){lbIdx=(i+GAL.length)%GAL.length;
+  $('#lbImg').src=img(GAL[lbIdx].seed,1400,1050);$('#lbCap').textContent=GAL[lbIdx].cap;
+  $('#lbCount').textContent=String(lbIdx+1).padStart(2,'0')+' / '+String(GAL.length).padStart(2,'0');
+  $('#lb').classList.add('open');document.body.style.overflow='hidden';}
+function closeLB(){$('#lb').classList.remove('open');document.body.style.overflow=''}
+ $('#lbPrev').onclick=()=>openLB(lbIdx-1);$('#lbNext').onclick=()=>openLB(lbIdx+1);$('#lbClose').onclick=closeLB;
+
+/* ================= oyuncular ================= */
+function setPlayer(k){
+  const p=PLAYERS[k],t=T[p.team];
+  $('#plCard').innerHTML=`
+    <div class="bignum">${p.no}</div>
+    <div class="pl-top">
+      <img class="pl-img" src="${img(p.seed,400,480)}" alt="${p.name}">
+      <div><div class="pl-name">${p.name}</div>
+        <div class="pl-sub">${badge(t)}<span>${t.n}</span><i>·</i><span>${p.pos}</span><i>·</i><span>Age ${p.age}</span><i>·</i><span>#${p.no}</span></div>
+      </div>
+    </div>
+    <div class="pl-stats">${p.st.map(s=>`<div class="stat"><div class="srow"><span>${s[0]}</span><span class="val">${s[1]}</span></div>
+      <div class="bar"><i data-w="${Math.min(100,s[1]/s[2]*100)}"></i></div></div>`).join('')}</div>
+    <div class="pl-foot">Season 2024/25 · ${p.comp} · ${p.foot}</div>`;
+  requestAnimationFrame(()=>requestAnimationFrame(()=>$$('.pl-card .bar i').forEach(b=>b.style.width=b.dataset.w+'%')));
+  $$('#plList .plrow').forEach(r=>r.classList.toggle('on',r.dataset.p===k));
+}
+function buildPlayers(){
+  const keys=Object.keys(PLAYERS);
+  $('#plList').innerHTML=keys.map((k,i)=>{const p=PLAYERS[k];return `<div class="plrow" data-p="${k}">
+    <span class="idx">${String(i+1).padStart(2,'0')}</span>${badge(T[p.team])}
+    <div><div class="pn">${p.name}</div><div class="pm">${p.pos} · ${T[p.team].n}</div></div>
+    <div class="gls"><b>${p.st[0][1]}</b><small>GOALS</small></div></div>`}).join('');
+  $$('#plList .plrow').forEach(r=>r.addEventListener('click',()=>setPlayer(r.dataset.p)));
+  setPlayer(keys[0]);
+}
+
+/* ================= podcast ================= */
+const P={dur:0,t:0,playing:false,timer:null,ep:null};
+function renderP(){$('#bpFill').style.width=(P.t/P.dur*100)+'%';$('#bpTime').textContent=fmt(P.t)+' / '+fmt(P.dur)}
+function playEp(i){
+  const ep=PODS[i];P.ep=i;P.dur=ep.sec;P.t=0;P.playing=true;
+  $('#bpImg').src=img(ep.seed,120,120);$('#bpTitle').textContent='EP '+ep.no+' — '+ep.t;$('#bpMeta').textContent=ep.d;
+  document.body.classList.add('has-player');
+  clearInterval(P.timer);P.timer=setInterval(()=>{if(P.playing){P.t=Math.min(P.dur,P.t+1);renderP()}},1000);
+  setUse(['#bpUse'],'#i-pause');renderP();
+}
+function pToggle(){if(P.ep===null)return;P.playing=!P.playing;setUse(['#bpUse'],P.playing?'#i-pause':'#i-play')}
+function buildPods(){
+  $('#epList').innerHTML=PODS.map((e,i)=>`<div class="ep" data-e="${i}">
+    <div class="epno">${e.no}</div>
+    <div><div class="ept">${e.t}</div><div class="epm">${e.d} · The Touchline</div></div>
+    <span class="pb2"><svg class="icon"><use href="#i-play"/></svg></span></div>`).join('');
+  $$('#epList .ep').forEach(el=>el.addEventListener('click',()=>playEp(+el.dataset.e)));
+}
+ $('#bpToggle').onclick=pToggle;
+ $('#bpTl').addEventListener('click',e=>{if(P.dur){const r=e.currentTarget.getBoundingClientRect();P.t=Math.round((e.clientX-r.left)/r.width*P.dur);renderP()}});
+ $('#bpClose').onclick=()=>{clearInterval(P.timer);P.playing=false;P.ep=null;document.body.classList.remove('has-player')};
+ $$('.pbtn').forEach(b=>b.addEventListener('click',()=>toast('External platform links are disabled in this preview build.','arrow')));
+
+/* ================= modal / arama / genel ================= */
+function openModal(s){$(s).classList.add('open');document.body.style.overflow='hidden'}
+function closeModal(s){$(s).classList.remove('open');document.body.style.overflow=''}
+ $$('#artModal [data-close]').forEach(el=>el.addEventListener('click',()=>closeModal('#artModal')));
+
+/* arama */
+const openSearch=()=>{$('#search').classList.add('open');setTimeout(()=>$('#searchInput').focus(),30);renderSearch('')};
+const closeSearch=()=>{$('#search').classList.remove('open');$('#searchInput').value=''};
+function renderSearch(q){
+  q=q.trim().toLowerCase();
+  if(!q){$('#searchRes').innerHTML=`<div class="shint">Type to search across news, transfers and analysis — try \u201CSaka\u201D or \u201CReal Madrid\u201D.</div>`;return}
+  const hits=Object.entries(ART).filter(([k,a])=>(a.title+' '+a.cat+' '+a.dek).toLowerCase().includes(q));
+  $('#searchRes').hits? null:null;
+  $('#searchRes').innerHTML=hits.length?hits.map(([k,a])=>`<div class="sr" data-a="${k}"><span class="t">${a.title}</span><span class="c">${a.cat}</span></div>`).join('')
+    :`<div class="shint">No results for \u201C${q}\u201D.</div>`;
+  $$('#searchRes .sr').forEach(el=>el.addEventListener('click',()=>{closeSearch();openArticle(el.dataset.a)}));
+}
+ $('#searchBtn').onclick=openSearch;$('#searchClose').onclick=closeSearch;
+ $('#searchInput').addEventListener('input',e=>renderSearch(e.target.value));
+ $('#search').addEventListener('click',e=>{if(e.target.id==='search')closeSearch()});
+ $('#mcBtn').onclick=()=>$('#matches').scrollIntoView({behavior:'smooth'});
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    if($('#search').classList.contains('open'))return closeSearch();
+    if($('#lb').classList.contains('open'))return closeLB();
+    if($('#vidModal').classList.contains('open')){clearInterval(V.timer);V.playing=false;return closeModal('#vidModal')}
+    if($('#artModal').classList.contains('open'))return closeModal('#artModal');
+  }
+  if($('#lb').classList.contains('open')){
+    if(e.key==='ArrowRight')openLB(lbIdx+1);
+    if(e.key==='ArrowLeft')openLB(lbIdx-1);
+  }
+  if(e.key==='/'&&!/input|textarea/i.test(document.activeElement.tagName)){e.preventDefault();openSearch()}
+});
+
+/* ================= başlat ================= */
+buildTicker();initLive();buildResults();buildNews();buildVideos();buildGallery();buildPlayers();buildPods();
+</script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+1:"$Sreact.fragment"
+2:I[77612,["/_next/static/chunks/44ea02c45ad76008.js","/_next/static/chunks/ec798b5d8baebee2.js","/_next/static/chunks/ec5b76147bec6036.js"],"SiteDataProvider"]
+3:I[66463,["/_next/static/chunks/44ea02c45ad76008.js","/_next/static/chunks/ec798b5d8baebee2.js","/_next/static/chunks/ec5b76147bec6036.js"],"ScrollProgress"]
+4:I[13102,["/_next/static/chunks/44ea02c45ad76008.js","/_next/static/chunks/ec798b5d8baebee2.js","/_next/static/chunks/ec5b76147bec6036.js"],"CursorGlow"]
+5:I[2874,["/_next/static/chunks/44ea02c45ad76008.js","/_next/static/chunks/ec798b5d8baebee2.js","/_next/static/chunks/ec5b76147bec6036.js"],"Navbar"]
+6:I[61564,["/_next/static/chunks/44ea02c45ad76008.js","/_next/static/chunks/ec798b5d8baebee2.js","/_next/static/chunks/ec5b76147bec6036.js"],"Hero"]
+7:I[74423,["/_next/static/chunks/44ea02c45ad76008.js","/_next/static/chunks/ec798b5d8baebee2.js","/_next/static/chunks/ec5b76147bec6036.js"],"About"]
+8:I[29514,["/_next/static/chunks/44ea02c45ad76008.js","/_next/static/chunks/ec798b5d8baebee2.js","/_next/static/chunks/ec5b76147bec6036.js"],"Skills"]
+9:I[21191,["/_next/static/chunks/44ea02c45ad76008.js","/_next/static/chunks/ec798b5d8baebee2.js","/_next/static/chunks/ec5b76147bec6036.js"],"Services"]
+a:I[75998,["/_next/static/chunks/44ea02c45ad76008.js","/_next/static/chunks/ec798b5d8baebee2.js","/_next/static/chunks/ec5b76147bec6036.js"],"Projects"]
+b:I[99774,["/_next/static/chunks/44ea02c45ad76008.js","/_next/static/chunks/ec798b5d8baebee2.js","/_next/static/chunks/ec5b76147bec6036.js"],"Experience"]
+c:I[29278,["/_next/static/chunks/44ea02c45ad76008.js","/_next/static/chunks/ec798b5d8baebee2.js","/_next/static/chunks/ec5b76147bec6036.js"],"Testimonials"]
+d:I[50300,["/_next/static/chunks/44ea02c45ad76008.js","/_next/static/chunks/ec798b5d8baebee2.js","/_next/static/chunks/ec5b76147bec6036.js"],"Contact"]
+e:I[54231,["/_next/static/chunks/44ea02c45ad76008.js","/_next/static/chunks/ec798b5d8baebee2.js","/_next/static/chunks/ec5b76147bec6036.js"],"Footer"]
+f:I[44225,["/_next/static/chunks/44ea02c45ad76008.js","/_next/static/chunks/ec798b5d8baebee2.js","/_next/static/chunks/ec5b76147bec6036.js"],"AdminShell"]
+10:I[93338,["/_next/static/chunks/44ea02c45ad76008.js","/_next/static/chunks/ec798b5d8baebee2.js","/_next/static/chunks/ec5b76147bec6036.js"],"FloatingWhatsApp"]
+11:I[97367,["/_next/static/chunks/2f236954d6a65e12.js"],"OutletBoundary"]
+12:"$Sreact.suspense"
+0:{"buildId":"XhK_JImhFpZtJ79YEi-D7","rsc":["$","$1","c",{"children":[["$","$L2",null,{"children":["$","div",null,{"className":"relative flex min-h-screen flex-col overflow-x-hidden bg-background","children":[["$","$L3",null,{}],["$","$L4",null,{}],["$","$L5",null,{}],["$","main",null,{"className":"flex-1","children":[["$","$L6",null,{}],["$","$L7",null,{}],["$","$L8",null,{}],["$","$L9",null,{}],["$","$La",null,{}],["$","$Lb",null,{}],["$","$Lc",null,{}],["$","$Ld",null,{}]]}],["$","$Le",null,{}],["$","$Lf",null,{}],["$","$L10",null,{}]]}]}],[["$","script","script-0",{"src":"/_next/static/chunks/ec5b76147bec6036.js","async":true}]],["$","$L11",null,{"children":["$","$12",null,{"name":"Next.MetadataOutlet","children":"$@13"}]}]]}],"loading":null,"isPartial":false}
+13:null
