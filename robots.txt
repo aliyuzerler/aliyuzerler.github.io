@@ -1,3 +1,6 @@
+# aliyuzerler.github.io için robots.txt taslağı (P2 paketi)
+# Değişiklik: Sitemap satırı eklendi. Mevcut User-agent kuralları korundu.
+
 User-agent: Googlebot
 Allow: /
 
@@ -12,3 +15,5 @@ Allow: /
 
 User-agent: *
 Allow: /
+
+Sitemap: https://aliyuzerler.github.io/sitemap.xml

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- aliyuzerler.github.io için sitemap taslağı (P2 paketi) -->
+<!-- Yeni sayfa eklendikçe <url> bloğu çoğaltılmalıdır. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://aliyuzerler.github.io/</loc>
+    <lastmod>2026-01-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <!-- Canlı demo proje sayfaları -->
+  <url>
+    <loc>https://aliyuzerler.github.io/projects/volta-eticaret.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://aliyuzerler.github.io/projects/ravza-turizm.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://aliyuzerler.github.io/projects/karay-dogan-hukuk.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://aliyuzerler.github.io/projects/futbolhaberler.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://aliyuzerler.github.io/projects/altinokmakine.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+</urlset>
