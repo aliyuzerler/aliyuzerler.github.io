@@ -43,7 +43,7 @@
 /* ========== QA TURU #8 EKLERI - H2 kalici + dokunma hedefleri + cila ========== */
 /* 1) Mobil menu paneli: backdrop-filter fixed-header baglaminda yetersiz, arka plan siziyor
       (koyu+acik modda dogrulandi) -> panel neredeyse tam opak. Yalnizca header icindeki panel etkilenir. */
-header div.glass-strong{background-color:color-mix(in oklab,var(--card)98%,transparent)}
+header div.glass-strong{background-color:color-mix(in oklab,var(--card)100%,transparent)}
 /* 2) Dokunma hedefleri: gorsel boyut korunur, hit alani buyur (WCAG 2.5.8) */
 button.h-2{position:relative;margin-inline:4px}
 button.h-2::before{content:"";position:absolute;inset:-8px;border-radius:9999px}
