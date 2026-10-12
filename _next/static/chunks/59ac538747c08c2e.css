@@ -39,3 +39,36 @@
 .fixed.btn-grad,.fixed.chip-grad{position:fixed}
 .absolute.btn-grad,.absolute.chip-grad{position:absolute}
 .sticky.btn-grad,.sticky.chip-grad{position:sticky}
+
+/* ========== QA TURU #8 EKLERI - H2 kalici + dokunma hedefleri + cila ========== */
+/* 1) Mobil menu paneli: backdrop-filter fixed-header baglaminda yetersiz, arka plan siziyor
+      (koyu+acik modda dogrulandi) -> panel neredeyse tam opak. Yalnizca header icindeki panel etkilenir. */
+header div.glass-strong{background-color:color-mix(in oklab,var(--card)98%,transparent)}
+/* 2) Dokunma hedefleri: gorsel boyut korunur, hit alani buyur (WCAG 2.5.8) */
+button.h-2{position:relative;margin-inline:4px}
+button.h-2::before{content:"";position:absolute;inset:-8px;border-radius:9999px}
+button.h-10.w-10{position:relative}
+button.h-10.w-10::before{content:"";position:absolute;inset:-2px;border-radius:inherit}
+/* 3) Marka uyumlu ince scrollbar (WebKit + Firefox) */
+html{scrollbar-width:thin;scrollbar-color:color-mix(in oklab,var(--grad-a)50%,transparent) transparent}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:color-mix(in oklab,var(--grad-a)45%,transparent);border-radius:9999px;border:2px solid transparent;background-clip:content-box}
+::-webkit-scrollbar-thumb:hover{background:color-mix(in oklab,var(--grad-a)72%,transparent);background-clip:content-box}
+/* 4) Metin secimi marka tinili */
+::selection{background:color-mix(in oklab,var(--grad-a)28%,transparent)}
+/* 5) E-posta kopyala butonu (guard script enjekte eder) */
+.qa-copybtn{display:grid;place-items:center;width:44px;height:44px;flex-shrink:0;border-radius:.75rem;border:1px solid color-mix(in oklab,var(--grad-a)25%,transparent);background:color-mix(in oklab,var(--grad-a)8%,transparent);color:var(--brand);cursor:pointer;transition:background .25s ease,transform .25s ease,color .25s ease}
+.qa-copybtn:hover{background:color-mix(in oklab,var(--grad-a)16%,transparent);transform:translateY(-1px)}
+.qa-copybtn:active{transform:translateY(0)}
+.qa-copybtn.copied{color:#fff;border-color:transparent;background-image:linear-gradient(135deg,var(--grad-a),var(--grad-b));box-shadow:0 8px 18px -8px color-mix(in oklab,var(--grad-a)55%,transparent)}
+/* 6) Baski dostu cikti (Ctrl+P -> portfolyo PDF'i) */
+@media print{
+ .fixed,header{display:none!important}
+ html,body{background:#fff!important;color:#111!important}
+ .bg-card,.glass,.glass-strong{background:#fff!important;box-shadow:none!important;border-color:#ddd!important}
+ .bg-card{break-inside:avoid}
+ .mesh-bg:before,.mesh-bg:after,.hp-portrait-glow,.hp-frame-dash{display:none!important}
+ img,iframe{max-width:100%!important}
+ *{animation:none!important;transition:none!important}
+}
