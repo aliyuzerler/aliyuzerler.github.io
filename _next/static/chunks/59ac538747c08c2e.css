@@ -34,3 +34,8 @@
 
 .hp-scrollhint{position:absolute;bottom:26px;left:30px;display:none;z-index:5}
 @media(min-width:768px){.hp-scrollhint{display:block}}
+
+/* v2 fix: btn-grad/chip-grad konum utility'lerini ezmesin */
+.fixed.btn-grad,.fixed.chip-grad{position:fixed}
+.absolute.btn-grad,.absolute.chip-grad{position:absolute}
+.sticky.btn-grad,.sticky.chip-grad{position:sticky}
