@@ -1,6 +1,8 @@
 /* ============================================================
-   ALIDECK — Projeler bölümü: kartlar sırayla uzaktan yakına uçar
-   - Tek kart odakta (daha büyük boyut), scroll ile 3D derinlikten gelir
+   ALIDECK — Projeler bölümü: kartlar rastgele sağdan/soldan eğimli
+   açılarla gelir, ekrana doğru düzleşerek merkezde konumlanır
+   - Tek kart odakta (daha büyük boyut), scroll ile yandan 3D giriş
+   - Önizleme iframe'leri kart boyutuna dinamik tam oturtulur (boşluksuz)
    - Kart tasarımı KORUNUR; yalnızca yerleşim + animasyon
    - position:sticky taklidi (fixed-emulation) — ancestor overflow'a dayanıklı
    - React güvenli: düğüm taşınmaz, yalnız inline style; MO ile self-heal
@@ -27,6 +29,20 @@
     let stageState = '', activeIdx = -1, rafId = 0, visible = false;
     let dotsWrap = null, dotEls = [], titles = [];
     let cardCache = [];
+    let seeds = [];
+
+    /* ---------- rastgele giriş tohumu: sağ/sol + eğimli açı ---------- */
+    function makeSeed() {
+      const side = Math.random() < 0.5 ? -1 : 1;
+      return {
+        x: side * (300 + Math.random() * 240),   // yandan giriş mesafesi (±300..540)
+        y: (Math.random() * 2 - 1) * 60,         // hafif dikey çeşitleme (±60)
+        z: -1500 * (0.9 + Math.random() * 0.25), // derinlik çeşitlemesi
+        rx: (Math.random() * 2 - 1) * 7,         // öne/arkaya eğik (±7°)
+        ry: side * (14 + Math.random() * 14),    // yana dönük burun (±14..28°)
+        rz: side * (6 + Math.random() * 8)       // yatıklık / roll (±6..14°)
+      };
+    }
 
     /* ---------- ölçüm ---------- */
     function measure() {
@@ -89,6 +105,7 @@
       N = els.length;
       if (!N) return;
       cardCache = els;
+      seeds = els.map(() => makeSeed()); // her kurulumda yeni rastgele dağılım
       titles = els.map((el, i) => (el.querySelector('h3,h2,strong') || {}).textContent || ('Proje ' + (i + 1)));
 
       const m = measure();
@@ -103,6 +120,7 @@
       sec.style.position = 'relative';
 
       els.forEach(el => styleCard(el, cardW));
+      fitPreviews();
       activeIdx = -1;
 
       // mutlak konumlar
@@ -116,6 +134,37 @@
       sec.style.height = sec.offsetHeight + 'px';
 
       buildDots();
+    }
+
+    /* ---------- önizlemeleri kart boyutuna tam oturt (boşluksuz) ---------- */
+    function fitPreviews() {
+      cardCache.forEach(el => {
+        try {
+          const ifr = el.querySelector('iframe');
+          if (!ifr) return;
+          const box = ifr.parentElement; // düzen ölçüsü — transformdan etkilenmez
+          const vw = box.clientWidth, vh = box.clientHeight;
+          if (!vw || !vh) return;
+          const wPx = parseFloat(ifr.style.width) || 0;
+          if (wPx > 600) {
+            // tarayıcı mockup'ı (1200px belge): genişliğe tamamla,
+            // sanal sayfa yüksekliğini alana tam yay → ne boşluk ne kırpma
+            const sc = vw / wPx;
+            ifr.style.transform = 'scale(' + sc.toFixed(4) + ')';
+            ifr.style.height = Math.round(vh / sc) + 'px';
+          } else {
+            // telefon mockup'ı (380x800): yüksekliğe tamamla,
+            // kabuğu orantılı büyüt (max-w-120 sınırlamasını kaldır)
+            const sc = vh / 800;
+            ifr.style.transform = 'scale(' + sc.toFixed(4) + ')';
+            const shell = ifr.parentElement && ifr.parentElement.parentElement;
+            if (shell) {
+              shell.style.maxWidth = 'none';
+              shell.style.width = Math.round(380 * sc + 16) + 'px'; // 6+6 çerçeve + 2+2 pad
+            }
+          }
+        } catch (e) { /* tek kart oturtulamadıysa diğerlerine devam */ }
+      });
     }
 
     /* ---------- sahne durumu ---------- */
@@ -142,17 +191,24 @@
       for (let i = 0; i < els.length; i++) {
         const el = els[i];
         const t = (p - i * w) / w;
-        let z, op, blur, rx, y;
+        const s = seeds[i] || (seeds[i] = makeSeed());
+        let x = 0, y = 0, z = 0, op, blur, rx = 0, ry = 0, rz = 0;
         if (t < 0.45) {
+          // rastgele sağdan/soldan eğimli giriş → düzleşerek merkeze yaslan
           const e = easeIO(clamp(t / 0.45, 0, 1));
-          z = -1500 * (1 - e); op = Math.min(1, e * 1.15); blur = 8 * (1 - e); rx = 9 * (1 - e); y = 70 * (1 - e);
+          const k = 1 - e;
+          x = s.x * k; y = s.y * k; z = s.z * k;
+          rx = s.rx * k; ry = s.ry * k; rz = s.rz * k;
+          op = Math.min(1, e * 1.15); blur = 8 * k;
         } else if (t < 0.85) {
-          z = 0; op = 1; blur = 0; rx = 0; y = 0;
+          op = 1; blur = 0;
         } else if (i < els.length - 1) {
+          // kameradan geçiş: kartın kendi yönüne hafif sürüklenerek uçsun
           const e = easeIO(clamp((t - 0.85) / 0.15, 0, 1));
-          z = 750 * e; op = Math.max(0, 1 - e * 1.25); blur = 5 * e; rx = -7 * e; y = 0;
+          z = 750 * e; op = Math.max(0, 1 - e * 1.25); blur = 5 * e;
+          rx = -7 * e; ry = s.ry * 0.35 * e; rz = s.rz * 0.3 * e; x = s.x * 0.12 * e;
         } else {
-          z = 0; op = 1; blur = 0; rx = 0; y = 0;
+          op = 1; blur = 0;
         }
         if (op < 0.02) {
           el.style.visibility = 'hidden';
@@ -161,7 +217,7 @@
         }
         el.style.visibility = 'visible';
         el.style.opacity = String(op);
-        el.style.transform = `translate(-50%,-50%) translateY(${y.toFixed(1)}px) translateZ(${z.toFixed(1)}px) rotateX(${rx.toFixed(2)}deg)`;
+        el.style.transform = `translate(-50%,-50%) translate3d(${x.toFixed(1)}px,${y.toFixed(1)}px,${z.toFixed(1)}px) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg) rotateZ(${rz.toFixed(2)}deg)`;
         el.style.filter = blur > 0.2 ? `blur(${blur.toFixed(1)}px) brightness(${(0.75 + 0.25 * op).toFixed(2)})` : 'none';
         el.style.zIndex = String(10 + Math.round(z / 10));
         const interactive = (i === holdIdx && t >= 0.45 && t < 0.85);
@@ -233,6 +289,24 @@
     build();
     applyState('flow');
     startLoop();
+
+    // SAĞLIK KONTROLÜ: React hidrasyonu init'ten sonra bölüm/kılavuz düğümünü
+    // yeniden oluşturabilir (yavaş cihazlarda görüldü) — deste kopuk düğümlerde
+    // kalırsa sessizce ölür. Yeni düğüme kendini yeniden kur.
+    const health = setInterval(() => {
+      try {
+        const cur = document.getElementById('projects');
+        const stale = !cur || cur !== sec || !cur.contains(grid);
+        if (!stale) return;
+        clearInterval(health);
+        stopLoop();
+        io.disconnect();
+        mo.disconnect();
+        if (dotsWrap) dotsWrap.remove();
+        if (cur && cur.dataset) delete cur.dataset.deckInit;
+        setTimeout(init, 60);
+      } catch (e) { /* sağlık kontrolü hata halinde klasik grid kalır */ }
+    }, 1200);
 
     window.__aliDeck = { get state() { return { N, enterAt, exitAt, stage: stageState, active: activeIdx, rafId: rafId, visible: visible }; }, rebuild: build };
   } catch (err) {
