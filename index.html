@@ -334,4 +334,51 @@ try{var _qh=(location.hash||'').toLowerCase();if(_qh==='#en'||_qh==='#tr'){local
  }
  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',start)}else{start()}
 })();
+</script><script id="admin-login-fix">
+/* ALIFIX v1: React 19, yonetim giris formu + iletisim formu ayni anda DOM'da
+   oldugunda submit'i yanlis forma yonlendiriyor (mailto tetikleniyor, admin
+   handler hic cagrilmiyor). Kopruler: click/Enter capture'da yakalanir, React
+   fiber'indan admin onSubmit dogrudan cagrilir. Sadece sifreli admin giris
+   formu hedeflenir (iletisim/bulten formlari etkilenmez). */
+(function(){
+  if(window.__aliAdminFix)return;window.__aliAdminFix=1;
+  function isAdminLoginForm(f){
+    return !!(f&&f.querySelector&&f.querySelector('input[type=password]')&&/Giri\u015f Yap|Sign in/.test(f.textContent||''));
+  }
+  function findReactSubmit(form){
+    var k=Object.keys(form).find(function(x){return x.indexOf('__reactFiber')===0});
+    var fib=form[k];
+    for(var i=0;i<60&&fib;i++){
+      var p=fib.memoizedProps||fib.pendingProps;
+      if(p&&typeof p.onSubmit==='function')return p.onSubmit;
+      fib=fib.return;
+    }
+    return null;
+  }
+  function bridge(form){
+    var h=findReactSubmit(form);
+    if(!h)return false;
+    var ev={preventDefault:function(){},stopPropagation:function(){},stopImmediatePropagation:function(){},target:form,currentTarget:form,type:'submit',nativeEvent:{}};
+    try{h(ev);return true}catch(err){return false}
+  }
+  document.addEventListener('click',function(e){
+    var b=e.target&&e.target.closest?e.target.closest('button[type="submit"]'):null;
+    if(!b||b.disabled)return;
+    var f=b.closest('form');
+    if(!isAdminLoginForm(f))return;
+    e.preventDefault();e.stopImmediatePropagation();
+    bridge(f);
+  },true);
+  document.addEventListener('keydown',function(e){
+    if(e.key!=='Enter')return;
+    var t=e.target;
+    if(!t||t.tagName!=='INPUT')return;
+    var f=t.closest?t.closest('form'):null;
+    if(!isAdminLoginForm(f))return;
+    var btn=f.querySelector('button[type="submit"]');
+    if(btn&&btn.disabled)return;
+    e.preventDefault();e.stopImmediatePropagation();
+    bridge(f);
+  },true);
+})();
 </script></body></html>
