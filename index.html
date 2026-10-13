@@ -72,6 +72,38 @@ try{var _qh=(location.hash||'').toLowerCase();if(_qh==='#en'||_qh==='#tr'){local
    }
   }catch(e){}
  }
+
+ function ensureDotKeys(){
+  if(ensureDotKeys.bound)return;ensureDotKeys.bound=true;
+  var RE=/^(Testimonial|Yorum|Reference|Referans) \d+$/;
+  document.addEventListener('keydown',function(ev){
+   if(ev.key!=='ArrowLeft'&&ev.key!=='ArrowRight')return;
+   var t=ev.target;
+   if(!t||!t.getAttribute)return;
+   var lb=t.getAttribute('aria-label')||'';
+   if(!RE.test(lb))return;
+   var dots=Array.prototype.slice.call(document.querySelectorAll('button')).filter(function(b){return RE.test(b.getAttribute('aria-label')||'');});
+   if(dots.length<2)return;
+   var idx=dots.indexOf(t);
+   if(idx<0)return;
+   ev.preventDefault();
+   var nx=ev.key==='ArrowRight'?(idx+1)%dots.length:(idx-1+dots.length)%dots.length;
+   dots[nx].focus();
+   dots[nx].click();
+  },true);
+ }
+
+ function ensureMenuAria(){
+  try{
+   var bs=document.querySelectorAll('header button');
+   var btn=null;
+   for(var i=0;i<bs.length;i++){if((bs[i].getAttribute('aria-label')||'')==='Men\u00fc'){btn=bs[i];break;}}
+   if(!btn)return;
+   var open=!!document.querySelector('header div.glass-strong a');
+   var want=open?'true':'false';
+   if(btn.getAttribute('aria-expanded')!==want)btn.setAttribute('aria-expanded',want);
+  }catch(e){}
+ }
  function ensureModalA11y(){
   if(ensureModalA11y.bound)return;ensureModalA11y.bound=true;
   var SEL='div.fixed.inset-0[class*="z-[100]"]';
@@ -145,6 +177,17 @@ try{var _qh=(location.hash||'').toLowerCase();if(_qh==='#en'||_qh==='#tr'){local
      ev.preventDefault();x.click();return;
     }
    }
+   try{
+    var panel=document.querySelector('header div.glass-strong a');
+    if(panel){
+     var bs2=document.querySelectorAll('header button');
+     for(var j=0;j<bs2.length;j++){
+      if((bs2[j].getAttribute('aria-label')||'')==='Men\u00fc'){
+       ev.preventDefault();bs2[j].click();return;
+      }
+     }
+    }
+   }catch(e){}
   },true);
  }
  function ensureCopy(){
@@ -219,11 +262,11 @@ try{var _qh=(location.hash||'').toLowerCase();if(_qh==='#en'||_qh==='#tr'){local
  var t=null;
  function settle(){
   clearTimeout(t);
-  t=setTimeout(function(){ensureHead();ensureBody();ensureForms();try{ensureModalA11y()}catch(e){}try{ensureShare()}catch(e){}try{ensureDots()}catch(e){}},120);
+  t=setTimeout(function(){ensureHead();ensureBody();ensureForms();try{ensureModalA11y()}catch(e){}try{ensureShare()}catch(e){}try{ensureDots()}catch(e){}try{ensureDotKeys()}catch(e){}try{ensureMenuAria()}catch(e){}},120);
  
   try{ensureCopy()}catch(e){}}
  function start(){
-  ensureHead();ensureBody();ensureForms();ensureKeys();ensureCopy();try{ensureModalA11y()}catch(e){}try{ensureShare()}catch(e){}try{ensureDots()}catch(e){}settle();
+  ensureHead();ensureBody();ensureForms();ensureKeys();ensureCopy();try{ensureModalA11y()}catch(e){}try{ensureShare()}catch(e){}try{ensureDots()}catch(e){}try{ensureDotKeys()}catch(e){}try{ensureMenuAria()}catch(e){}settle();
   var mo=new MutationObserver(settle);
   mo.observe(document.documentElement,{childList:true,subtree:true});
   window.addEventListener('load',function(){settle();setTimeout(settle,1500);});
