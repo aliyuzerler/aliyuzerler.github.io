@@ -381,8 +381,14 @@ try{var _qh=(location.hash||'').toLowerCase();if(_qh==='#en'||_qh==='#tr'){local
     bridge(f);
   },true);
 })();
-</script><script>/* ALIMUSIC v1.1 - arka plan müziği: ilk etkileşimde yumuşak giriş, FAB kontrol,
-tercih hatırlama (localStorage ali_music), sekme gizlenince duraklatma, TR/EN etiketler.
+</script><script>/* ALIMUSIC v2.0 - arka plan müziği OTO-BAŞLANGIÇ: site açılır açılmaz müzik kendiliğinden başlar.
+3 kademeli strateji (tarayıcı autoplay politikalarına tam uyumlu):
+  (1) sesli autoplay denemesi — tarayıcı izin verirse (MEI/PWA vb.) müzik DUYULUR başlar,
+  (2) sessiz autoplay — engellenirse muted başlar, konum akmaya devam eder; kullanıcının İLK
+      etkileşiminde (tıklama/kaydırma/tuş) ses kendiliğinden açılır — FAB'a basmaya gerek yok,
+  (3) gesture fallback — muted bile engellenirse ilk etkileşimde normal başlatma.
+FAB kontrol, tercih hatırlama (localStorage ali_music: 'off' ise hiçbir otomatik başlatma yok),
+sekme gizlenince duraklatma / dönünce otomatik devam, TR/EN etiketler.
 SELF-HEAL: React 19 document-hydration body düzeyini yönetir ve eklenen düğümleri
 temizleyebilir -> 1.4s'lik sağlık kontrolü FAB'ı yeniden yaratır (diğer köprülerle aynı kalıp).
 Kaynak sırası: /music/interstellar.mp3 (varsa öncelikli) -> /music/arkaplan.mp3 (öntanımlı) */
@@ -395,7 +401,7 @@ var LS='ali_music',VOL=0.35,FADE=1500;
    (YouTube: UDVtMYqUAyw — istenen kisim 22. saniyede başlıyor) */
 var ISTART=22;
 var srcs=['/music/interstellar.mp3','/music/arkaplan.mp3'];
-var aud=null,fab=null,si=0,playing=false,wanted=false,hiddenPause=false,raf=0,kickArmed=false;
+var aud=null,fab=null,si=0,playing=false,mutedRun=false,wanted=false,hiddenPause=false,raf=0,gArmed=false,gestureGo=null;
 var en=function(){try{return /^en/i.test(localStorage.getItem('portfolio_lang')||document.documentElement.lang||'')}catch(e){return false}};
 var pref=function(){try{return localStorage.getItem(LS)}catch(e){return null}};
 var setP=function(v){try{localStorage.setItem(LS,v)}catch(e){}};
@@ -424,36 +430,47 @@ var fadeTo=function(goal,done){
 };
 var setUI=function(){
   if(!fab)return;
-  fab.classList.toggle('playing',playing);
-  fab.setAttribute('aria-pressed',playing?'true':'false');
+  var on=playing||mutedRun;
+  fab.classList.toggle('playing',on);
+  fab.setAttribute('aria-pressed',on?'true':'false');
   var e=en();
   fab.setAttribute('aria-label',e?'Toggle background music':'Arka plan müziğini aç/kapat');
-  fab.title=playing?(e?'Mute background music':'Arka plan müziğini kapat'):(e?'Play background music':'Arka plan müziğini aç');
+  fab.title=on?(mutedRun?(e?'Music starts automatically — click to turn off':'Müzik otomatik başlayacak — kapatmak için tıkla'):(e?'Mute background music':'Arka plan müziğini kapat')):(e?'Play background music':'Arka plan müziğini aç');
 };
-var start=function(){
-  if(!aud||playing)return;
+/* başlat: mutedRun varsa sadece sesi aç (konum zaten akıyor), yoksa play() */
+var start=function(cb){
+  if(!aud)return;
+  if(mutedRun){
+    mutedRun=false;playing=true;wanted=true;setUI();
+    try{aud.muted=false}catch(e){}
+    if(cb)cb();fadeTo(VOL);return;
+  }
+  if(playing){if(cb)cb();return}
+  try{aud.muted=false}catch(e){}
   var pr;try{pr=aud.play()}catch(e){return}
-  var ok=function(){playing=true;wanted=true;setUI();fadeTo(VOL)};
+  var ok=function(){playing=true;wanted=true;setUI();if(cb)cb();fadeTo(VOL)};
   if(pr&&pr.then)pr.then(ok).catch(function(){});
   else ok();
 };
 var stop=function(permanent){
   if(permanent)wanted=false;
-  playing=false;setUI();
+  playing=false;mutedRun=false;setUI();
   if(!aud)return;
+  try{aud.muted=false}catch(e){}
   fadeTo(0,function(){try{aud.pause()}catch(e){}});
 };
 var toggle=function(){
-  if(playing){stop(true);setP('off')}
+  if(playing||mutedRun){stop(true);setP('off')}
   else{wanted=true;setP('on');start()}
 };
-window.__aliMusicToggle=toggle;Object.defineProperty(window,'__aliMusic',{get:function(){return aud?{playing:playing,src:(aud.currentSrc||aud.src||'').split('/').pop(),t:+aud.currentTime.toFixed(2),vol:+aud.volume.toFixed(3),wanted:wanted,st:startAt,si:si}:{playing:false}}});
+window.__aliMusicToggle=toggle;Object.defineProperty(window,'__aliMusic',{get:function(){return aud?{playing:playing||mutedRun,audible:playing,mutedRun:mutedRun,src:(aud.currentSrc||aud.src||'').split('/').pop(),t:+aud.currentTime.toFixed(2),vol:+aud.volume.toFixed(3),wanted:wanted,st:startAt,si:si}:{playing:false}}});
 var ensureAudio=function(){
   if(aud)return;
-  aud=new Audio();aud.loop=true;aud.preload='none';aud.volume=0;
+  aud=new Audio();aud.loop=true;aud.preload='metadata';aud.volume=0;
   aud.addEventListener('error',function(){
-    if(si<srcs.length-1){si++;try{aud.src=srcs[si];aud.load()}catch(e){}
-      if(wanted&&!playing)setTimeout(start,150);}
+    if(mutedRun){mutedRun=false;setUI()}
+    if(si<srcs.length-1){si++;try{aud.src=srcs[si];aud.load()}catch(e){}}
+    if(wanted&&!playing){tryAuto();armG()}
   });
   aud.src=srcs[si];
   aud.addEventListener('loadedmetadata',function(){
@@ -462,10 +479,47 @@ var ensureAudio=function(){
   });
   /* dongu basa sardiginda girise dönmesin: startAt altina duserse geri sar */
   aud.addEventListener('timeupdate',function(){
-    if(startAt&&playing&&aud.currentTime<startAt-0.6){try{aud.currentTime=startAt}catch(e){}}
+    if(startAt&&(playing||mutedRun)&&aud.currentTime<startAt-0.6){try{aud.currentTime=startAt}catch(e){}}
   });
 };
 var startAt=0;
+/* kademe 2: sessiz (muted) autoplay — tarayıcılar muted medyaya izin verir */
+var mtry=function(){
+  if(!aud||playing||mutedRun)return;
+  var pr;try{aud.muted=true;pr=aud.play()}catch(e){return}
+  if(pr&&pr.then)pr.then(function(){mutedRun=true;setUI()}).catch(function(){try{aud.muted=false}catch(e){}});
+  else{mutedRun=true;setUI()}
+};
+/* kademe 1: sesli autoplay denemesi (izin verilen bağlamda site açılır açılmaz duyulur) */
+var tryAuto=function(){
+  if(!aud||playing||mutedRun)return;
+  var pr;try{pr=aud.play()}catch(e){return mtry()}
+  var to=setTimeout(function(){if(!playing&&!mutedRun)mtry()},2500);
+  var fin=function(){clearTimeout(to)};
+  if(pr&&pr.then)pr.then(function(){fin();playing=true;wanted=true;setUI();fadeTo(VOL)}).catch(function(){fin();mtry()});
+  else{fin();playing=true;setUI();fadeTo(VOL)}
+};
+var resumeAuto=function(){
+  ensureAudio();
+  if(!wanted||playing||mutedRun||pref()==='off')return;
+  tryAuto();
+  setTimeout(function(){if(!playing&&!mutedRun&&wanted)armG()},600);
+};
+/* kademe 3: ilk etkileşimde müzik kendiliğinden başlar (FAB'a basmaya gerek yok) */
+var armG=function(){
+  if(gArmed||pref()==='off')return;gArmed=true;
+  var evs=['pointerdown','keydown','touchend','wheel','scroll'];
+  var cleanup=function(){gArmed=false;for(var i=0;i<evs.length;i++)removeEventListener(evs[i],gestureGo,{passive:true})};
+  gestureGo=function(e){
+    /* FAB'a yapılan tıklama toggle'a kalsın (pointerdown-start + click-stop yarışı olmasın) */
+    if(e&&e.target&&e.target.closest&&e.target.closest('#ali-music-fab'))return;
+    if(pref()==='off'){wanted=false;cleanup();return}
+    ensureAudio();
+    wanted=true;
+    start(function(){if(playing||mutedRun)cleanup()});
+  };
+  for(var i=0;i<evs.length;i++)addEventListener(evs[i],gestureGo,{passive:true});
+};
 var ensureFab=function(){
   if(!document.body)return false;
   var ex=document.getElementById('ali-music-fab');
@@ -486,29 +540,19 @@ var ensureFab=function(){
   document.body.appendChild(fab);
   return true;
 };
-var armKicks=function(){
-  if(kickArmed)return;kickArmed=true;
-  var kick=function(){
-    ensureAudio();
-    if(pref()==='off'){wanted=false;return}
-    start();
-  };
-  ['pointerdown','keydown','touchend'].forEach(function(ev){
-    addEventListener(ev,kick,{once:true,passive:true});
-  });
-};
 var boot=function(){
   ensureAudio();
   ensureFab();
-  if(pref()!=='off'){wanted=true;armKicks();}
+  if(pref()!=='off'){wanted=true;tryAuto();armG()}
   setInterval(function(){ensureFab()},1400);
   addEventListener('hashchange',setUI);
+  addEventListener('pageshow',function(ev){if(ev&&ev.persisted)setTimeout(resumeAuto,300)});
   document.addEventListener('visibilitychange',function(){
     if(document.hidden){
-      if(playing){hiddenPause=true;playing=false;setUI();fadeTo(0,function(){try{aud.pause()}catch(e){}})}
+      if(playing||mutedRun){hiddenPause=true;playing=false;mutedRun=false;setUI();fadeTo(0,function(){try{aud.pause()}catch(e){}})}
     }else if(hiddenPause){
       hiddenPause=false;
-      if(wanted)setTimeout(function(){ensureAudio();if(wanted&&!playing)start()},500);
+      if(wanted)setTimeout(resumeAuto,500);
     }
   });
 };
