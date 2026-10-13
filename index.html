@@ -390,6 +390,10 @@ Kaynak sırası: /music/interstellar.mp3 (varsa öncelikli) -> /music/arkaplan.m
 try{
 if(window.__aliMusicInit)return;window.__aliMusicInit=true;
 var LS='ali_music',VOL=0.35,FADE=1500;
+/* ALIMUSIC v1.2: kullanici parcasindan baslama saniyesi.
+   /music/interstellar.mp3 bu saniyeden itibaren calar ve dongude de bu noktaya döner.
+   (YouTube: UDVtMYqUAyw — istenen kisim 22. saniyede başlıyor) */
+var ISTART=22;
 var srcs=['/music/interstellar.mp3','/music/arkaplan.mp3'];
 var aud=null,fab=null,si=0,playing=false,wanted=false,hiddenPause=false,raf=0,kickArmed=false;
 var en=function(){try{return /^en/i.test(localStorage.getItem('portfolio_lang')||document.documentElement.lang||'')}catch(e){return false}};
@@ -443,7 +447,7 @@ var toggle=function(){
   if(playing){stop(true);setP('off')}
   else{wanted=true;setP('on');start()}
 };
-window.__aliMusicToggle=toggle;Object.defineProperty(window,'__aliMusic',{get:function(){return aud?{playing:playing,src:(aud.currentSrc||aud.src||'').split('/').pop(),t:+aud.currentTime.toFixed(2),vol:+aud.volume.toFixed(3),wanted:wanted}:{playing:false}}});
+window.__aliMusicToggle=toggle;Object.defineProperty(window,'__aliMusic',{get:function(){return aud?{playing:playing,src:(aud.currentSrc||aud.src||'').split('/').pop(),t:+aud.currentTime.toFixed(2),vol:+aud.volume.toFixed(3),wanted:wanted,st:startAt,si:si}:{playing:false}}});
 var ensureAudio=function(){
   if(aud)return;
   aud=new Audio();aud.loop=true;aud.preload='none';aud.volume=0;
@@ -452,7 +456,16 @@ var ensureAudio=function(){
       if(wanted&&!playing)setTimeout(start,150);}
   });
   aud.src=srcs[si];
+  aud.addEventListener('loadedmetadata',function(){
+    startAt=(/interstellar\.mp3$/.test(aud.currentSrc||aud.src||''))?ISTART:0;
+    if(startAt&&aud.readyState>=1){try{aud.currentTime=startAt}catch(e){}}
+  });
+  /* dongu basa sardiginda girise dönmesin: startAt altina duserse geri sar */
+  aud.addEventListener('timeupdate',function(){
+    if(startAt&&playing&&aud.currentTime<startAt-0.6){try{aud.currentTime=startAt}catch(e){}}
+  });
 };
+var startAt=0;
 var ensureFab=function(){
   if(!document.body)return false;
   var ex=document.getElementById('ali-music-fab');
