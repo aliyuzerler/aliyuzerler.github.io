@@ -538,6 +538,7 @@
         $("gate").hidden = true;
         $("panel").hidden = false;
         switchTab("list");
+        setBusy(false);
       })
       .catch(function () { setBusy(false); });
   }
