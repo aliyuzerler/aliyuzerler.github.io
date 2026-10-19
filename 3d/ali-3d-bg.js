@@ -474,7 +474,12 @@ function frame(t) {
   const dt = Math.min((t - lastT) / 1000, 0.05); lastT = t;
   smoothP += (targetP - smoothP) * Math.min(1, dt * 5.5);
   if (Math.abs(targetP - smoothP) < 0.00004) smoothP = targetP;
-  if (three) three.update(t / 1000, dt, smoothP);
+  /* FIX: prog 1.0 kenarında CatmullRom arc eşlemesi float hatasıyla
+     t>1 üretebiliyor → centripetal dt hesabında p3=undefined patlaması.
+     0.9995'e kelepçele (görsel fark yok) + tek karelik hata döngüyü
+     öldürmesin (hata spam'i de engellenir). */
+  const prog = Math.min(0.9995, Math.max(0, smoothP));
+  try { if (three) three.update(t / 1000, dt, prog); } catch (e) { /* kenar durumunda sessiz geç */ }
 }
 function start() {
   if (running || !three || lightTheme || modalOpen || document.hidden) return;
@@ -495,7 +500,8 @@ function reducedRender() {
   requestAnimationFrame(() => {
     reducedPending = false;
     smoothP = targetP;
-    if (three) three.update(0, 0, smoothP);
+    const rp = Math.min(0.9995, Math.max(0, smoothP));
+    try { if (three) three.update(0, 0, rp); } catch (e) { /* sessiz */ }
   });
 }
 

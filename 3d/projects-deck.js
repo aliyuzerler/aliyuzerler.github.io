@@ -1,12 +1,28 @@
 /* ============================================================
-   ALIDECK — Projeler bölümü: kartlar rastgele sağdan/soldan eğimli
-   açılarla gelir, ekrana doğru düzleşerek merkezde konumlanır
-   - Tek kart odakta (daha büyük boyut), scroll ile yandan 3D giriş
-   - Önizleme iframe'leri kart boyutuna dinamik tam oturtulur (boşluksuz)
-   - Kart tasarımı KORUNUR; yalnızca yerleşim + animasyon
-   - position:sticky taklidi (fixed-emulation) — ancestor overflow'a dayanıklı
-   - React güvenli: düğüm taşınmaz, yalnız inline style; MO ile self-heal
-   - prefers-reduced-motion: destesi hiç kurmaz (mevcut grid kalır)
+   ALIDECK v2 — Projeler bölümü (PERFORMANS OPTİMİZE)
+   ------------------------------------------------------------
+   v2 iyileştirmeleri (kasılma düzeltmesi):
+   1) STATİK ÖNİZLEME: kartlar dinlenirken canlı iframe yerine
+      /projects/previews/*.jpg statik görüntüsü gösterir.
+      Canlı iframe YALNIZ odaktaki kart ±1 penceresinde arm
+      edilir (lazy yüklenir), odak bitince gizlenir, ±2 dışına
+      çıkınca about:blank ile boşaltılır. Aynı anda en fazla
+      3 canlı iframe; sayfa açılışında SIFIR iframe yüklenir.
+   2) PREVIEW_ONLY modu (mobil / zayıf donanım / saveData):
+      iframe hiç arm edilmez — her zaman statik görüntü.
+      Tıkla → proje zaten yeni sekmede açılıyor.
+   3) KİRLEİK KONTROLÜ (dirty check): her kart için yazılan
+      stil imzası önbelleklenir; değişmeyen kartlara karede
+      hiç yazılmaz. Scroll durunca döngü neredeyse boşta çalışır.
+   4) BOŞTA ERKEN ÇIKIŞ: scroll değişmediyse updateCards tamamen
+      atlanır (yalnız 2 karşılaştırma/kare).
+   5) Uyumlu bulanıklık: blur yalnız giriş/çıkış fazında ve
+      yalnız güçlü cihazlarda; LOW cihazda filtre tamamen kapalı.
+      willChange'den filter çıkarıldı.
+   - Kart tasarımı ve 3D giriş animasyonu KORUNDU.
+   - position:sticky taklidi (fixed-emulation) aynen korundu.
+   - React güvenli: düğüm taşınmaz, yalnız inline style; MO self-heal.
+   - prefers-reduced-motion: destesi hiç kurmaz (mevcut grid kalır).
    ============================================================ */
 (function () {
   function init() {
@@ -19,6 +35,12 @@
     const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
     const easeIO = t => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
 
+    /* v2: cihaz profili — zayıf cihazda statik önizleme + filtresiz */
+    const LOW = (navigator.hardwareConcurrency || 8) <= 4;
+    let saveData = false;
+    try { saveData = !!(navigator.connection || 0).saveData; } catch (e) {}
+    const PREVIEW_ONLY = LOW || saveData;
+
     const grid = sec.querySelector('.grid');
     if (!grid || !grid.parentElement) return;
     const wrap = grid.parentElement; // başlık + filtre + grid'i içeren sarmalayıcı
@@ -30,6 +52,8 @@
     let dotsWrap = null, dotEls = [], titles = [];
     let cardCache = [];
     let seeds = [];
+    /* v2: boşta erken çıkış durumu */
+    let lastSy = -1, lastStage = '', forcePaint = true;
 
     /* ---------- rastgele giriş tohumu: sağ/sol + eğimli açı ---------- */
     function makeSeed() {
@@ -84,12 +108,130 @@
       el.style.margin = '0';
       el.style.transition = 'none';
       el.style.animation = 'none';
-      el.style.willChange = 'transform,opacity,filter';
+      // v2: filter willChange'den çıkarıldı (katman bellek baskısını azaltır)
+      el.style.willChange = 'transform,opacity';
       el.style.backfaceVisibility = 'hidden';
       el.style.transform = 'translate(-50%,-50%) translateZ(-1500px)';
       el.style.opacity = '0';
       el.style.visibility = 'hidden';
       el.style.pointerEvents = 'none';
+    }
+
+    /* ---------- v2: statik önizleme altyapısı ---------- */
+    function previewFor(ifr) {
+      try {
+        const src = ifr.__deckSrc || ifr.getAttribute('src') || '';
+        const m = src.match(/\/projects\/([\w.-]+?)\.html/i);
+        if (!m) return '';
+        const wide = (parseFloat(ifr.style.width) || 0) > 600;
+        return '/projects/previews/' + m[1] + (wide ? '-desktop.jpg' : '-mobile.jpg');
+      } catch (e) { return ''; }
+    }
+    function ensureImg(el, ifr) {
+      if (el.__deckImg && el.__deckImg.isConnected) return el.__deckImg;
+      const parent = ifr.parentElement;
+      if (!parent) return null;
+      const url = previewFor(ifr);
+      if (!url) return null; // harici/özel kaynaklar: önizleme yok, iframe kendi halinde
+      const img = document.createElement('img');
+      img.decoding = 'async';
+      img.loading = 'lazy';
+      img.alt = '';
+      img.setAttribute('aria-hidden', 'true');
+      img.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top center;pointer-events:none;';
+      img.onerror = function () { img.style.display = 'none'; };
+      img.src = url;
+      // iframe'den ÖNCE eklenir: iframe (transform'lu stacking context) üstte kalır
+      parent.insertBefore(img, ifr);
+      el.__deckImg = img;
+      return img;
+    }
+    function fitOne(el, ifr) {
+      try {
+        const box = ifr.parentElement;
+        if (!box) return;
+        const vw = box.clientWidth, vh = box.clientHeight;
+        if (!vw || !vh) return;
+        const wPx = parseFloat(ifr.style.width) || 0;
+        if (wPx > 600) {
+          const sc = vw / wPx;
+          ifr.style.transform = 'scale(' + sc.toFixed(4) + ')';
+          ifr.style.height = Math.round(vh / sc) + 'px';
+        } else {
+          const sc = vh / 800;
+          ifr.style.transform = 'scale(' + sc.toFixed(4) + ')';
+          const shell = ifr.parentElement && ifr.parentElement.parentElement;
+          if (shell) {
+            shell.style.maxWidth = 'none';
+            shell.style.width = Math.round(380 * sc + 16) + 'px';
+          }
+        }
+      } catch (e) { /* tek kart oturtulamadıysa devam */ }
+    }
+    function showIfr(el) {
+      const ifr = el.__deckIfr;
+      if (!ifr) return;
+      ifr.style.visibility = 'visible';
+      if (typeof ifr.animate === 'function') {
+        try { ifr.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 420, easing: 'ease' }); } catch (e) {}
+      }
+    }
+    function hideIfr(el) {
+      const ifr = el.__deckIfr;
+      if (ifr && ifr.style.visibility !== 'hidden') ifr.style.visibility = 'hidden';
+    }
+    function armCard(el) {
+      const ifr = el.__deckIfr;
+      if (!ifr || el.__deckArmed) return;
+      el.__deckArmed = true;
+      ensureImg(el, ifr);
+      if (PREVIEW_ONLY) return; // zayıf cihaz: iframe hiç yaşamaz
+      if (!ifr.__deckHook) {
+        ifr.__deckHook = 1;
+        ifr.addEventListener('load', function () {
+          if (!el.__deckArmed) return;      // about:blank boşaltma yüklemesini yok say
+          el.__deckLoaded = true;
+          if (el.__deckFocused) showIfr(el);
+        }, { passive: true });
+      }
+      /* ÖNEMLİ: lazy+display:none ile başlayan iframe'lerde loading=eager
+         dinamik değişimi yüklemeyi her zaman tetiklemiyor — src'yi yeniden
+         atamak taze bir navigasyon başlatır ve yüklemeyi garantiler. */
+      ifr.style.display = '';
+      ifr.loading = 'eager';
+      const src = ifr.__deckSrc || '';
+      if (src) {
+        ifr.setAttribute('src', src);
+        el.__deckLoaded = false;
+      }
+      fitOne(el, ifr);
+    }
+    function disarmCard(el, unload) {
+      hideIfr(el);
+      const ifr = el.__deckIfr;
+      if (!ifr || !el.__deckArmed) return;
+      if (!unload) return; // pencere içinde: yüklü kalsın, yalnız gizle
+      el.__deckArmed = false;
+      el.__deckLoaded = false;
+      try { ifr.setAttribute('src', 'about:blank'); } catch (e) {}
+    }
+    /* odak penceresi: odak kart ±1 arm, ±2 dışı boşalt */
+    function mediaHousekeeping(holdIdx) {
+      for (let i = 0; i < cardCache.length; i++) {
+        const el = cardCache[i];
+        const d = Math.abs(i - holdIdx);
+        const focused = (i === holdIdx) && !PREVIEW_ONLY;
+        if (d <= 1) armCard(el);
+        else if (d > 2) disarmCard(el, true);
+        else disarmCard(el, false);
+        /* odak geçişi: yüklü iframe'i göster/gizle (önden yükleme sonrası
+           odak gelirse burada görünür olur — yükleme olayı kaçtıysa bile) */
+        if (el.__deckFocused !== focused) {
+          el.__deckFocused = focused;
+          if (focused) { if (el.__deckLoaded) showIfr(el); }
+          else hideIfr(el);
+        }
+      }
     }
 
     /* ---------- kurulum / yeniden kurulum ---------- */
@@ -108,6 +250,24 @@
       seeds = els.map(() => makeSeed()); // her kurulumda yeni rastgele dağılım
       titles = els.map((el, i) => (el.querySelector('h3,h2,strong') || {}).textContent || ('Proje ' + (i + 1)));
 
+      /* v2: iframe + imza önbelleğini tazele (React yeni düğümler oluşturmuş olabilir) */
+      els.forEach(el => {
+        if (!el.__deckIfr || !el.__deckIfr.isConnected) {
+          el.__deckIfr = el.querySelector('iframe') || null;
+          el.__deckArmed = false;
+          el.__deckLoaded = false;
+          el.__deckFocused = false;
+          el.__deckSig = '';
+          if (el.__deckIfr) {
+            el.__deckIfr.__deckSrc = el.__deckIfr.getAttribute('src') || '';
+            // iframe baştan kapalı: sayfa açılışında SIFIR canlı site yüklenir
+            el.__deckIfr.style.display = 'none';
+            el.__deckIfr.style.visibility = 'hidden';
+          }
+        }
+        ensureImg(el, el.__deckIfr); // statik önizleme her durumda hazır olsun
+      });
+
       const m = measure();
       deckH = m.deckH; cardW = m.cardW;
 
@@ -120,7 +280,8 @@
       sec.style.position = 'relative';
 
       els.forEach(el => styleCard(el, cardW));
-      fitPreviews();
+      // v2: önizleme oturtma kart genişlikleri KESİNLEŞTİKTEN SONRA (v1 sırası)
+      els.forEach(el => fitOne(el, el.__deckIfr));
       activeIdx = -1;
 
       // mutlak konumlar
@@ -134,37 +295,7 @@
       sec.style.height = sec.offsetHeight + 'px';
 
       buildDots();
-    }
-
-    /* ---------- önizlemeleri kart boyutuna tam oturt (boşluksuz) ---------- */
-    function fitPreviews() {
-      cardCache.forEach(el => {
-        try {
-          const ifr = el.querySelector('iframe');
-          if (!ifr) return;
-          const box = ifr.parentElement; // düzen ölçüsü — transformdan etkilenmez
-          const vw = box.clientWidth, vh = box.clientHeight;
-          if (!vw || !vh) return;
-          const wPx = parseFloat(ifr.style.width) || 0;
-          if (wPx > 600) {
-            // tarayıcı mockup'ı (1200px belge): genişliğe tamamla,
-            // sanal sayfa yüksekliğini alana tam yay → ne boşluk ne kırpma
-            const sc = vw / wPx;
-            ifr.style.transform = 'scale(' + sc.toFixed(4) + ')';
-            ifr.style.height = Math.round(vh / sc) + 'px';
-          } else {
-            // telefon mockup'ı (380x800): yüksekliğe tamamla,
-            // kabuğu orantılı büyüt (max-w-120 sınırlamasını kaldır)
-            const sc = vh / 800;
-            ifr.style.transform = 'scale(' + sc.toFixed(4) + ')';
-            const shell = ifr.parentElement && ifr.parentElement.parentElement;
-            if (shell) {
-              shell.style.maxWidth = 'none';
-              shell.style.width = Math.round(380 * sc + 16) + 'px'; // 6+6 çerçeve + 2+2 pad
-            }
-          }
-        } catch (e) { /* tek kart oturtulamadıysa diğerlerine devam */ }
-      });
+      forcePaint = true;
     }
 
     /* ---------- sahne durumu ---------- */
@@ -183,11 +314,13 @@
       }
     }
 
-    /* ---------- kart animasyonu ---------- */
+    /* ---------- kart animasyonu (v2: dirty check + medya yönetimi) ---------- */
     function updateCards(p) {
       const els = cardCache.length ? cardCache : cardEls();
+      if (!els.length) return;
       const w = 1 / Math.max(1, els.length);
       const holdIdx = clamp(Math.floor(p / w), 0, els.length - 1);
+      const useBlur = !LOW; // v2: bulanıklık yalnız güçlü cihazlarda
       for (let i = 0; i < els.length; i++) {
         const el = els[i];
         const t = (p - i * w) / w;
@@ -199,30 +332,41 @@
           const k = 1 - e;
           x = s.x * k; y = s.y * k; z = s.z * k;
           rx = s.rx * k; ry = s.ry * k; rz = s.rz * k;
-          op = Math.min(1, e * 1.15); blur = 8 * k;
+          op = Math.min(1, e * 1.15); blur = 6 * k;
         } else if (t < 0.85) {
           op = 1; blur = 0;
         } else if (i < els.length - 1) {
           // kameradan geçiş: kartın kendi yönüne hafif sürüklenerek uçsun
           const e = easeIO(clamp((t - 0.85) / 0.15, 0, 1));
-          z = 750 * e; op = Math.max(0, 1 - e * 1.25); blur = 5 * e;
+          z = 750 * e; op = Math.max(0, 1 - e * 1.25); blur = 4 * e;
           rx = -7 * e; ry = s.ry * 0.35 * e; rz = s.rz * 0.3 * e; x = s.x * 0.12 * e;
         } else {
           op = 1; blur = 0;
         }
-        if (op < 0.02) {
-          el.style.visibility = 'hidden';
-          el.style.pointerEvents = 'none';
-          continue;
+        const vis = op < 0.02 ? 'hidden' : 'visible';
+        const pe = (i === holdIdx && t >= 0.45 && t < 0.85) ? 'auto' : 'none';
+        const filter = (useBlur && blur > 0.2) ? 'blur(' + blur.toFixed(1) + 'px) brightness(' + (0.75 + 0.25 * op).toFixed(2) + ')' : 'none';
+        const zix = String(10 + Math.round(z / 10));
+        const tf = 'translate(-50%,-50%) translate3d(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px,' + z.toFixed(1) + 'px) rotateX(' + rx.toFixed(2) + 'deg) rotateY(' + ry.toFixed(2) + 'deg) rotateZ(' + rz.toFixed(2) + 'deg)';
+        /* v2: imza değişmedikçe YAZMA — tarayıcı stili yeniden hesaplamaz */
+        const sig = vis + '|' + op.toFixed(3) + '|' + tf + '|' + filter + '|' + zix + '|' + pe;
+        if (el.__deckSig !== sig) {
+          el.__deckSig = sig;
+          el.style.visibility = vis;
+          if (vis === 'hidden') {
+            el.style.pointerEvents = 'none';
+            continue; // gizli kart: opacity/transform/filter/z gerekmiyor
+          }
+          el.style.opacity = String(op);
+          el.style.transform = tf;
+          el.style.filter = filter;
+          el.style.zIndex = zix;
+          el.style.pointerEvents = pe;
+        } else if (el.style.pointerEvents !== pe) {
+          el.style.pointerEvents = pe;
         }
-        el.style.visibility = 'visible';
-        el.style.opacity = String(op);
-        el.style.transform = `translate(-50%,-50%) translate3d(${x.toFixed(1)}px,${y.toFixed(1)}px,${z.toFixed(1)}px) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg) rotateZ(${rz.toFixed(2)}deg)`;
-        el.style.filter = blur > 0.2 ? `blur(${blur.toFixed(1)}px) brightness(${(0.75 + 0.25 * op).toFixed(2)})` : 'none';
-        el.style.zIndex = String(10 + Math.round(z / 10));
-        const interactive = (i === holdIdx && t >= 0.45 && t < 0.85);
-        el.style.pointerEvents = interactive ? 'auto' : 'none';
       }
+      /* v2: sekme/etiket + dots yalnız odak değişince */
       if (holdIdx !== activeIdx) {
         els.forEach((el, i) => { try { el.tabIndex = i === holdIdx ? 0 : -1; } catch (e) {} });
         if (dotEls.length) dotEls.forEach((d, i) => {
@@ -233,9 +377,10 @@
         });
         activeIdx = holdIdx;
       }
+      mediaHousekeeping(holdIdx);
     }
 
-    /* ---------- ana döngü ---------- */
+    /* ---------- ana döngü (v2: boşta erken çıkış) ---------- */
     function loop() {
       rafId = requestAnimationFrame(loop);
       const sy = window.scrollY || 0;
@@ -243,13 +388,13 @@
       if (sy >= exitAt) st = 'exit';
       else if (sy >= enterAt) st = 'pin';
       if (st !== stageState) applyState(st);
+      /* v2: scroll durduysa ve durum değişmediyse hiçbir şey yazma */
+      if (!forcePaint && st === lastStage && Math.abs(sy - lastSy) < 0.35) return;
+      lastSy = sy; lastStage = st; forcePaint = false;
       if (st === 'pin') {
-        const p = clamp((sy - enterAt) / Math.max(1, exitAt - enterAt), 0, 1);
-        updateCards(p);
-      } else if (st === 'exit') {
-        updateCards(1);
+        updateCards(clamp((sy - enterAt) / Math.max(1, exitAt - enterAt), 0, 1));
       } else {
-        updateCards(0);
+        updateCards(st === 'exit' ? 1 : 0);
       }
     }
     function startLoop() { if (!rafId && visible) rafId = requestAnimationFrame(loop); }
@@ -276,6 +421,7 @@
         const sy = window.scrollY || 0;
         applyState(sy >= exitAt ? 'exit' : sy >= enterAt ? 'pin' : 'flow');
         activeIdx = -1;
+        forcePaint = true;
       });
     });
     mo.observe(grid, { childList: true });
@@ -283,7 +429,7 @@
     let resizeT = 0;
     addEventListener('resize', () => {
       clearTimeout(resizeT);
-      resizeT = setTimeout(() => { build(); const sy = window.scrollY || 0; applyState(sy >= exitAt ? 'exit' : sy >= enterAt ? 'pin' : 'flow'); activeIdx = -1; }, 180);
+      resizeT = setTimeout(() => { build(); const sy = window.scrollY || 0; applyState(sy >= exitAt ? 'exit' : sy >= enterAt ? 'pin' : 'flow'); activeIdx = -1; forcePaint = true; }, 180);
     }, { passive: true });
 
     build();
@@ -308,7 +454,10 @@
       } catch (e) { /* sağlık kontrolü hata halinde klasik grid kalır */ }
     }, 1200);
 
-    window.__aliDeck = { get state() { return { N, enterAt, exitAt, stage: stageState, active: activeIdx, rafId: rafId, visible: visible }; }, rebuild: build };
+    window.__aliDeck = {
+      get state() { return { N, enterAt, exitAt, stage: stageState, active: activeIdx, rafId: rafId, visible: visible, previewOnly: PREVIEW_ONLY, low: LOW }; },
+      rebuild: build
+    };
   } catch (err) {
     console.warn('ALIDECK: proje destesi kurulamadı, klasik grid kalıyor.', err);
   }

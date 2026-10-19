@@ -29,6 +29,9 @@
   }
 
   function setupSection(secId, o) {
+    /* FIX: canHover initFx kapsamındaydı, buradan erişilemiyordu
+       (ReferenceError → hover tilt dinleyicileri hiç bağlanmıyordu) */
+    var canHover = matchMedia('(hover: hover) and (pointer: fine)').matches;
     var sec = document.getElementById(secId);
     if (!sec || sec.dataset.cardsFx) return;
     var grid = sec.querySelector('.mt-16.grid');
@@ -115,6 +118,14 @@
         var tsc = s.hover ? o.hoverScale : 1, k = o.lerp;
         s.rx += (trx - s.rx) * k; s.ry += (trY - s.ry) * k;
         s.y += (ty - s.y) * k; s.sc += (tsc - s.sc) * k;
+        /* PERF: süzülme yokken (skills) dinlenen kartlara tekrar tekrar yazma —
+           hover bitişi sonrası değerler sıfıra oturur, kimlik transformu bir kez
+           yazılır ve kareler boş geçer (tarayıcı stili yeniden hesaplamaz) */
+        var rest = !o.float && !s.hover &&
+          Math.abs(s.rx) < 0.02 && Math.abs(s.ry) < 0.02 &&
+          Math.abs(s.y) < 0.02 && Math.abs(s.sc - 1) < 0.002;
+        if (rest && s.rest) continue;
+        s.rest = rest;
         el.style.transform = 'translate3d(0,' + s.y.toFixed(2) + 'px,0) rotateX(' + s.rx.toFixed(2) + 'deg) rotateY(' + s.ry.toFixed(2) + 'deg) scale(' + s.sc.toFixed(3) + ')';
       }
     }
