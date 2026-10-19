@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-19T22:17:36.952Z",
+  "updatedAt": "2026-10-19T23:50:37.488Z",
   "posts": [
     {
       "id": "p-blog-acilis-001",
@@ -17,6 +17,20 @@
       "published": true,
       "createdAt": "2026-10-20T21:50:00.000Z",
       "updatedAt": "2026-10-20T21:50:00.000Z"
+    },
+    {
+      "id": "p-mvfwqgmoxgat",
+      "createdAt": "2026-10-19T23:50:37.488Z",
+      "title": "Test",
+      "slug": "test",
+      "category": "ekonomi",
+      "tags": [
+        "test"
+      ],
+      "excerpt": "test",
+      "content": "test",
+      "published": true,
+      "updatedAt": "2026-10-19T23:50:37.488Z"
     }
   ]
 }
