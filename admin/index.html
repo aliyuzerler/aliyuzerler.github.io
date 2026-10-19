@@ -4,8 +4,8 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <meta name="robots" content="noindex,nofollow"/>
-<title>Blog Yönetimi — Ali Yüzerler</title>
-<meta name="description" content="Blog yazıları yönetim paneli (özel)."/>
+<title>Yönetim Paneli — Ali Yüzerler</title>
+<meta name="description" content="Site içeriği ve blog yönetim paneli (özel)."/>
 <link rel="icon" href="/favicon.ico"/>
 <link rel="stylesheet" href="/blog/app.css"/>
 <link rel="stylesheet" href="./admin.css"/>
@@ -22,12 +22,12 @@
 <!-- GİRİŞ EKRANI (token) -->
 <section id="gate" class="gate" hidden>
   <div class="gate-card">
-    <span class="badge"><span class="badge-dot"></span>Blog Yönetimi</span>
+    <span class="badge"><span class="badge-dot"></span>Yönetim Paneli</span>
     <h1 class="gate-title">Özel Alan</h1>
     <p class="gate-text">
-      Blog yazılarını yönetmek için GitHub erişim anahtarın (Personal Access Token) gerekir.
-      Anahtar yalnızca bu tarayıcıda saklanır, hiçbir yere gönderilmez; yalnızca GitHub API'sine
-      kendi sunucusuna iletilir.
+      Site içeriğini (profil, projeler, hizmetler, deneyim...) ve blog yazılarını tek panelden
+      yönetmek için GitHub erişim anahtarın (Personal Access Token) gerekir. Anahtar yalnızca bu
+      tarayıcıda saklanır, hiçbir yere gönderilmez; yalnızca GitHub API'sine kendi sunucusuna iletilir.
     </p>
     <form id="gateForm" class="gate-form">
       <input type="password" id="tokenInput" class="inp" placeholder="ghp_..." autocomplete="off" spellcheck="false" aria-label="GitHub token"/>
@@ -52,13 +52,13 @@
       <a href="/admin/" class="brand">
         <span class="brand-logo"><img src="/profile.jpg" alt="AY"/><span class="brand-ring"></span></span>
         <span class="brand-text">
-          <span class="brand-name">Blog<span class="brand-dot">.</span></span>
-          <span class="brand-sub">Yönetim</span>
+          <span class="brand-name">Yönetim<span class="brand-dot">.</span></span>
+          <span class="brand-sub">Blog + Site</span>
         </span>
       </a>
       <div class="topbar-links" role="tablist" aria-label="Panel sekmeleri">
-        <button type="button" class="topbar-link tab-btn is-active" id="tabList" role="tab" aria-selected="true">Yazılar</button>
-        <button type="button" class="topbar-link tab-btn" id="tabEditor" role="tab" aria-selected="false">Düzenleyici</button>
+        <button type="button" class="topbar-link tab-btn is-active" id="tabSite" role="tab" aria-selected="true">Site İçeriği</button>
+        <button type="button" class="topbar-link tab-btn" id="tabBlog" role="tab" aria-selected="false">Blog</button>
       </div>
       <div class="topbar-actions">
         <a href="/blog/" class="btn-cta" target="_blank" rel="noopener">Canlı Site
@@ -82,8 +82,25 @@
       <span class="status-right" id="fileMeta"></span>
     </div>
 
-    <!-- YAZILAR SEKMESİ -->
-    <section id="viewList" class="view">
+    <!-- SİTE İÇERİĞİ SEKMESİ -->
+    <section id="viewSite" class="view">
+      <div class="site-head">
+        <h2 class="sec-title" id="siteTitle">Site İçeriği</h2>
+      </div>
+      <p class="site-hint" id="siteHint"></p>
+      <div class="site-rail" id="siteRail"></div>
+      <div id="siteBody"></div>
+    </section>
+
+    <!-- BLOG SEKMESİ -->
+    <div id="blogWrap" hidden>
+      <div class="subtabs" role="tablist" aria-label="Blog alt sekmeleri">
+        <button type="button" class="subtab is-active" id="tabList" role="tab" aria-selected="true">Yazılar</button>
+        <button type="button" class="subtab" id="tabEditor" role="tab" aria-selected="false">Düzenleyici</button>
+      </div>
+
+      <!-- YAZILAR -->
+      <section id="viewList" class="view">
       <div class="stats-row" id="statsRow"></div>
       <div class="list-bar">
         <h2 class="sec-title">Blog Yazıları</h2>
@@ -95,8 +112,8 @@
       <div class="post-list" id="postList"></div>
     </section>
 
-    <!-- DÜZENLEYİCİ SEKMESİ -->
-    <section id="viewEditor" class="view" hidden>
+      <!-- DÜZENLEYİCİ -->
+      <section id="viewEditor" class="view" hidden>
       <div class="ed-head">
         <h2 class="sec-title" id="edTitle">Yeni Yazı</h2>
         <div class="ed-actions">
@@ -164,18 +181,20 @@
           </label>
         </div>
       </form>
-    </section>
+      </section>
+    </div>
   </main>
 
   <footer class="foot">
     <div class="container foot-inner">
-      <p class="foot-copy">© 2026 Ali Yüzerler — Blog Yönetimi</p>
-      <p class="foot-copy" id="verInfo">ALIBLOG v1</p>
+      <p class="foot-copy">© 2026 Ali Yüzerler — Yönetim Paneli</p>
+      <p class="foot-copy" id="verInfo">ALIBLOG v2 — Blog + Site</p>
     </div>
   </footer>
 </div>
 
 <div id="toast" class="toast" hidden></div>
 <script src="./admin.js"></script>
+<script src="./site.js"></script>
 </body>
 </html>

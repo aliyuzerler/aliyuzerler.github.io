@@ -123,6 +123,9 @@
     el.className = "status-msg " + (kind || "");
   }
 
+  /* site.js'in kullanacağı köprü */
+  window.AliblogBridge = { toast: toast, status: status };
+
   /* ---------- Tema ---------- */
   $("themeBtn").addEventListener("click", function () {
     var root = document.documentElement;
@@ -151,6 +154,7 @@
   function logout() {
     clearToken();
     data = null; fileSha = null; editingId = null;
+    if (window.SiteAdmin) window.SiteAdmin.reset();
     $("panel").hidden = true;
     $("gate").hidden = false;
     $("tokenInput").value = "";
@@ -220,6 +224,22 @@
   }
 
   /* ---------- Sekmeler ---------- */
+  /* Üst sekmeler: Site İçeriği (Supabase) | Blog (GitHub) */
+  function switchTop(top) {
+    var isSite = top === "site";
+    $("viewSite").hidden = !isSite;
+    $("blogWrap").hidden = isSite;
+    $("tabSite").classList.toggle("is-active", isSite);
+    $("tabBlog").classList.toggle("is-active", !isSite);
+    $("tabSite").setAttribute("aria-selected", isSite ? "true" : "false");
+    $("tabBlog").setAttribute("aria-selected", isSite ? "false" : "true");
+    if (isSite && window.SiteAdmin) window.SiteAdmin.show();
+    window.scrollTo(0, 0);
+  }
+  $("tabSite").addEventListener("click", function () { switchTop("site"); });
+  $("tabBlog").addEventListener("click", function () { switchTop("blog"); });
+
+  /* Blog alt sekmeleri: Yazılar | Düzenleyici */
   function switchTab(tab) {
     var isList = tab === "list";
     $("viewList").hidden = !isList;
@@ -538,6 +558,7 @@
         $("gate").hidden = true;
         $("panel").hidden = false;
         switchTab("list");
+        switchTop("site");
         setBusy(false);
       })
       .catch(function () { setBusy(false); });
