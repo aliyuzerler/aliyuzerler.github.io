@@ -1,18 +1,34 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-20T21:50:00.000Z",
+  "updatedAt": "2026-10-19T22:17:17.748Z",
   "posts": [
     {
       "id": "p-blog-acilis-001",
       "title": "Blog Açıldı: Ne Üzerine Yazacağım?",
       "slug": "blog-acildi-ne-uzerine-yazacagim",
       "category": "kisisel-gelisim",
-      "tags": ["blog", "kişisel gelişim", "hedefler"],
+      "tags": [
+        "blog",
+        "kişisel gelişim",
+        "hedefler"
+      ],
       "excerpt": "Bu blogda zevk aldığım konularda yazacağım: ekonomi, borsa, yapay zeka, kişisel gelişim sürecim ve gündem. İşte bu yolculuğa neden başladım ve sizi neler bekliyor.",
       "content": "Merhaba! Bu blogu aylardır aklımın bir köşesinde taşıyordum ve sonunda açtım.\n\nYazmayı sevmekle birlikte, öğrendiklerimi yazıya dökmek benim için en iyi öğrenme yöntemi. Bir konuyu gerçekten anladığınızda, onu basitçe anlatabiliyorsunuz. Bu blog benim için bir tür **düşünme defteri** olacak; umarım aynı merakla yol yürüyenler için de faydalı bir kaynak olur.\n\n## Hangi konularda yazacağım?\n\nZevk aldığım ve sürekli takip ettiğim beş ana başlık var:\n\n### Ekonomi\n\nEnflasyondan faiz kararlarına, küresel ticaretten Türkiye ekonomisine... Ekonomiyi herkesin anlayacağı bir dille ele almayı amaçlıyorum. Karmaşık görünen tabloları sadeleştirip \"bu bizim için ne demek?\" sorusuna cevap arayacağım.\n\n### Borsa\n\nYatırım dünyasında yeni bir şeyler öğrenirken notlarımı burada paylaşacağım. Hisse senetleri, portföy yönetimi, uzun vadeli yatırım stratejileri ve piyasaları hareket ettiren dinamikler üzerine düşüncelerim. Tabii standart bir uyarıyla: burada yazılanlar yatırım tavsiyesi değil, öğrenme sürecimin izleridir.\n\n### Yapay Zeka\n\nMeslek olarak mobil ve web geliştirme yapıyorum; yapay zeka hem işimin hem ilgi alanımın merkezinde. Yeni modeller, araçlar, geliştirici iş akışlarını değiştiren uygulamalar ve bu dönüşümün bizi nereye götürdüğü üzerine yazacağım.\n\n### Kişisel Gelişimim\n\nAlışkanlıklar, üretkenlik, disiplin, öğrenme yöntemleri... Kendi deneyimlerimden yola çıkarak; neyin işe yaradığını, neyin yaramadığını, hatalarımla birlikte paylaşacağım. Kusursuz bir rehber değil, samimi bir süreç kaydı olacak.\n\n### Gündem\n\nTeknoloji ve finans dünyasından öne çıkan gelişmeler hakkında kısa değerlendirmeler. Açılışların, ürün lansmanlarının ve piyasaları sarsan haberlerin arkasındaki büyük resmi okumaya çalışacağım.\n\n## Kapanış\n\nHer hafta en az bir yazı hedefiyle başlıyorum. Yorumlarınızı, önerilerinizi ve \"şunu da yaz\" dediklerinizi sosyal medya üzerinden iletebilirsiniz.\n\nKeyifli okumalar!",
       "published": true,
       "createdAt": "2026-10-20T21:50:00.000Z",
       "updatedAt": "2026-10-20T21:50:00.000Z"
+    },
+    {
+      "id": "p-mvftefucyg7o",
+      "createdAt": "2026-10-19T22:17:17.748Z",
+      "title": "CRUD Test 2",
+      "slug": "crud-test-2",
+      "category": "ekonomi",
+      "tags": [],
+      "excerpt": "Geçici test içeriği.",
+      "content": "Geçici test içeriği.",
+      "published": false,
+      "updatedAt": "2026-10-19T22:17:17.748Z"
     }
   ]
 }
