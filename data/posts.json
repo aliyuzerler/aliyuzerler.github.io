@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-19T22:17:17.748Z",
+  "updatedAt": "2026-10-19T22:17:36.952Z",
   "posts": [
     {
       "id": "p-blog-acilis-001",
@@ -17,18 +17,6 @@
       "published": true,
       "createdAt": "2026-10-20T21:50:00.000Z",
       "updatedAt": "2026-10-20T21:50:00.000Z"
-    },
-    {
-      "id": "p-mvftefucyg7o",
-      "createdAt": "2026-10-19T22:17:17.748Z",
-      "title": "CRUD Test 2",
-      "slug": "crud-test-2",
-      "category": "ekonomi",
-      "tags": [],
-      "excerpt": "Geçici test içeriği.",
-      "content": "Geçici test içeriği.",
-      "published": false,
-      "updatedAt": "2026-10-19T22:17:17.748Z"
     }
   ]
 }
