@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Blog — Ali Yüzerler</title>
+<meta name="description" content="Zevk aldığım konularda yazılar: ekonomi, borsa, yapay zeka, kişisel gelişim sürecim ve gündem üzerine notlar ve değerlendirmeler."/>
+<meta property="og:title" content="Blog — Ali Yüzerler"/>
+<meta property="og:description" content="Ekonomi, borsa, yapay zeka, kişisel gelişim ve gündem üzerine yazılar."/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://aliyuzerler.github.io/blog/"/>
+<meta property="og:image" content="https://aliyuzerler.github.io/og-image.jpg"/>
+<link rel="icon" href="/favicon.ico"/>
+<link rel="canonical" href="https://aliyuzerler.github.io/blog/"/>
+<link rel="preload" href="/_next/static/media/83afe278b6a6bb3c-s.p.3a6ba036.woff2" as="font" type="font/woff2" crossorigin/>
+<link rel="preload" href="/_next/static/media/0c89a48fa5027cee-s.p.4564287c.woff2" as="font" type="font/woff2" crossorigin/>
+<link rel="stylesheet" href="./app.css"/>
+<script>
+/* Ana siteyle ayni tema anahtari (next-themes "theme") — FOUC engelle */
+(function(){try{var t=localStorage.getItem("theme");if(t==="light"){document.documentElement.classList.remove("dark")}else{document.documentElement.classList.add("dark")}}catch(e){}})();
+</script>
+</head>
+<body>
+<div class="bg-deco" aria-hidden="true">
+  <div class="bg-grid"></div>
+  <div class="bg-glow"></div>
+</div>
+
+<a class="skip" href="#icerik">İçeriğe geç</a>
+
+<!-- ÜST BAR -->
+<header class="topbar-wrap">
+  <nav class="topbar" aria-label="Blog menüsü">
+    <a href="/" class="brand">
+      <span class="brand-logo"><img src="/profile.jpg" alt="Ali Yüzerler"/><span class="brand-ring"></span></span>
+      <span class="brand-text">
+        <span class="brand-name">Ali<span class="brand-dot">.</span></span>
+        <span class="brand-sub">Developer</span>
+      </span>
+    </a>
+    <div class="topbar-links">
+      <a href="/" class="topbar-link">Ana Sayfa</a>
+      <a href="#/" class="topbar-link is-active" data-route-home>Blog</a>
+    </div>
+    <div class="topbar-actions">
+      <a href="/#contact" class="btn-cta">İletişime Geç
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg>
+      </a>
+      <button type="button" class="icon-btn" id="themeBtn" aria-label="Tema değiştir">
+        <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/><path d="M20 3v4"/><path d="M22 5h-4"/></svg>
+        <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<main id="icerik">
+  <!-- PROGRESS BAR (yazi görünümü) -->
+  <div class="progress" id="progress" hidden><div class="progress-bar" id="progressBar"></div></div>
+
+  <!-- ANA SAYFA GÖRÜNÜMÜ -->
+  <section id="view-home">
+    <div class="hero">
+      <div class="container">
+        <span class="badge"><span class="badge-dot"></span>Blog</span>
+        <h1 class="hero-title">Zevk aldığım konularda <span class="grad-text">yazılar</span></h1>
+        <p class="hero-text">
+          Burada takip etmeye ve yazmaya zaman ayırdığım konuları paylaşıyorum: ekonomi ve borsadaki
+          gelişmeler, yapay zekadaki yenilikler, kişisel gelişim sürecimden notlar ve gündemdeki
+          başlıklar üzerine değerlendirmeler. Öğrendiklerimi yazıya dökmek benim için en iyi öğrenme
+          yöntemi; bu blog o yolculuğun kaydı olacak.
+        </p>
+        <div class="hero-topics" aria-label="Konu başlıkları">
+          <span class="topic-chip t-ekonomi">Ekonomi</span>
+          <span class="topic-chip t-borsa">Borsa</span>
+          <span class="topic-chip t-yapay-zeka">Yapay Zeka</span>
+          <span class="topic-chip t-kisisel-gelisim">Kişisel Gelişim</span>
+          <span class="topic-chip t-gundem">Gündem</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="container list-wrap">
+      <div class="list-head">
+        <h2 class="list-title">Yazılar <span class="list-count" id="postCount"></span></h2>
+        <label class="search-box">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="search" id="searchInput" placeholder="Yazılarda ara..." autocomplete="off" aria-label="Yazılarda ara"/>
+        </label>
+      </div>
+      <div class="filter-row" id="filterRow" role="group" aria-label="Kategori filtresi"></div>
+      <div class="cards" id="cards"></div>
+      <div class="empty" id="emptyState" hidden></div>
+    </div>
+  </section>
+
+  <!-- YAZI GÖRÜNÜMÜ -->
+  <section id="view-post" hidden>
+    <div class="container post-wrap">
+      <a href="#/" class="back-link">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+        Tüm Yazılar
+      </a>
+      <article id="postArticle" class="post-article"></article>
+      <section id="relatedSection" class="related" hidden>
+        <h2 class="related-title">Benzer Yazılar</h2>
+        <div class="cards cards-tight" id="relatedCards"></div>
+      </section>
+    </div>
+  </section>
+
+  <section id="view-404" hidden>
+    <div class="container nf">
+      <h1 class="nf-title">404</h1>
+      <p class="nf-text">Aradığın yazı bulunamadı ya da kaldırılmış olabilir.</p>
+      <a href="#/" class="btn-cta">Bloga Dön</a>
+    </div>
+  </section>
+</main>
+
+<!-- ALT BÖLÜM -->
+<footer class="foot">
+  <div class="container foot-inner">
+    <div class="foot-left">
+      <a href="/" class="brand">
+        <span class="brand-logo"><img src="/profile.jpg" alt="Ali Yüzerler"/></span>
+        <span class="brand-text">
+          <span class="brand-name-sm">Ali Yüzerler</span>
+          <span class="brand-sub">Mobile &amp; Web Developer</span>
+        </span>
+      </a>
+      <p class="foot-desc">Konya, Türkiye — dijital ürünler üzerine geliştirici.</p>
+    </div>
+    <div class="foot-right">
+      <div class="foot-social">
+        <a href="https://www.instagram.com/aliyuzerler" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="social-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+        </a>
+        <a href="https://x.com/Yzerler" target="_blank" rel="noopener noreferrer" aria-label="X" class="social-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        </a>
+        <a href="https://wa.me/905530282303" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" class="social-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 0 1 8.413 3.488 11.824 11.824 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24z"/></svg>
+        </a>
+        <a href="mailto:yuzerler042@gmail.com" aria-label="E-posta" class="social-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        </a>
+      </div>
+      <p class="foot-copy">© 2026 Ali Yüzerler. Tüm hakları saklıdır.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="./app.js"></script>
+</body>
+</html>

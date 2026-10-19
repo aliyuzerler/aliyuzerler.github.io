@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="tr" class="dark">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>Blog Yönetimi — Ali Yüzerler</title>
+<meta name="description" content="Blog yazıları yönetim paneli (özel)."/>
+<link rel="icon" href="/favicon.ico"/>
+<link rel="stylesheet" href="/blog/app.css"/>
+<link rel="stylesheet" href="./admin.css"/>
+<script>
+(function(){try{var t=localStorage.getItem("theme");if(t==="light"){document.documentElement.classList.remove("dark")}else{document.documentElement.classList.add("dark")}}catch(e){}})();
+</script>
+</head>
+<body>
+<div class="bg-deco" aria-hidden="true">
+  <div class="bg-grid"></div>
+  <div class="bg-glow"></div>
+</div>
+
+<!-- GİRİŞ EKRANI (token) -->
+<section id="gate" class="gate" hidden>
+  <div class="gate-card">
+    <span class="badge"><span class="badge-dot"></span>Blog Yönetimi</span>
+    <h1 class="gate-title">Özel Alan</h1>
+    <p class="gate-text">
+      Blog yazılarını yönetmek için GitHub erişim anahtarın (Personal Access Token) gerekir.
+      Anahtar yalnızca bu tarayıcıda saklanır, hiçbir yere gönderilmez; yalnızca GitHub API'sine
+      kendi sunucusuna iletilir.
+    </p>
+    <form id="gateForm" class="gate-form">
+      <input type="password" id="tokenInput" class="inp" placeholder="ghp_..." autocomplete="off" spellcheck="false" aria-label="GitHub token"/>
+      <label class="chk">
+        <input type="checkbox" id="rememberChk" checked/>
+        <span>Bu cihazda hatırla</span>
+      </label>
+      <button type="submit" class="btn-primary" id="gateBtn">Giriş Yap</button>
+    </form>
+    <p class="gate-err" id="gateErr" hidden></p>
+    <p class="gate-help">
+      Yeni anahtar için:
+      <a href="https://github.com/settings/tokens/new?scopes=repo&description=Blog%20Y%C3%B6netimi" target="_blank" rel="noopener noreferrer">GitHub token oluştur <em>(repo yetkisi yeterli)</em></a>
+    </p>
+  </div>
+</section>
+
+<!-- PANEL -->
+<div id="panel" hidden>
+  <header class="topbar-wrap">
+    <nav class="topbar" aria-label="Panel menüsü">
+      <a href="/admin/" class="brand">
+        <span class="brand-logo"><img src="/profile.jpg" alt="AY"/><span class="brand-ring"></span></span>
+        <span class="brand-text">
+          <span class="brand-name">Blog<span class="brand-dot">.</span></span>
+          <span class="brand-sub">Yönetim</span>
+        </span>
+      </a>
+      <div class="topbar-links" role="tablist" aria-label="Panel sekmeleri">
+        <button type="button" class="topbar-link tab-btn is-active" id="tabList" role="tab" aria-selected="true">Yazılar</button>
+        <button type="button" class="topbar-link tab-btn" id="tabEditor" role="tab" aria-selected="false">Düzenleyici</button>
+      </div>
+      <div class="topbar-actions">
+        <a href="/blog/" class="btn-cta" target="_blank" rel="noopener">Canlı Site
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg>
+        </a>
+        <button type="button" class="icon-btn" id="themeBtn" aria-label="Tema değiştir">
+          <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+          <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+        </button>
+        <button type="button" class="icon-btn" id="logoutBtn" title="Çıkış" aria-label="Çıkış">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <main class="panel-main">
+    <!-- DURUM ÇUBUĞU -->
+    <div class="status-row">
+      <span class="status-msg" id="statusMsg"></span>
+      <span class="status-right" id="fileMeta"></span>
+    </div>
+
+    <!-- YAZILAR SEKMESİ -->
+    <section id="viewList" class="view">
+      <div class="stats-row" id="statsRow"></div>
+      <div class="list-bar">
+        <h2 class="sec-title">Blog Yazıları</h2>
+        <button type="button" class="btn-primary" id="newBtn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+          Yeni Yazı
+        </button>
+      </div>
+      <div class="post-list" id="postList"></div>
+    </section>
+
+    <!-- DÜZENLEYİCİ SEKMESİ -->
+    <section id="viewEditor" class="view" hidden>
+      <div class="ed-head">
+        <h2 class="sec-title" id="edTitle">Yeni Yazı</h2>
+        <div class="ed-actions">
+          <button type="button" class="btn-ghost" id="previewBtn">Önizleme</button>
+          <button type="button" class="btn-ghost" id="cancelBtn">İptal</button>
+          <button type="button" class="btn-primary" id="saveBtn">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            GitHub'a Kaydet
+          </button>
+        </div>
+      </div>
+
+      <form id="edForm" class="ed-form" onsubmit="return false">
+        <div class="ed-grid">
+          <label class="fld fld-wide">
+            <span>Başlık <em>*</em></span>
+            <input type="text" id="fTitle" class="inp" placeholder="Yazı başlığı" maxlength="160"/>
+          </label>
+          <label class="fld">
+            <span>Kısa Ad (slug) <em>*</em></span>
+            <div class="slug-row">
+              <input type="text" id="fSlug" class="inp" placeholder="blog-yazisi-basligi" spellcheck="false"/>
+              <button type="button" class="btn-ghost btn-sm" id="slugBtn" title="Başlıktan üret">Oluştur</button>
+            </div>
+          </label>
+          <label class="fld">
+            <span>Kategori <em>*</em></span>
+            <select id="fCat" class="inp">
+              <option value="ekonomi">Ekonomi</option>
+              <option value="borsa">Borsa</option>
+              <option value="yapay-zeka">Yapay Zeka</option>
+              <option value="kisisel-gelisim">Kişisel Gelişim</option>
+              <option value="gundem">Gündem</option>
+            </select>
+          </label>
+          <label class="fld fld-wide">
+            <span>Etiketler <small>(virgülle ayır)</small></span>
+            <input type="text" id="fTags" class="inp" placeholder="enflasyon, faiz, tcmb"/>
+          </label>
+          <label class="fld fld-wide">
+            <span>Özet</span>
+            <textarea id="fExcerpt" class="inp" rows="2" placeholder="Kartlarda görünecek kısa özet (boş bırakılırsa içeriğin ilk cümleleri kullanılır)" maxlength="400"></textarea>
+          </label>
+          <div class="fld fld-wide">
+            <span>İçerik (Markdown) <em>*</em></span>
+            <div class="md-tools">
+              <button type="button" class="md-tool" data-md="h2" title="Başlık">H2</button>
+              <button type="button" class="md-tool" data-md="h3" title="Alt başlık">H3</button>
+              <button type="button" class="md-tool" data-md="b" title="Kalın">B</button>
+              <button type="button" class="md-tool" data-md="i" title="İtalik">I</button>
+              <button type="button" class="md-tool" data-md="link" title="Bağlantı">Link</button>
+              <button type="button" class="md-tool" data-md="quote" title="Alıntı">Alıntı</button>
+              <button type="button" class="md-tool" data-md="code" title="Kod">Kod</button>
+              <button type="button" class="md-tool" data-md="list" title="Liste">Liste</button>
+            </div>
+            <textarea id="fContent" class="inp ta-code" rows="16" placeholder="# Başlık&#10;&#10;Yazı buraya... **kalın**, *italik*, `kod`, [bağlantı](https://...)"></textarea>
+          </div>
+          <div class="fld fld-wide" id="previewWrap" hidden>
+            <span>Önizleme</span>
+            <div class="prev-box" id="previewBox"></div>
+          </div>
+          <label class="chk chk-wide">
+            <input type="checkbox" id="fPublished" checked/>
+            <span>Yayında (işaretsizse taslak olarak kaydedilir)</span>
+          </label>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <div class="container foot-inner">
+      <p class="foot-copy">© 2026 Ali Yüzerler — Blog Yönetimi</p>
+      <p class="foot-copy" id="verInfo">ALIBLOG v1</p>
+    </div>
+  </footer>
+</div>
+
+<div id="toast" class="toast" hidden></div>
+<script src="./admin.js"></script>
+</body>
+</html>

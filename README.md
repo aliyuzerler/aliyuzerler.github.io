@@ -24,16 +24,32 @@ Kişisel portfolyo sitesi: mobil & web geliştirme hizmetleri, canlı proje öni
 ├── 404.html              # 404 sayfası
 ├── _next/                # Next.js statik varlıkları (JS/CSS/font)
 ├── projects/             # Proje demo sayfaları ve varlıkları
+├── blog/                 # Blog sayfası (statik, posts.json'dan beslenir)
+├── admin/                # Blog yönetim paneli (özel, noindex)
+├── data/posts.json       # Blog yazıları veri kaynağı
 ├── profile.jpg           # Profil fotoğrafı
 └── robots.txt            # Arama motoru kuralları
 ```
 
 > ⚠️ **Bu depo yalnızca build çıktısını içerir.** Kaynak kod ayrı tutulmaktadır.
 
+## ✍️ Blog
+
+- **Blog sayfası:** [/blog/](https://aliyuzerler.github.io/blog/) — ekonomi, borsa, yapay zeka,
+  kişisel gelişim ve gündem başlıklı yazılar. Ana sitedeki "Blog" sekmesinden erişilir.
+- **Yönetim paneli:** [/admin/](https://aliyuzerler.github.io/admin/) — yalnızca yazarın
+  erişimine açık, sitede hiçbir yerden bağlantı verilmez.
+  Yazı eklemek/düzenlemek için GitHub Personal Access Token (repo yetkili) gerekir;
+  token yalnızca tarayıcıda saklanır ve kayıtlar doğrudan `data/posts.json` dosyasına
+  commit edilir. Site, commit sonrası otomatik olarak yeniden yayınlanır (1-2 dk).
+
 ## 🚀 Yerel Geliştirme
 
 Kaynak proje ayrı olduğundan bu depo üzerinde doğrudan geliştirme yapılmaz;
 `next build` çıktısı bu depoya deploy edilir (bkz. `.github/workflows/deploy.yml`).
+
+Blog verisi üzerinde çalışırken basit bir statik sunucu yeterlidir:
+`python3 -m http.server 3030` → `http://localhost:3030/blog/`
 
 ## 📞 İletişim
 
